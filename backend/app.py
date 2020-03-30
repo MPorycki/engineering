@@ -5,7 +5,7 @@ from flask.json import jsonify
 from flask_restful import Api, Resource
 from flask_cors import CORS
 
-from Modules.users import (
+from Modules.user_management import (
     login,
     register_user,
     logout,
@@ -18,9 +18,6 @@ from Modules.adresses import get_adress
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
 from models import (
-    Projects as projects_table,
-    Comments as comments_table,
-    InitiativesParticipants,
     Accounts,
 )
 
@@ -56,22 +53,25 @@ class Account(Resource):
             return make_response(result,200)
 
     def post(self):
+        """
+        Create a new user based on provided data
+        :return: HTTP status of the registration attempt
+        """
         try:
             data = request.get_json()
             email = data["email"]
             raw_password = data["raw_password"]
-            name = data["name"]
-            surname = data["surname"]
+            fist_name = data["fist_name"]
+            last_name = data["last_name"]
             account_type = data["account_type"]
-            username = data["login"]
-        except Exception as e:
+        except KeyError as e:
             print(e)
-            return make_response("Not enough data provided", 400)
+            return make_response("Not enough data provided, missing data: "+e, 400)
         registration = register_user(
-            email, raw_password, name, surname, account_type, username
+            email, raw_password, fist_name, last_name, account_type
         )
         if registration["success"]:
-            return make_response("Rejestracja zakonczona pomyslnie", 200)
+            return make_response("Registration succesfull", 200)
         else:
             return make_response(jsonify(registration), 401)
 
