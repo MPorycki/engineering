@@ -92,20 +92,20 @@ def update_user(user_data: dict) -> bool:
         return False
 
 
-def change_password(account_id: str, new_password: str) -> str:
+def change_password(account_id: str, new_password: str) -> bool:
     """
     Changes the password for the user
     :param account_id: user's account_id
     :param new_password: user's new password
-    :return:
+    :return: True if the change was successful, False if there were any errors
     """
     with session_scope() as session:
         user = get_object(Accounts, account_id)
         new_password_hash = sha256_crypt.hash(new_password)
         user.hashed_password = new_password_hash
         session.commit()
-        return "password_changed"
-    return "password_not_changed"
+        return True
+    return False
 
 
 # AUTHENTICATION

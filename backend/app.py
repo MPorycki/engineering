@@ -71,7 +71,7 @@ class Account(Resource):
             email, raw_password, fist_name, last_name, account_type
         )
         if registration["success"]:
-            return make_response("Registration succesfull", 200)
+            return make_response("Registration successful", 200)
         else:
             return make_response(jsonify(registration), 401)
 
@@ -123,16 +123,18 @@ api.add_resource(AccountLogin, "/account/login")
 
 class AccountResetPassword(Resource):
     def patch(self):
-        # Password change handling
-        new_password = request.form.get("new_password")
-        account_id = request.headers.get("account_id")
+        """
+        Handle password change initiated by the user.
+        :return: HTTP response: 200 if the change was successful, 403 otherwise.
+        """
+        data = request.get_json()
+        new_password = data["new_password"]
+        account_id = data["account_id"]
         password_change = change_password(account_id, new_password)
-        if password_change == "password_changed":
-            return make_response(password_change, 200)
-        elif password_change == "user_does_not_exist":
-            return make_response(password_change, 403)
-        elif password_change == "message_not_sent":
-            return make_response(password_change, 400)
+        if password_change:
+            return make_response("Password changed", 200)
+        else:
+            return make_response("Password was not changed", 403)
 
 
 api.add_resource(AccountResetPassword, "/account/reset")
