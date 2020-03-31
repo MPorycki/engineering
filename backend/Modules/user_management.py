@@ -10,7 +10,6 @@ from .crud_common import *
 
 # CREATE
 
-
 def register_user(
         email: str,
         raw_password: str,

@@ -13,7 +13,6 @@ from Modules.user_management import (
     session_exists,
     update_user,
 )
-from Modules.adresses import get_adress
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -30,15 +29,16 @@ def verify_session(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            session_id = request.headers.get("session_id")
-            account_id = request.headers.get("account_id")
+            data = request.get_json()
+            session_id = data["session_id"]
+            account_id = data["account_id"]
         except Exception as e:
             print(e)
-            return make_response(401, "Invalid session")
+            return make_response("Invalid session", 401)
         if session_exists(session_id, account_id):
             return func(**kwargs)
         else:
-            return make_response(401, "Invalid session")
+            return make_response("Invalid session", 401)
 
     return wrapper()
 
