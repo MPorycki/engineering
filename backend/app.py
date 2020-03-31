@@ -140,175 +140,20 @@ api.add_resource(AccountResetPassword, "/account/reset")
 
 class AccountLogout(Resource):
     def delete(self):
-        # Logout
+        """
+        Logouts the user.
+        :return: HTTP Response: 200 if the logout was successful, 400 if the session does not exists for the user
+        """
         account_id = request.headers.get("account_id")
         session_id = request.headers.get("session_id")
         logout_result = logout(session_id, account_id)
-        if logout_result == "logout_successful":
-            return make_response(logout_result, 200)
-        elif logout_result == "logout_unsuccessful":
-            return make_response(logout_result, 400)
+        if logout_result:
+            return make_response("User logged out.", 200)
         else:
-            return make_response(None, 500)
+            return make_response("Given session does not exists for given user.", 400)
 
 
 api.add_resource(AccountLogout, "/account/logout")
-
-
-class Projects(Resource):  # we assume the session is verified
-    def get(self, project_id=None):
-        if project_id:
-            project = fetch_object(
-                object_table=projects_table, object_id=project_id
-            )
-            # Add adress to payload
-            adress = get_adress(project["id"])
-            project.update(adress)
-            return make_response(jsonify(project), 200)
-        else:
-            projects = fetch_all_objects(projects_table)
-            return make_response(jsonify(projects), 200)
-
-    def post(self):
-        try:
-            data = request.get_json()
-            name = data["name"]
-            owner = data["owner_id"]
-            description = data["description"]
-            adress = data["adress"]
-            requested_participants = data["requested_participants"]
-        except Exception as e:
-            print(str(e.__class__.__name__) + ": " + str(e))
-            return make_response("Not enough data provided", 400)
-        project = create_project(
-            name, owner, description, requested_participants, adress
-        )
-        if project:
-            add_participant(
-                account_id=data["owner_id"], project_id=project, role="Tworca"
-            )
-            return make_response("", 200)
-        else:
-            return make_response("Serwer nie przyjal danych", 400)
-
-    def patch(self):
-        data = request.get_json()
-        _id = update_project(data)
-        if _id:
-            return make_response(str(_id), 200)
-        else:
-            return make_response("Serwer nie przyjal danych", 400)
-
-    def delete(self, project_id):
-        delete = delete_object(
-            object_table=projects_table, object_id=project_id
-        )
-        return make_response(str(delete), 200)
-
-
-api.add_resource(Projects, "/projects", "/projects/<project_id>")
-
-
-class Ranking(Resource):
-    def get(self):
-        ranking = dict()
-        ranking["projects"] = get_best_projects()
-        return make_response(jsonify(ranking), 200)
-
-
-api.add_resource(Ranking, "/ranking")
-
-
-class Comments(Resource):
-    def get(self, id):
-        comments = get_comments(id)
-        return make_response(comments, 200)
-
-    def post(self):
-        data = request.get_json()
-        result = create_comment(
-            user_id=data["user_id"],
-            project_id=data["project_id"],
-            text=data["text"],
-        )
-        if result:
-            return make_response(jsonify(result), 200)
-        else:
-            return make_response("", 400)
-
-    def patch(self):
-        data = request.get_json()
-        _id = update_comment(data)
-        if _id:
-            return make_response(str(_id), 200)
-        else:
-            return make_response(str(_id), 400)
-
-    def delete(self, id):
-        delete = delete_object(object_table=comments_table, object_id=id)
-        return make_response(str(delete), 200)
-
-
-api.add_resource(Comments, "/comments", "/comments/<id>")
-
-
-class Comment(Resource):
-    def get(self, _id):
-        comment = get_comment(_id)
-        return make_response(jsonify(comment), 200)
-
-
-api.add_resource(Comment, "/comment/<_id>")
-
-
-class Participants(Resource):
-    def get(self, _id):
-        result = fetch_all_participants(_id)
-        return make_response(result, 200)
-
-    def post(self):
-        data = request.get_json()
-        result = add_participant(
-            account_id=data["user_id"],
-            project_id=data["project_id"],
-            role=data["role"],
-        )
-        if result:
-            return make_response(jsonify(result), 200)
-        else:
-            return make_response("", 400)
-
-    def patch(self):
-        data = request.get_json()
-        result = update_participant(data["participant_id"], data["role"])
-        return make_response(str(result), 200)
-
-    def delete(self, _id):
-        delete = delete_object(
-            object_table=InitiativesParticipants, object_id=_id
-        )
-        return make_response(str(delete), 200)
-
-
-api.add_resource(Participants, "/participants/", "/participants/<_id>")
-
-
-class Votes(Resource):
-    def post(self):
-        data = request.get_json()
-        if not alread_voted(data["user_id"], data["type"], data["object_id"]):
-            _id = vote(
-                data["user_id"],
-                data["type"],
-                data["object_id"],
-                data["is_upvote"],
-            )
-            return make_response(str(_id), 200)
-        else:
-            return make_response("Juz na to zaglosowales", 403)
-
-
-api.add_resource(Votes, "/votes/")
 
 
 class Main(Resource):

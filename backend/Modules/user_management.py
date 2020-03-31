@@ -172,15 +172,15 @@ def session_exists(session_id: str, account_id: str) -> bool:
         return session.query(exists_object).scalar()
 
 
-def logout(session_id: str, account_id: str) -> str:
+def logout(session_id: str, account_id: str) -> bool:
     """
     Logouts the user based on session_id and account_id
-    :return: string with the information about the logout status
+    :return: True if the session was removed, False if the given session does not exists for this account
     """
     if session_exists(session_id, account_id):
         with session_scope() as session:
             session.query(Sessions).filter(
                 Sessions.session_id == session_id
             ).delete()
-            return "logout_successful"
-    return "logout_unsuccessful"
+            return True
+    return False
