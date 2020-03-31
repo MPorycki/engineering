@@ -50,7 +50,7 @@ class Account(Resource):
             return make_response(result, 200)
         else:
             result = fetch_all_objects(Accounts)
-            return make_response(result,200)
+            return make_response(result, 200)
 
     def post(self):
         """
@@ -66,7 +66,7 @@ class Account(Resource):
             account_type = data["account_type"]
         except KeyError as e:
             print(e)
-            return make_response("Not enough data provided, missing data: "+e, 400)
+            return make_response("Not enough data provided, missing data: " + e, 400)
         registration = register_user(
             email, raw_password, fist_name, last_name, account_type
         )
@@ -93,19 +93,28 @@ api.add_resource(Account, "/account/", "/account/<_id>")
 
 class AccountLogin(Resource):
     def post(self):
+        """
+        Authorizes the user via provided email and password
+        :return: HTTP Response with a JSON attached
+                 Structure of the JSON  {"session_id": uuid,
+                                        "account_id": uuid,
+                                        "email_exists": bool,
+                                        "correct_pass": bool}
+                 HTTP responses: 200 if authorization was successful
+                                 400 if not enough data was provided
+                                 401 if the password was incorrect for the given email or the email is not in the db
+        """
         try:
             data = request.get_json()
             raw_password = data["raw_password"]
-            username = data["login"]
-        except Exception as e:
+            email = data["email"]
+        except KeyError as e:
             print(e)
-            return make_response("Not enough data provided", 400)
-        result = login(username=username, raw_password=raw_password)
+            return make_response("Not enough data provided" + e, 400)
+        result = login(email=email, raw_password=raw_password)
         if result["session_id"]:
             return make_response(jsonify(result), 200)
-        elif not result["username_exists"]:
-            return make_response(jsonify(result), 400)
-        elif not result["correct_pass"]:
+        else:
             return make_response(jsonify(result), 401)
 
 
