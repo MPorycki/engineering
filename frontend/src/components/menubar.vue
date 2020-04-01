@@ -11,7 +11,7 @@
 /*Paleta kolorow https://colorpalettes.net/color-palette-4182/ */
 .header {
     background-color: #a4e6f4 ;
-    height: 50px;
+    height: 55px;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -36,7 +36,7 @@ li a {
 }
 
 a:hover {
-    color: white;
+    color:#fff;
 }
 
 li:hover {
@@ -46,6 +46,6 @@ li:hover {
 
 .router-link-exact-active {
     background-color: #f3bac3;
-    color: white;
+    color: #fff;
 }
 </style>
