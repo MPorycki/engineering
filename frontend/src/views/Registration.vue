@@ -17,7 +17,7 @@
                             <input type="password" id="password" class="form-control" placeholder="Wpisz hasło" value="" />
                         </div>
                         <div class="form-group">
-                            <input type="password_confirm" id="password" class="form-control" placeholder="Potwierdź hasło" value="" />
+                            <input type="password" id="password_confirm" class="form-control" placeholder="Potwierdź hasło" value="" />
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btnSubmit" value="Zarejestruj się" />
@@ -29,11 +29,32 @@
 </template>
 
 <script>
+import axios from 'axios'
+import backend_url from './variables'
+
 export default {
     name: 'Registration',
     methods: {
     register(){
-
+            var data = {
+                email:document.getElementById("email").value,
+                first_name: document.getElementById("first_name").value,
+                last_name: document.getElementById("last_name").value,
+                raw_password: document.getElementById("password").value,
+                account_type: "customer"
+            }
+            if (this.validate_form()){
+                axios.post(backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));
+            }
+        },
+        register_success(message){
+            alert(message);
+            this.$router.push({ name: 'Login', })
+        },
+        handle_error(error_data){
+            if (error_data["email_taken"]) {
+                this.add_error_text("email_error", "Podany mail jest zajety");
+            }
         }
     }
 }
