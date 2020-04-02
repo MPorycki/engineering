@@ -3,7 +3,7 @@
             <div class="row">
                 <div class="col-md-6 login-form">
                     <h3>Podaj nowe hasło</h3>
-                    <form @submit.prevent="register">
+                    <form @submit.prevent="reset_password">
                          <div class="form-group">
                             <input type="password" id="password" class="form-control" placeholder="Wpisz hasło" value="" />
                         </div>
@@ -18,6 +18,28 @@
             </div>
         </div>
 </template>
+
+<script>
+import axios from 'axios'
+import backend_url from './variables'
+
+export default {
+    methods:{
+        reset_password(){
+            var data = {"new_password": document.getElementById("password").value, "reset_id": this.$route.query.reset_id}
+            axios.patch(backend_url+ "account/reset", data).then(this.reset_success()).catch(this.reset_fail())
+        },
+        reset_success(){
+            alert("Hasło zostało zmienione.")
+            this.$router.push({ name: 'Login', })
+            location.reload()
+        },
+        reset_fail(){
+            alert("Zmiana hasłą nie powiodła się.")
+        }
+    }
+}
+</script>
 
 
 <style scoped>
