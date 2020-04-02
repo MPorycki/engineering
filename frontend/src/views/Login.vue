@@ -5,7 +5,7 @@
                     <h3>Logowanie</h3>
                     <form>
                         <div class="form-group">
-                            <input type="text" id="login" class="form-control" placeholder="E-mail" value="" />
+                            <input type="text" id="email" class="form-control" placeholder="E-mail" value="" />
                         </div>
                         <div class="form-group">
                             <input type="password" id="password" class="form-control" placeholder="Hasło" value="" />
@@ -32,11 +32,20 @@ export default {
     methods:{
         log_in(){
             var data = {
-                login: document.getElementById("login").value,
+                email: document.getElementById("email").value,
                 raw_password: document.getElementById("password").value
             }
             axios.post(backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
         },
+        add_session_cookies(user_id, session_id){
+            var d = new Date();
+            d.setTime(d.getTime() + (7*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = "session-id=" + session_id + ";" + expires + ";path=/";
+            document.cookie = "user-id=" +user_id +";" + expires + ";path=/";
+            this.$router.push({ name: 'home', })
+            location.reload()
+        }
     }
 }
 </script>
