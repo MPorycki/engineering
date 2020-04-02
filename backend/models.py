@@ -33,6 +33,11 @@ def session_scope(_session=None):
 
 
 class Accounts(base):
+    """
+    Table representing user accounts in the application.
+
+    :account_type: Can have one of 3 values = "hairdresser", "customer", "admin"
+    """
     __tablename__ = "accounts"
 
     id = Column(String(length=32), primary_key=True)
