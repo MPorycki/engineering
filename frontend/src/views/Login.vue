@@ -3,7 +3,7 @@
             <div class="row">
                 <div class="col-md-6 login-form">
                     <h3>Logowanie</h3>
-                    <form>
+                    <form @submit.prevent="log_in">
                         <div class="form-group">
                             <input type="text" id="email" class="form-control" placeholder="E-mail" value="" />
                         </div>
@@ -14,10 +14,10 @@
                             <input type="submit" class="btnSubmit" value="Login" />
                         </div>
                         <div class="form-group">
-                            <a href="#" class="ForgetPwd">Zapomniałeś hasła?</a>
+                            <router-link to="/passreset" class="FormLinks">Zapomniałeś hasła?</router-link>
                         </div>
                         <div class="form-group">
-                            <a href="#" class="ForgetPwd">Nie masz konta?</a>
+                            <router-link to="/registration" class="FormLinks">Nie masz konta?</router-link>
                         </div>
                     </form>
                 </div>
@@ -84,7 +84,7 @@ export default {
     color: #fff;
     background-color: #f3bac3;
 }
-.ForgetPwd{
+.FormLinks{
     color: #6998a3;
     font-weight: 600;
     text-decoration: none;
