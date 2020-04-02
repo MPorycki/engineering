@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios'
+import backend_url from "./variables"
 export default {
     methods:{
         log_in(){
@@ -34,7 +35,7 @@ export default {
                 login: document.getElementById("login").value,
                 raw_password: document.getElementById("password").value
             }
-            axios.post("http://localhost:5000/account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
+            axios.post(backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
         },
     }
 }
