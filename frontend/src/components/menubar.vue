@@ -1,16 +1,75 @@
 <template>
     <div class="header">
         <ul>
-            <li><router-link to="/login" >Logowanie/Rejestracja</router-link></li>
-            <li><router-link to="/" >Strona główna</router-link></li>
+            <li v-if="this.session_id.length == 0">
+                <router-link to="/login">Logowanie/Rejestracja</router-link>
+            </li>
+            <li v-else v-on:click="logout()">
+                <a>Wyloguj</a>
+            </li>
+            <li>
+                <router-link to="/">Strona główna</router-link>
+            </li>
         </ul>
     </div>
 </template>
 
+<script>
+import axios from 'axios'
+import backend_url from '../views/variables'
+
+export default {
+    data() {
+        return {
+            user_id: "",
+            session_id: ""
+        }
+    },
+    methods: {
+        get_session() {
+            this.user_id = this.get_cookie("user-id")
+            this.session_id = this.get_cookie("session-id")
+        },
+        get_cookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        },
+        logout() {
+            var data = { "account_id": this.user_id, "session_id": this.session_id }
+            axios.delete(backend_url + "account/logout", data).then(this.logout_success()).catch(this.logout_failed())
+        },
+        logout_success(){
+            document.cookie = "session-id=;"
+            document.cookie = "user-id=;"
+            location.reload()
+        },
+        logout_failed(){
+            alert("Wylogowanie nie powiodło się.")
+        }
+
+    },
+    mounted() {
+        this.get_session()
+    }
+}
+</script>
+
 <style scoped>
 /*Paleta kolorow https://colorpalettes.net/color-palette-4182/ */
+
 .header {
-    background-color: #a4e6f4 ;
+    background-color: #a4e6f4;
     height: 55px;
     margin: 0;
     padding: 0;
@@ -36,12 +95,12 @@ li a {
 }
 
 a:hover {
-    color:#fff;
+    color: #fff;
 }
 
 li:hover {
-    display:block;
-    background-color:#f3bac3;
+    display: block;
+    background-color: #f3bac3;
 }
 
 .router-link-exact-active {
