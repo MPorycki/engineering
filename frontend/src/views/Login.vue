@@ -14,7 +14,7 @@
                             <input type="submit" class="btnSubmit" value="Login" />
                         </div>
                         <div class="form-group">
-                            <router-link to="/passreset" class="FormLinks">Zapomniałeś hasła?</router-link>
+                            <router-link to="/passresetverify" class="FormLinks">Zapomniałeś hasła?</router-link>
                         </div>
                         <div class="form-group">
                             <router-link to="/registration" class="FormLinks">Nie masz konta?</router-link>

@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Registration from '../views/Registration.vue'
+import PasswordResetVerification from '../views/PasswordResetVerification.vue'
+import PasswordReset from '../views/PasswordReset.vue'
 
 Vue.use(VueRouter)
 
@@ -29,6 +31,16 @@ const routes = [
     path: '/registration',
     name: 'Registration',
     component: Registration
+  },
+  {
+    path: '/passresetverify',
+    name: 'PasswordResetVerification',
+    component: PasswordResetVerification
+  },
+  {
+    path: '/passreset',
+    name: 'PasswordReset',
+    component: PasswordReset
   }
 ]
 
