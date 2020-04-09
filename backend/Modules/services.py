@@ -54,7 +54,7 @@ def validate_service(name: str, price: int, gender: str, service_duration: int):
 
 def update_service(service_updated_data: dict) -> bool:
     """
-        Update user data
+        Update service data
         :param service_updated_data: data of the given service to be updated
         :return: Boolean stating whether the update was successful
         """

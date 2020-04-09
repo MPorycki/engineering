@@ -78,6 +78,7 @@ class Adresses(base):
     __tablename__ = "adresses"
 
     id = Column(String(length=32), primary_key=True)
+    # salon_id
     city = Column(String)
     zip_code = Column(String)
     street = Column(String)
