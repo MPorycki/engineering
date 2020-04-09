@@ -74,7 +74,6 @@ class Services(base):
     service_duration = Column(Integer)
 
 
-"""
 class Adresses(base):
     __tablename__ = "adresses"
 
@@ -83,8 +82,6 @@ class Adresses(base):
     zip_code = Column(String)
     street = Column(String)
     building_no = Column(Integer)
-    flat_no = Column(Integer)
-    exact_location = Column(Boolean)
-"""
+    number_of_seats = Column(Integer)
 
 base.metadata.create_all(db)
