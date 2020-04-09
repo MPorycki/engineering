@@ -80,7 +80,6 @@ def update_user(user_data: dict) -> bool:
                     .filter(Accounts.id == user_data["user_id"])
                     .first()
             )
-            user.username = user_data["login"]
             user.name = user_data["name"]
             user.surname = user_data["surname"]
             user.email = user_data["email"]
