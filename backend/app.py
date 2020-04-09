@@ -13,11 +13,13 @@ from Modules.user_management import (
     session_exists,
     update_user,
 )
+from Modules.services import (create_service, update_service)
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
 from models import (
     Accounts,
+    Services
 )
 
 app = Flask(__name__)
@@ -156,6 +158,55 @@ class AccountLogout(Resource):
 
 
 api.add_resource(AccountLogout, "/account/logout")
+
+
+class Service(Resource):
+    def get(self, _id=None):
+        if _id:
+            result = fetch_object(Services, _id)
+            return make_response(result, 200)
+        else:
+            result = fetch_all_objects(Services)
+            return make_response(result, 200)
+
+    def post(self):
+        """
+                Create a new service based on provided data
+                :return: HTTP status of the creation attempt
+                """
+        try:
+            data = request.get_json()
+            name = data["name"]
+            price = data["price"]
+            description = data["description"]
+            gender = data["gender"]
+            service_duration = data["service_duration"]
+        except KeyError as e:
+            print(e)
+            return make_response("Not enough data provided, missing data: " + e, 400)
+        service_creation = create_service(
+            name, price, description, gender, service_duration
+        )
+        if service_creation["success"]:
+            return make_response("Registration successful", 200)
+        else:
+            return make_response(jsonify(service_creation), 401)
+
+
+    def patch(self):
+        data = request.get_json()
+        result = update_service(data)
+        if result:
+            return make_response(str(result), 200)
+        else:
+            return make_response(str(result), 400)
+
+    def delete(self, _id):
+        delete = delete_object(object_table=Services, object_id=_id)
+        return make_response(str(delete), 200)
+
+
+api.add_resource(Service, "/service/", "/service/<_id>")
 
 
 class Main(Resource):
