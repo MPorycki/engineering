@@ -66,6 +66,7 @@ class Services(base):
     __tablename__ = "services"
 
     service_id = Column(String(length=32), primary_key=True)
+    name = Column(String)
     price = Column(Float, nullable=False)
     description = Column(String)
     created_at = Column(TIMESTAMP)
