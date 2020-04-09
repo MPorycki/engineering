@@ -4,6 +4,7 @@ from sqlalchemy import (
     create_engine,
     Column,
     Integer,
+    Float,
     String,
     TIMESTAMP,
     ForeignKey,
@@ -47,19 +48,30 @@ class Accounts(base):
     hashed_password = Column(String)
     created_at = Column(TIMESTAMP)
     account_type = Column(String)
-    #salonId = Column(String(length=32), ForeignKey)
-
+    # salonId = Column(String(length=32), ForeignKey)
 
 
 class Sessions(base):
     __tablename__ = "sessions"
 
-    um_accounts_id = Column(
+    account_id = Column(
         String(length=32),
         ForeignKey(Accounts.id, onupdate="CASCADE", ondelete="CASCADE"),
     )
     session_id = Column(String(length=32), primary_key=True)
     created_at = Column(TIMESTAMP)
+
+
+class Services(base):
+    __tablename__ = "services"
+
+    service_id = Column(String(length=32), primary_key=True)
+    price = Column(Float, nullable=False)
+    description = Column(String)
+    created_at = Column(TIMESTAMP)
+    gender = Column(String)
+    service_duration = Column(Integer)
+
 
 """
 class Adresses(base):
