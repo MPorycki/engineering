@@ -14,6 +14,7 @@ from Modules.user_management import (
     update_user,
 )
 from Modules.services import (create_service, update_service)
+from Modules.adresses import (update_adress)
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -192,7 +193,6 @@ class Service(Resource):
         else:
             return make_response(jsonify(service_creation), 401)
 
-
     def patch(self):
         data = request.get_json()
         result = update_service(data)
@@ -207,6 +207,27 @@ class Service(Resource):
 
 
 api.add_resource(Service, "/service/", "/service/<_id>")
+
+
+class Adress(Resource):
+    def get(self, _id=None):
+        if _id:
+            result = fetch_object(Services, _id)
+            return make_response(result, 200)
+        else:
+            result = fetch_all_objects(Services)
+            return make_response(result, 200)
+
+    def patch(self):
+        data = request.get_json()
+        result = update_adress(data)
+        if result:
+            return make_response(str(result), 200)
+        else:
+            return make_response(str(result), 400)
+
+
+api.add_resource(Service, "/adress/", "/adress/<salon_id>")
 
 
 class Main(Resource):
