@@ -7,13 +7,10 @@ from models import Services, session_scope
 
 
 def create_service(name: str, price: int, description: str, gender: str, service_duration: int) -> dict:
-    payload = dict()
-    payload["success"] = False
     try:
         validate_service(name, price, gender, service_duration)
     except IntegrityError as e:
-        payload["error"] = str(e)
-        return payload
+        return {"success": False, "error": str(e)}
     _id = uuid.uuid4().hex
     new_service = Services(
         id=_id,
@@ -27,11 +24,9 @@ def create_service(name: str, price: int, description: str, gender: str, service
     try:
         with session_scope() as session:
             session.add(new_service)
-            payload["success"] = True
-            return payload
+            return {"success": True}
     except IntegrityError as e:
-        payload["error"] = str(e)
-        return payload
+        return {"success": False, "error": str(e)}
 
 
 def validate_service(name: str, price: int, gender: str, service_duration: int):
