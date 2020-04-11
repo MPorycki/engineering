@@ -1,6 +1,10 @@
+import datetime
+import uuid
+
 from sqlalchemy.exc import IntegrityError
 
-from models import Salons
+from models import Salons, session_scope
+from Modules.adresses import create_adress
 
 
 def create_salon(salon_data: dict) -> dict:
@@ -14,14 +18,16 @@ def create_salon(salon_data: dict) -> dict:
     except IntegrityError as e:
         return {"success": False, "error": str(e)}
     _id = uuid.uuid4().hex
+    try:
+        adress_id = create_adress(salon_data['adress'], _id)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
     new_service = Salons(
-        id=,
-        name=name,
-        price=price,
-        created_at=datetime.datetime.now(),
-        description=description,
-        gender=gender,
-        service_duration=service_duration,
+        id=_id,
+        adress_id=adress_id,
+        opening_hour=salon_data["opening_hour"],
+        closing_hour=salon_data["closing_hour"],
+        created_at=datetime.datetime.now()
     )
     try:
         with session_scope() as session:

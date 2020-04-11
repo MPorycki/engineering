@@ -258,6 +258,7 @@ class Salons(Resource):
             salon_creation = create_salon(request.get_json())
         else:
             return make_response(str(inputs.errors), 400)
+
         if salon_creation["success"]:
             return make_response("Salon created successfully", 200)
         else:
