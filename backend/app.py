@@ -1,9 +1,9 @@
 from functools import wraps
 
 from flask import Flask, request, make_response
+from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
-from flask_cors import CORS
 
 from Modules.user_management import (
     login,
@@ -22,6 +22,7 @@ from models import (
     Accounts,
     Services
 )
+from validation import ServiceInputs
 
 app = Flask(__name__)
 api = Api(app)
@@ -172,16 +173,20 @@ class Service(Resource):
 
     def post(self):
         """
-                Create a new service based on provided data
-                :return: HTTP status of the creation attempt
-                """
+        Create a new service based on provided data
+        :return: HTTP status of the creation attempt
+        """
         try:
             data = request.get_json()
-            name = data["name"]
-            price = data["price"]
-            description = data["description"]
-            gender = data["gender"]
-            service_duration = data["service_duration"]
+            inputs = ServiceInputs(request)
+            if inputs.validate():
+                name = data["name"]
+                price = data["price"]
+                description = data["description"]
+                gender = data["gender"]
+                service_duration = data["service_duration"]
+            else:
+                return make_response(str(inputs.errors), 422)
         except KeyError as e:
             print(e)
             return make_response("Not enough data provided, missing data: " + e, 400)
@@ -227,7 +232,7 @@ class Adress(Resource):
             return make_response(str(result), 400)
 
 
-api.add_resource(Service, "/adress/", "/adress/<salon_id>")
+api.add_resource(Adress, "/adress/", "/adress/<salon_id>")
 
 
 class Main(Resource):
