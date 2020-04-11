@@ -186,7 +186,7 @@ class Service(Resource):
                 gender = data["gender"]
                 service_duration = data["service_duration"]
             else:
-                return make_response(str(inputs.errors), 422)
+                return make_response(str(inputs.errors), 400)
         except KeyError as e:
             print(e)
             return make_response("Not enough data provided, missing data: " + e, 400)
@@ -199,8 +199,11 @@ class Service(Resource):
             return make_response(jsonify(service_creation), 401)
 
     def patch(self):
-        data = request.get_json()
-        result = update_service(data)
+        inputs = ServiceInputs(request)
+        if inputs.validate():
+            result = update_service(request.get_json())
+        else:
+            return make_response(str(inputs.errors), 422)
         if result:
             return make_response(str(result), 200)
         else:
