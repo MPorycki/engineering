@@ -3,7 +3,7 @@ import uuid
 
 from sqlalchemy.exc import IntegrityError
 
-from models import Salons, session_scope
+from models import Adresses, Salons, session_scope
 from Modules.adresses import create_adress, update_adress
 
 
@@ -92,3 +92,22 @@ def update_salon(salon_data: dict) -> dict:
         return {"success": True}
     except IntegrityError as e:
         return {"success": False, "error": str(e)}
+
+
+def delete_salon(salon_id):
+    """
+    Deletes salon and the corresponding adress
+    :param salon_id:
+    :return:
+    """
+    try:
+        with session_scope() as session:
+            adress_deletion = session.query(Adresses).filter(Salons.id == salon_id)
+            salon_deletion = session.query(Salons).filter(Salons.id == salon_id)
+            adress_deletion.delete()
+            salon_deletion.delete()
+            session.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False

@@ -277,7 +277,7 @@ class Salons(Resource):
 
     def delete(self, _id):
         try:
-            delete = delete_object(object_table=Salons, object_id=_id)
+            delete = delete_salon(_id)
             return make_response(str(delete), 200)
         except Exception as e:
             return make_response(str(e), 400)
