@@ -108,4 +108,5 @@ class Visits(base):
     visit_date = Column(TIMESTAMP)
     status = Column(String)
 
+
 base.metadata.create_all(db)

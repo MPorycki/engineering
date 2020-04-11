@@ -15,15 +15,17 @@ from Modules.user_management import (
 )
 from Modules.services import (create_service, update_service)
 from Modules.adresses import (update_adress)
-from Modules.salons import create_salon, update_salon
+from Modules.salons import create_salon, update_salon, delete_salon
+from Modules.visits import create_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
 from models import (
     Accounts,
-    Services
+    Services,
+    Salons
 )
-from validation import ServiceInputs, SalonInputs
+from validation import ServiceInputs, SalonInputs, VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
@@ -239,7 +241,7 @@ class Adress(Resource):
 api.add_resource(Adress, "/adress/", "/adress/<salon_id>")
 
 
-class Salons(Resource):
+class Salon(Resource):
     def get(self, _id=None):
         if _id:
             result = fetch_object(Salons, _id)
@@ -283,7 +285,31 @@ class Salons(Resource):
             return make_response(str(e), 400)
 
 
-api.add_resource(Service, "/salon/", "/salon/<_id>")
+api.add_resource(Salon, "/salon/", "/salon/<_id>")
+
+
+class Visit(Resource):
+    def get(self):
+        pass
+
+    def post(self):
+        """
+        Create a new visit based on provided data
+        :return: HTTP status of the creation attempt
+        """
+        inputs = VisitInputs(request)
+        if inputs.validate():
+            visit_creation = create_visit(request.get_json())
+        else:
+            return make_response(str(inputs.errors), 400)
+
+        if visit_creation["success"]:
+            return make_response("Visit created successfully", 200)
+        else:
+            return make_response(jsonify(visit_creation), 401)
+
+
+api.add_resource(Visit, "/visit/", "/visit/<_id>")
 
 
 class Main(Resource):
