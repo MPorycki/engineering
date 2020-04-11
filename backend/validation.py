@@ -52,3 +52,29 @@ salon_schema = {
 
 class SalonInputs(Inputs):
     json = [JsonSchema(schema=salon_schema)]
+
+
+visit_schema = {
+    'type': 'object',
+    'properties': {
+        'customer_id': {
+            'type': 'string',
+            'pattern': r'[0-9]{2}:[0-9]{2}'
+        },
+        'hairdresser_id': {
+            'type': 'string',
+            'pattern': r'[0-9]{2}:[0-9]{2}'
+        },
+        'salon_id': {
+            'type': 'string',
+        },
+        'visit_date': {
+            'type': 'string',
+        }
+    },
+    'required': ['opening_hour', 'closing_hour', 'adress']
+}
+
+
+class VisitInputs(Inputs):
+    json = [JsonSchema(schema=visit_schema)]
