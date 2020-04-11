@@ -38,7 +38,37 @@ def create_salon(salon_data: dict) -> dict:
 
 
 def validate_salon(data):
-    pass
+    """
+    Checks input service data and makes sure it fulfills all the requirements
+    :param data: Dict with at least the following schema:
+    {"opening_hour": "", "closing_hour": ""}
+    and requirements for the data:
+    "opening_hour" -> Must be an hour between 06:00 and 10:00
+    "closing_hour" -> Must be an hour between 16:00 and 20:00
+    The open time (closing_hour - opening_hour) must be at least 8 hours
+    To unify the time, it will be converted into minutes into the day beforehand.
+    :return:
+    """
+    opening_hour = minutes_into_the_day(data["opening_hour"])
+    closing_hour = minutes_into_the_day(data["closing_hour"])
+    if not 360 <= opening_hour <= 600:
+        raise IntegrityError("Godzina otwarcia musi byc miedzy 06:00 a 10:00.")
+    if not 960 <= closing_hour <= 1200:
+        raise IntegrityError("Godzina zamkniecia musi byc miedzy 16:00 a 20:00.")
+    if closing_hour - opening_hour < 640:
+        raise IntegrityError("Salon musi byc otwarty przez przynajmniej 8 godzin.")
+
+
+def minutes_into_the_day(time: str) -> int:
+    """
+    Converts time inputed in format XX:XX into minutes into the day
+    Minutes into the day means the minutes passed since midnight (00:00)
+    03:00 equals 180 minutes into the day, 13:00 equals 13*60 = 780 etc.
+    :param time: Time to be converted
+    :return: Time in new format of minutes into the day
+    """
+    hours_minutes = time.split(":")
+    return int(hours_minutes[0]) * 60 + int(hours_minutes[1])
 
 
 def update_salon():
