@@ -81,17 +81,19 @@ class Salons(base):
     adress_id = Column(String(length=32))
     opening_hour = Column(String)
     closing_hour = Column(String)
+    created_at = Column(TIMESTAMP)
 
 
 class Adresses(base):
     __tablename__ = "adresses"
 
     id = Column(String(length=32), primary_key=True)
-    salon_id = Column(String, ForeignKey(Salons.id))
+    salon_id = Column(String)
     city = Column(String)
     zip_code = Column(String)
     street = Column(String)
     building_no = Column(Integer)
     number_of_seats = Column(Integer)
+    created_at = Column(TIMESTAMP)
 
 base.metadata.create_all(db)
