@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from models import Salons, session_scope
-from Modules.adresses import create_adress
+from Modules.adresses import create_adress, update_adress
 
 
 def create_salon(salon_data: dict) -> dict:
@@ -71,5 +71,24 @@ def minutes_into_the_day(time: str) -> int:
     return int(hours_minutes[0]) * 60 + int(hours_minutes[1])
 
 
-def update_salon():
-    pass
+def update_salon(salon_data: dict) -> dict:
+    """
+    Update salon data
+    :param salon_data: data of the given salon to be updated
+    :return: Dict with an information whether the update was successful
+    """
+    try:
+        validate_salon(salon_data)
+        update_adress(salon_data["id"], salon_data["adress"])
+        with session_scope() as session:
+            salon = (
+                session.query(Salons)
+                    .filter(Salons.id == salon_data["id"])
+                    .first()
+            )
+            salon.price = salon_data["opening_hours"]
+            salon.name = salon_data["closing_hours"]
+            session.commit()
+        return {"success": True}
+    except IntegrityError as e:
+        return {"success": False, "error": str(e)}
