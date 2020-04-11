@@ -15,6 +15,7 @@ from Modules.user_management import (
 )
 from Modules.services import (create_service, update_service)
 from Modules.adresses import (update_adress)
+from Modules.salons import create_salon, update_salon
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -22,7 +23,7 @@ from models import (
     Accounts,
     Services
 )
-from validation import ServiceInputs
+from validation import ServiceInputs, SalonInputs
 
 app = Flask(__name__)
 api = Api(app)
@@ -236,6 +237,52 @@ class Adress(Resource):
 
 
 api.add_resource(Adress, "/adress/", "/adress/<salon_id>")
+
+
+class Salons(Resource):
+    def get(self, _id=None):
+        if _id:
+            result = fetch_object(Salons, _id)
+            return make_response(result, 200)
+        else:
+            result = fetch_all_objects(Salons)
+            return make_response(result, 200)
+
+    def post(self):
+        """
+        Create a new salon based on provided data
+        :return: HTTP status of the creation attempt
+        """
+        inputs = SalonInputs(request)
+        if inputs.validate():
+            salon_creation = create_salon(request.get_json())
+        else:
+            return make_response(str(inputs.errors), 400)
+        if salon_creation["success"]:
+            return make_response("Salon created successfully", 200)
+        else:
+            return make_response(jsonify(salon_creation), 401)
+
+    def patch(self):
+        inputs = SalonInputs(request)
+        if inputs.validate():
+            result = update_salon(request.get_json())
+        else:
+            return make_response(str(inputs.errors), 422)
+        if result:
+            return make_response(str(result), 200)
+        else:
+            return make_response(str(result), 400)
+
+    def delete(self, _id):
+        try:
+            delete = delete_object(object_table=Salons, object_id=_id)
+            return make_response(str(delete), 200)
+        except Exception as e:
+            return make_response(str(e), 400)
+
+
+api.add_resource(Service, "/salon/", "/salon/<_id>")
 
 
 class Main(Resource):
