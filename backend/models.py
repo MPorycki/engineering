@@ -74,11 +74,20 @@ class Services(base):
     service_duration = Column(Integer)
 
 
+class Salons(base):
+    __tablename__ = 'salons'
+
+    id = Column(String(length=32), primary_key=True)
+    adress_id = Column(String(length=32))
+    opening_hour = Column(String)
+    closing_hour = Column(String)
+
+
 class Adresses(base):
     __tablename__ = "adresses"
 
     id = Column(String(length=32), primary_key=True)
-    # salon_id
+    salon_id = Column(String, ForeignKey(Salons.id))
     city = Column(String)
     zip_code = Column(String)
     street = Column(String)
