@@ -75,7 +75,7 @@ class Services(base):
 
 
 class Salons(base):
-    __tablename__ = 'salons'
+    __tablename__ = "salons"
 
     id = Column(String(length=32), primary_key=True)
     adress_id = Column(String(length=32))
@@ -95,5 +95,17 @@ class Adresses(base):
     building_no = Column(Integer)
     number_of_seats = Column(Integer)
     created_at = Column(TIMESTAMP)
+
+
+class Visits(base):
+    __tablename__ = "visits"
+
+    id = Column(String(length=32), primary_key=True)
+    customer_id = Column(String, ForeignKey(Accounts.id))
+    hairdresser_id = Column(String, ForeignKey(Accounts.id))
+    service_id = Column(String, ForeignKey(Salons.id))
+    created_at = Column(TIMESTAMP)
+    visit_date = Column(TIMESTAMP)
+    status = Column(String)
 
 base.metadata.create_all(db)
