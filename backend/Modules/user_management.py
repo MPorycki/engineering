@@ -37,7 +37,7 @@ def register_user(
         id=account_id,
         email=email,
         hashed_password=password,
-        created_at=datetime.datetime.now(),
+        created_at=datetime.datetime.utcnow(),
         first_name=first_name,
         last_name=last_name,
         type=account_type,

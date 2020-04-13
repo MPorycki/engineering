@@ -1,3 +1,4 @@
+import datetime
 import re
 import uuid
 
@@ -24,7 +25,8 @@ def create_adress(adress: dict, salon_id: str) -> str:
         zip_code=adress["zip_code"],
         street=adress["street"],
         building_no=adress["building_no"],
-        number_of_seats=adress["numbetr_of_seats"]
+        number_of_seats=adress["numbetr_of_seats"],
+        created_at=datetime.datetime.utcnow()
     )
     try:
         with session_scope() as session:

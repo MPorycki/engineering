@@ -27,7 +27,7 @@ def create_salon(salon_data: dict) -> dict:
         adress_id=adress_id,
         opening_hour=salon_data["opening_hour"],
         closing_hour=salon_data["closing_hour"],
-        created_at=datetime.datetime.now()
+        created_at=datetime.datetime.utcnow()
     )
     try:
         with session_scope() as session:

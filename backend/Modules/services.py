@@ -16,7 +16,7 @@ def create_service(name: str, price: int, description: str, gender: str, service
         id=_id,
         name=name,
         price=price,
-        created_at=datetime.datetime.now(),
+        created_at=datetime.datetime.utcnow(),
         description=description,
         gender=gender,
         service_duration=service_duration,
