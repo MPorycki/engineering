@@ -17,6 +17,8 @@ def create_adress(adress: dict, salon_id: str) -> str:
     :param salon_id: ID of the salon that this adress is created for
     :return: UUID of the created adress object
     """
+    if not validate_adress(adress):
+        return None
     adress_id = uuid.uuid4().hex
     new_adress = Adresses(
         id=adress_id,
@@ -71,13 +73,6 @@ def validate_adress(adress: dict) -> bool:
     elif not building_no_regex.match(adress["building_no"]):
         return False
 
-    flat_no_regex = re.compile("^[0-9]{1,3}$")
-    if adress["flat_no"] is None:
-        return False
-    elif not flat_no_regex.match(str(adress["flat_no"])):
-        return False
-    return True
-
 
 def get_adress(salon_id: str) -> Adresses:
     """
@@ -107,6 +102,8 @@ def update_adress(salon_id, adress_data: dict) -> str:
     :param adress_data: Updated data of the adress
     :return: Boolean stating whether the update was successful
     """
+    if not validate_adress(adress_data):
+        return False
     try:
         with session_scope() as session:
             adress = (
