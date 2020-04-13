@@ -7,6 +7,9 @@
             <li v-else v-on:click="logout()">
                 <a>Wyloguj</a>
             </li>
+             <li>
+                <router-link to="/locations">Salony</router-link>
+            </li>
             <li>
                 <router-link to="/">Strona główna</router-link>
             </li>
