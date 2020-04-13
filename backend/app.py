@@ -90,8 +90,11 @@ class Account(Resource):
             return make_response(str(result), 400)
 
     def delete(self, _id):
-        delete = delete_object(object_table=Accounts, object_id=_id)
-        return make_response(str(delete), 200)
+        try:
+            delete = delete_object(object_table=Accounts, object_id=_id)
+            return make_response(str(delete), 200)
+        except Exception as e:
+            return make_response(str(e), 400)
 
 
 api.add_resource(Account, "/account/", "/account/<_id>")
@@ -108,7 +111,8 @@ class AccountLogin(Resource):
                                         "correct_pass": bool}
                  HTTP responses: 200 if authorization was successful
                                  400 if not enough data was provided
-                                 401 if the password was incorrect for the given email or the email is not in the db
+                                 401 if the password was incorrect for
+                                 the given email or the email is not in the db
         """
         try:
             data = request.get_json()
@@ -201,8 +205,11 @@ class Service(Resource):
             return make_response(str(result), 400)
 
     def delete(self, _id):
-        delete = delete_object(object_table=Services, object_id=_id)
-        return make_response(str(delete), 200)
+        try:
+            delete = delete_object(object_table=Services, object_id=_id)
+            return make_response(str(delete), 200)
+        except Exception as e:
+            return make_response(str(e), 400)
 
 
 api.add_resource(Service, "/service/", "/service/<_id>")
