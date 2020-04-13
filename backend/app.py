@@ -14,7 +14,6 @@ from Modules.user_management import (
     update_user,
 )
 from Modules.services import (create_service, update_service)
-from Modules.adresses import (update_adress)
 from Modules.salons import create_salon, update_salon, delete_salon
 from Modules.visits import create_visit
 
@@ -179,23 +178,12 @@ class Service(Resource):
         Create a new service based on provided data
         :return: HTTP status of the creation attempt
         """
-        try:
-            data = request.get_json()
-            inputs = ServiceInputs(request)
-            if inputs.validate():
-                name = data["name"]
-                price = data["price"]
-                description = data["description"]
-                gender = data["gender"]
-                service_duration = data["service_duration"]
-            else:
-                return make_response(str(inputs.errors), 400)
-        except KeyError as e:
-            print(e)
-            return make_response("Not enough data provided, missing data: " + e, 400)
-        service_creation = create_service(
-            name, price, description, gender, service_duration
-        )
+        data = request.get_json()
+        inputs = ServiceInputs(request)
+        if inputs.validate():
+            service_creation = create_service(data)
+        else:
+            return make_response(str(inputs.errors), 400)
         if service_creation["success"]:
             return make_response("Registration successful", 200)
         else:

@@ -6,20 +6,20 @@ from sqlalchemy.exc import IntegrityError
 from models import Services, session_scope
 
 
-def create_service(name: str, price: int, description: str, gender: str, service_duration: int) -> dict:
+def create_service(data: dict) -> dict:
     try:
-        validate_service(name, price, gender, service_duration)
+        validate_service(data)
     except IntegrityError as e:
         return {"success": False, "error": str(e)}
     _id = uuid.uuid4().hex
     new_service = Services(
         id=_id,
-        name=name,
-        price=price,
+        name=data["name"],
+        price=data["price"],
         created_at=datetime.datetime.utcnow(),
-        description=description,
-        gender=gender,
-        service_duration=service_duration,
+        description=data["description"],
+        gender=data["gender"],
+        service_duration=data["service_duration"],
     )
     try:
         with session_scope() as session:
@@ -29,21 +29,22 @@ def create_service(name: str, price: int, description: str, gender: str, service
         return {"success": False, "error": str(e)}
 
 
-def validate_service(name: str, price: int, gender: str, service_duration: int):
+def validate_service(data: dict):
     """
     Checks input service data and make sures it fulfills all the requirements
-    :param name: Name of the service, can't be longer than 32 characters
-    :param price: Price of the service, can't be lower than 0
-    :param gender: Gender for which the service is designed, has to be one of: (MALE, FEMALE)
-    :param service_duration: Duration of the service, has to be higher than 0
+    :param data: Dict with the following keys:
+    name: Name of the service, can't be longer than 32 characters
+    price: Price of the service, can't be lower than 0
+    gender: Gender for which the service is designed, has to be one of: (MALE, FEMALE)
+    service_duration: Duration of the service, has to be higher than 0
     """
-    if len(name) > 32:
+    if len(data["name"]) > 32:
         raise IntegrityError("Nazwa uslugi jest za dluga")
-    if price < 0:
+    if data["price"] < 0:
         raise IntegrityError("Cena nie moze byc ujemna")
-    if gender not in ("MALE", "FEMALE"):
+    if data["gender"] not in ("MALE", "FEMALE"):
         raise IntegrityError("Niepoprawna plec")
-    if service_duration <= 0:
+    if data["service_duration"] <= 0:
         raise IntegrityError("Czas trwania uslugi musi byc dodatni")
 
 
