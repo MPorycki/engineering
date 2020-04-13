@@ -54,6 +54,8 @@ def update_service(service_updated_data: dict) -> bool:
         :param service_updated_data: data of the given service to be updated
         :return: Boolean stating whether the update was successful
         """
+    if not validate_service(service_updated_data):
+        return False
     try:
         with session_scope() as session:
             service = (
