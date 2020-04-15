@@ -6,21 +6,26 @@
                     <form @submit.prevent="register">
                         <div class="form-group">
                             <input type="text" id="email" class="form-control" placeholder="Podaj swój email" value="" />
+                            <b-tooltip target="email" id="email_error" class="rtooltips" triggers="hover" placement="right"  :disabled.sync="disabled" >{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="text" id="first_name" class="form-control" placeholder="Podaj swoje imię" value="" />
+                            <b-tooltip target="first_name" id="first_name_error" class="rtooltips" triggers="hover" placement="right"  :disabled.sync="disabled">{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="text" id="last_name" class="form-control" placeholder="Podaj swoje nazwisko" value="" />
+                            <b-tooltip target="last_name" id="last_name_error" class="rtooltips" triggers="hover" placement="right"  :disabled.sync="disabled">{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="password" id="password" class="form-control" placeholder="Wpisz hasło" value="" />
+                            <b-tooltip target="password" id="password_error" class="rtooltips" triggers="hover" placement="right"  :disabled.sync="disabled">{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="password" id="password_confirm" class="form-control" placeholder="Potwierdź hasło" value="" />
+                            <b-tooltip target="password_confirm" id="password_confirm_error" class="rtooltips" triggers="hover" placement="right"  :disabled.sync="disabled">{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btnSubmit" value="Zarejestruj się" />
+                            <input type="submit" class="btnSubmit" value="Zarejestruj się"/>
                         </div>
                     </form>
                 </div>
@@ -34,6 +39,11 @@ import backend_url from './variables'
 
 export default {
     name: 'Registration',
+    data()
+        {
+        return {tooltip_email_show: false, email_text: "", disabled: true}
+        }
+    ,
     methods: {
     register(){
             var data = {
@@ -43,6 +53,7 @@ export default {
                 raw_password: document.getElementById("password").value,
                 account_type: "customer"
             }
+            this.add_error_text("email", "Dzialabanga");
             if (this.validate_form()){
                 axios.post(backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));
             }
@@ -55,6 +66,16 @@ export default {
             if (error_data["email_taken"]) {
                 this.add_error_text("email_error", "Podany mail jest zajety");
             }
+        },
+        validate_form(){
+            return false;
+        },
+        add_error_text(element_name, error_text){
+            var form = document.getElementById(element_name);
+            form.style.borderColor = "red"
+            this.$root.$emit('bv::enable::tooltip', element_name + '_error')
+            this.$root.$emit('bv::show::tooltip', element_name+ '_error')
+            this.email_text = error_text
         }
     }
 }
@@ -98,5 +119,10 @@ export default {
     color: #6998a3;
     font-weight: 600;
     text-decoration: none;
+}
+.rtooltips{
+    background-color:white;
+    color:red;
+    border-style: dotted
 }
 </style>
