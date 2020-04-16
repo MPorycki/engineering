@@ -7,6 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
+Vue.prototype.$backend_url = "http://localhost:5000/"
 
 new Vue({
   router,
