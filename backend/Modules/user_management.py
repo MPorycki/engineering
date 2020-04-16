@@ -144,9 +144,8 @@ def create_session_for_user(account_id: str) -> str:
     :return: newly created session_id
     """
     session_id = uuid.uuid4().hex
-    created_at = str(datetime.datetime.now())
     new_session = Sessions(
-        um_accounts_id=account_id, session_id=session_id, created_at=created_at
+        account_id=account_id, session_id=session_id, created_at=datetime.datetime.now()
     )
     with session_scope() as session:
         session.add(new_session)

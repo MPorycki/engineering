@@ -40,7 +40,6 @@ export default {
                 raw_password: document.getElementById("password").value
             }
             if (this.validate_login(data)){
-                alert(this.$backend_url)
                 axios.post(this.$backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
             }
         },
