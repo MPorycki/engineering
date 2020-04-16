@@ -40,7 +40,7 @@ export default {
                 raw_password: document.getElementById("password").value
             }
             if (this.validate_login(data)){
-                axios.post(this.$backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
+                axios.post(this.$backend_url  + "account/login", data).then(res => this.handle_login_success(res.data["account_id"], res.data["session_id"])).catch(error => this.handle_login_error(error.response.data))
             }
         },
         validate_login(data){
@@ -78,7 +78,9 @@ export default {
             form.style.borderColor = "#ced4da"
             this.$root.$emit('bv::disable::tooltip', element_name + '_error')
         },
-        add_session_cookies(user_id, session_id){
+        handle_login_success(user_id, session_id){
+            this.clear_error("email")
+            this.clear_error("password")
             var d = new Date();
             d.setTime(d.getTime() + (7*24*60*60*1000));
             var expires = "expires="+ d.toUTCString();
@@ -86,6 +88,13 @@ export default {
             document.cookie = "user-id=" +user_id +";" + expires + ";path=/";
             this.$router.push({ name: 'home', })
             location.reload()
+        },
+        handle_login_error(data){
+            if (!data["email_exists"]){
+                this.add_error("email", "Użytkownik z podanym mailem nie istnieje")
+            } else if (!data["correct_pass"]) {
+                this.add_error("password", "Błędne hasło")
+            }
         }
     }
 }
