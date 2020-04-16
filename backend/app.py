@@ -67,12 +67,11 @@ class Account(Resource):
             data = request.get_json()
             email = data["email"]
             raw_password = data["raw_password"]
-            fist_name = data["fist_name"]
+            fist_name = data["first_name"]
             last_name = data["last_name"]
             account_type = data["account_type"]
         except KeyError as e:
-            print(e)
-            return make_response("Not enough data provided, missing data: " + e, 400)
+            return make_response("Not enough data provided, missing data: " + str(e), 400)
         registration = register_user(
             email, raw_password, fist_name, last_name, account_type
         )

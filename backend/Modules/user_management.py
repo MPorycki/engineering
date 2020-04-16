@@ -40,7 +40,7 @@ def register_user(
         created_at=datetime.datetime.utcnow(),
         first_name=first_name,
         last_name=last_name,
-        type=account_type,
+        account_type=account_type,
     )
     try:
         with session_scope() as session:
