@@ -19,7 +19,6 @@
 
 <script>
 import axios from 'axios'
-import backend_url from '../views/variables'
 
 export default {
     data() {
@@ -50,7 +49,7 @@ export default {
         },
         logout() {
             var data = { "account_id": this.user_id, "session_id": this.session_id }
-            axios.delete(backend_url + "account/logout", data).then(this.logout_success()).catch(this.logout_failed())
+            axios.delete(this.$backend_url + "account/logout", data).then(this.logout_success()).catch(this.logout_failed())
         },
         logout_success(){
             document.cookie = "session-id=;"

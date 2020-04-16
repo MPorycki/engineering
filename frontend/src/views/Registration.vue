@@ -34,7 +34,6 @@
 
 <script>
 import axios from 'axios'
-import backend_url from './variables'
 
 export default {
     name: 'Registration',
@@ -53,7 +52,7 @@ export default {
                 account_type: "customer"
             }
             if (this.validate_form(data)){
-                axios.post(backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));
+                axios.post(this.$backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));
             }
         },
         register_success(message){

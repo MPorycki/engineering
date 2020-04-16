@@ -21,13 +21,12 @@
 
 <script>
 import axios from 'axios'
-import backend_url from './variables'
 
 export default {
     methods:{
         reset_password(){
             var data = {"new_password": document.getElementById("password").value, "reset_id": this.$route.query.reset_id}
-            axios.patch(backend_url+ "account/reset", data).then(this.reset_success()).catch(this.reset_fail())
+            axios.patch(this.$backend_url+ "account/reset", data).then(this.reset_success()).catch(this.reset_fail())
         },
         reset_success(){
             alert("Hasło zostało zmienione.")

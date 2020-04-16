@@ -19,13 +19,12 @@
 
 <script>
 import axios from 'axios'
-import backend_url from './variables'
 
 export default {
     methods:{
         send_link(){
             var data = {"email": document.getElementById("email").value}
-            axios.patch(backend_url + 'account/reset_link', data).then(this.reset_link_sent()).catch(this.reset_link_sent_fail())
+            axios.patch(this.$backend_url + 'account/reset_link', data).then(this.reset_link_sent()).catch(this.reset_link_sent_fail())
         },
         reset_link_sent(){
             alert("Link został wysłany na podany mail.")
