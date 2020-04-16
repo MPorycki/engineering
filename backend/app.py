@@ -155,8 +155,9 @@ class AccountLogout(Resource):
         Logouts the user.
         :return: HTTP Response: 200 if the logout was successful, 400 if the session does not exists for the user
         """
-        account_id = request.headers.get("account_id")
-        session_id = request.headers.get("session_id")
+        data = request.get_json(force=True)
+        account_id = data["account_id"]
+        session_id = data["session_id"]
         logout_result = logout(session_id, account_id)
         if logout_result:
             return make_response("User logged out.", 200)

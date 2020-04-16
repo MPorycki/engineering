@@ -48,13 +48,14 @@ export default {
             return "";
         },
         logout() {
-            var data = { "account_id": this.user_id, "session_id": this.session_id }
-            axios.delete(this.$backend_url + "account/logout", data).then(this.logout_success()).catch(this.logout_failed())
+            var data = { account_id: this.user_id, session_id: this.session_id }
+            axios.delete(this.$backend_url + "account/logout", {data: data}).then(this.logout_success())
         },
         logout_success(){
             document.cookie = "session-id=;"
             document.cookie = "user-id=;"
-            location.reload()
+            this.$router.push({ name: 'home', })
+            this.get_session()
         },
         logout_failed(){
             alert("Wylogowanie nie powiodło się.")

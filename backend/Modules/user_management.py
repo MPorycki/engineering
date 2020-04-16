@@ -162,7 +162,7 @@ def session_exists(session_id: str, account_id: str) -> bool:
             session.query(Sessions)
                 .filter(
                 Sessions.session_id == session_id,
-                Sessions.um_accounts_id == account_id,
+                Sessions.account_id == account_id,
             )
                 .exists()
         )
