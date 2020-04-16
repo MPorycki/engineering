@@ -6,9 +6,11 @@
                     <form @submit.prevent="log_in">
                         <div class="form-group">
                             <input type="text" id="email" class="form-control" placeholder="E-mail" value="" />
+                            <b-tooltip target="email" id="email_error" class="rtooltips" triggers="hover" placement="right"  :disabled=true >{{email_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="password" id="password" class="form-control" placeholder="Hasło" value="" />
+                            <b-tooltip target="password" id="password_error" class="rtooltips" triggers="hover" placement="right"  :disabled=true>{{password_text}}</b-tooltip>
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btnSubmit" value="Login" />
@@ -27,15 +29,55 @@
 
 <script>
 import axios from 'axios'
-import backend_url from "./variables"
 export default {
+    data(){
+        return {email_text: "", password_text: ""}
+    },
     methods:{
         log_in(){
             var data = {
                 email: document.getElementById("email").value,
                 raw_password: document.getElementById("password").value
             }
-            axios.post(backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
+            if (this.validate_login(data)){
+                alert(this.$backend_url)
+                axios.post(this.$backend_url  + "account/login", data).then(res => this.add_session_cookies(res.data["account_id"], res.data["session_id"]))
+            }
+        },
+        validate_login(data){
+            if ((data["email"].replace(/\s/g, '')).length > 32) {
+                this.add_error("email", "Podany login jest za długi")
+                return false;
+            } else if ((data["raw_password"].replace(/\s/g, '')).length > 32) {
+                this.add_error("password", "Podane hasło jest za długie")
+                return false;
+            }
+            else if ((data["email"].replace(/\s/g, '')).length == 0 || (data["raw_password"].replace(/\s/g, '')).length == 0){
+                return false;
+            } else {
+                this.clear_error("email")
+                this.clear_error("password")
+                return true;
+            }
+        },
+        add_error(element_name, error_text){
+            var form = document.getElementById(element_name);
+            form.style.borderColor = "red"
+            this.$root.$emit('bv::enable::tooltip', element_name + '_error')
+            this.$root.$emit('bv::show::tooltip', element_name+ '_error')
+            switch(element_name){
+                case "email":
+                    this.email_text = error_text
+                    break
+                case "password":
+                   this.password_text = error_text
+                   break
+                }
+        },
+        clear_error(element_name){
+            var form = document.getElementById(element_name);
+            form.style.borderColor = "#ced4da"
+            this.$root.$emit('bv::disable::tooltip', element_name + '_error')
         },
         add_session_cookies(user_id, session_id){
             var d = new Date();

@@ -71,9 +71,8 @@ export default {
             var val_lname = this.validate_last_name(data["last_name"])
             var val_pass = this.validate_password(data["raw_password"], document.getElementById("password_confirm").value)
             if (val_email && val_fname && val_lname && val_pass){
-                return false;
+                return true;
             } else {
-                alert("Nie przeszło")
                 return false;
             }
 
@@ -166,7 +165,6 @@ export default {
             var form = document.getElementById(element_name);
             form.style.borderColor = "#ced4da"
             this.$root.$emit('bv::disable::tooltip', element_name + '_error')
-            
         }
     }
 }
