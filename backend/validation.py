@@ -59,20 +59,23 @@ visit_schema = {
     'properties': {
         'customer_id': {
             'type': 'string',
-            'pattern': r'[0-9]{2}:[0-9]{2}'
+            'pattern': r'^[a-f0-9]{32}$'
         },
         'hairdresser_id': {
             'type': 'string',
-            'pattern': r'[0-9]{2}:[0-9]{2}'
+            'pattern': r'^[a-f0-9]{32}$'
         },
         'salon_id': {
             'type': 'string',
         },
         'visit_date': {
             'type': 'string',
+        },
+        'services': {
+            'type': "array"
         }
     },
-    'required': ['opening_hour', 'closing_hour', 'adress']
+    'required': ['customer_id', 'hairdresser_id', 'salon_id', 'visit_date', 'services' ]
 }
 
 
