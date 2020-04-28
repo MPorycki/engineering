@@ -75,7 +75,8 @@ visit_schema = {
             'type': "array"
         }
     },
-    'required': ['customer_id', 'hairdresser_id', 'salon_id', 'visit_date', 'services' ]
+    'required': ['customer_id', 'hairdresser_id', 'salon_id', 'visit_date',
+                 'services']
 }
 
 

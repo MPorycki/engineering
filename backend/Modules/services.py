@@ -73,3 +73,13 @@ def update_service(service_updated_data: dict) -> bool:
     except Exception as e:
         print(e)
         return False
+
+
+def get_specific_services(_ids: list):
+    """
+    Return the list of service objects based on a list of their ids
+    :param _ids: ids of the services to be returned
+    :return:
+    """
+    with session_scope() as session:
+        return session.query(Services).filter(Services.id.in_(_ids)).all()
