@@ -145,7 +145,8 @@ def create_session_for_user(account_id: str) -> str:
     """
     session_id = uuid.uuid4().hex
     new_session = Sessions(
-        account_id=account_id, session_id=session_id, created_at=datetime.datetime.now()
+        account_id=account_id, session_id=session_id,
+        created_at=datetime.datetime.now()
     )
     with session_scope() as session:
         session.add(new_session)
@@ -181,3 +182,15 @@ def logout(session_id: str, account_id: str) -> bool:
             ).delete()
             return True
     return False
+
+
+def get_hairdressers(salon_id: str):
+    """
+    Return the names of all hairdressers working in the given salon
+    :param salon_id: uuid of the salon
+    :return:
+    """
+    with session_scope() as session:
+        hairdressers = session.query(Accounts).filter(
+            Accounts.salon_id == salon_id).all()
+    return [x.first_name + " " + x.last_name for x in hairdressers]

@@ -12,6 +12,7 @@ from Modules.user_management import (
     change_password,
     session_exists,
     update_user,
+    get_hairdressers
 )
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon
@@ -284,6 +285,17 @@ class Visit(Resource):
 
 
 api.add_resource(Visit, "/visit/", "/visit/<_id>")
+
+
+class Hairdresser(Resource):
+    def get(self, _id=None):
+        """Finds all hairdressers for a given salon_id"""
+        if _id:
+            hairdressers = {"result": get_hairdressers(_id)}
+            return make_response(jsonify(hairdressers), 200)
+
+
+api.add_resource(Hairdresser, "/hairdresser/", "/hairdresser/<_id>")
 
 
 class Main(Resource):

@@ -48,7 +48,7 @@ class Accounts(base):
     hashed_password = Column(String)
     created_at = Column(TIMESTAMP)
     account_type = Column(String)
-    # salonId = Column(String(length=32), ForeignKey)
+    salon_id = Column(String(length=32), ForeignKey, nullable=True)
 
 
 class Sessions(base):
