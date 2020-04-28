@@ -103,10 +103,17 @@ class Visits(base):
     id = Column(String(length=32), primary_key=True)
     customer_id = Column(String, ForeignKey(Accounts.id))
     hairdresser_id = Column(String, ForeignKey(Accounts.id))
-    service_id = Column(String, ForeignKey(Salons.id))
+    salon_id = Column(String, ForeignKey(Salons.id))
     created_at = Column(TIMESTAMP)
     visit_date = Column(TIMESTAMP)
     status = Column(String)
+
+
+class VisitsServices(base):
+    __tablename__ = "visits_services"
+
+    service_id = Column(String, ForeignKey(Services.id), primary_key=True)
+    visit_id = Column(String, ForeignKey(Visits.id), primary_key=True)
 
 
 base.metadata.create_all(db)
