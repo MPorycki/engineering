@@ -107,8 +107,8 @@ class Visits(base):
     hairdresser_id = Column(String, ForeignKey(Accounts.id))
     salon_id = Column(String, ForeignKey(Salons.id))
     created_at = Column(TIMESTAMP)
-    visit_date_start = Column(TIMESTAMP)
-    visit_date_end = Column(TIMESTAMP)
+    date_start = Column(TIMESTAMP)
+    date_end = Column(TIMESTAMP)
     status = Column(String)
 
 

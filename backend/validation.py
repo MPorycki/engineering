@@ -68,7 +68,10 @@ visit_schema = {
         'salon_id': {
             'type': 'string',
         },
-        'visit_date': {
+        'visit_date_start': {
+            'type': 'string', # TODO add Validation
+        },
+        'visit_date_end': {
             'type': 'string',
         },
         'services': {
