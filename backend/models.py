@@ -33,6 +33,16 @@ def session_scope(_session=None):
         _session.close()
 
 
+class Salons(base):
+    __tablename__ = "salons"
+
+    id = Column(String(length=32), primary_key=True)
+    adress_id = Column(String(length=32))
+    opening_hour = Column(String)
+    closing_hour = Column(String)
+    created_at = Column(TIMESTAMP)
+
+
 class Accounts(base):
     """
     Table representing user accounts in the application.
@@ -48,7 +58,9 @@ class Accounts(base):
     hashed_password = Column(String)
     created_at = Column(TIMESTAMP)
     account_type = Column(String)
-    salon_id = Column(String(length=32), ForeignKey, nullable=True)
+    salon_id = Column(String(length=32),
+                      ForeignKey(Salons.id, onupdate="CASCADE",
+                                 ondelete="CASCADE"), nullable=True)
 
 
 class Sessions(base):
@@ -74,16 +86,6 @@ class Services(base):
     service_duration = Column(Integer)
 
 
-class Salons(base):
-    __tablename__ = "salons"
-
-    id = Column(String(length=32), primary_key=True)
-    adress_id = Column(String(length=32))
-    opening_hour = Column(String)
-    closing_hour = Column(String)
-    created_at = Column(TIMESTAMP)
-
-
 class Adresses(base):
     __tablename__ = "adresses"
 
@@ -105,7 +107,8 @@ class Visits(base):
     hairdresser_id = Column(String, ForeignKey(Accounts.id))
     salon_id = Column(String, ForeignKey(Salons.id))
     created_at = Column(TIMESTAMP)
-    visit_date = Column(TIMESTAMP)
+    visit_date_start = Column(TIMESTAMP)
+    visit_date_end = Column(TIMESTAMP)
     status = Column(String)
 
 

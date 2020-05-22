@@ -184,7 +184,7 @@ def logout(session_id: str, account_id: str) -> bool:
     return False
 
 
-def get_hairdressers(salon_id: str):
+def get_hairdressers_in_salon(salon_id: str):
     """
     Return the names of all hairdressers working in the given salon
     :param salon_id: uuid of the salon

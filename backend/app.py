@@ -12,7 +12,7 @@ from Modules.user_management import (
     change_password,
     session_exists,
     update_user,
-    get_hairdressers
+    get_hairdressers_in_salon
 )
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon
@@ -291,7 +291,7 @@ class Hairdresser(Resource):
     def get(self, _id=None):
         """Finds all hairdressers for a given salon_id"""
         if _id:
-            hairdressers = {"result": get_hairdressers(_id)}
+            hairdressers = {"result": get_hairdressers_in_salon(_id)}
             return make_response(jsonify(hairdressers), 200)
 
 
