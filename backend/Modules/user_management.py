@@ -16,6 +16,7 @@ def register_user(
         first_name: str,
         last_name: str,
         account_type: str,
+        salon_id: str,
 ) -> dict:
     """
     Registers the user by creating an account record in the database
@@ -24,6 +25,7 @@ def register_user(
     :param first_name: first name of the user
     :param last_name: last name of the user
     :param account_type: user or admin
+    :param salon_id: ID of the salon, in case the user is a hairdresser
     :return: Payload with data regarding the registration
     """
     payload = dict()
@@ -41,6 +43,7 @@ def register_user(
         first_name=first_name,
         last_name=last_name,
         account_type=account_type,
+        salon_id=salon_id
     )
     try:
         with session_scope() as session:

@@ -71,12 +71,13 @@ class Account(Resource):
             raw_password = data["raw_password"]
             fist_name = data["first_name"]
             last_name = data["last_name"]
-            account_type = data["account_type"]
+            account_type = data["account_type"] # TODO add mechanism for hairdresser addition
+            salon_id = data["salon_id"]
         except KeyError as e:
             return make_response(
                 "Not enough data provided, missing data: " + str(e), 400)
         registration = register_user(
-            email, raw_password, fist_name, last_name, account_type
+            email, raw_password, fist_name, last_name, account_type, salon_id
         )
         if registration["success"]:
             return make_response("Registration successful", 200)
