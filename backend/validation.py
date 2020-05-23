@@ -69,7 +69,7 @@ visit_schema = {
             'type': 'string',
         },
         'visit_date_start': {
-            'type': 'string', # TODO add Validation
+            'type': 'string',  # TODO add Validation
         },
         'visit_date_end': {
             'type': 'string',
@@ -78,8 +78,8 @@ visit_schema = {
             'type': "array"
         }
     },
-    'required': ['customer_id', 'hairdresser_id', 'salon_id', 'visit_date',
-                 'services']
+    'required': ['customer_id', 'hairdresser_id', 'salon_id',
+                 'visit_date_start', 'visit_date_end', 'services']
 }
 
 

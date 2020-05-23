@@ -1,4 +1,5 @@
 import datetime
+import time
 import uuid
 
 from .crud_common import delete_object
@@ -13,33 +14,41 @@ def create_visit(visit: dict) -> dict:
     "services"]
     :return: Dict with information about the result of the creation
     """
-    if date_available(visit["visit_date_start"], visit["visit_date_end"],
-                      visit["hairdresser_id"]):
-        _id = uuid.uuid4().hex
-        visit = Visits(
-            id=_id,
-            customer_id=visit["customer_id"],
-            hairdresser_id=visit["hairdresser_id"],
-            salon_id=visit["salon_id"],
-            created_at=datetime.datetime.utcnow(),
-            visit_date_start=visit["visit_date_start"],
-            visit_date_end=visit["visit_date_end"],
-            status="CREATED"
-        )
-        try:
-            with session_scope() as session:
-                session.add(visit)
-        except Exception as e:
-            raise e
-            return {"success": False}
-        if add_services(visit.id, visit["services"]):
-            return {"success": True}
-        else:
-            delete_object(Visits, visit.id)
-            return {"success": False}
+    try:
+        date_start = datetime.datetime.strptime(visit["visit_date_start"],
+                                                "%Y-%m-%d %H:%M")
+        date_end = datetime.datetime.strptime(visit["visit_date_end"],
+                                              "%Y-%m-%d %H:%M")
+    except ValueError as e:
+        raise ValueError("The date format is wrong: " + str(e))
+    if not date_available(date_start, date_end, visit["hairdresser_id"]):
+        return {"success": False}
+    _id = uuid.uuid4().hex
+    visit_object = Visits(
+        id=_id,
+        customer_id=visit["customer_id"],
+        hairdresser_id=visit["hairdresser_id"],
+        salon_id=visit["salon_id"],
+        created_at=datetime.datetime.utcnow(),
+        date_start=date_start,
+        date_end=date_end,
+        status="CREATED"
+    )
+    try:
+        with session_scope() as session:
+            session.add(visit_object)
+    except Exception as e:
+        raise e
+        return {"success": False}
+    if add_services(_id, visit["services"]):
+        return {"success": True}
+    else:
+        delete_object(Visits, _id)
+        return {"success": False}
 
 
-def date_available(date_start: str, date_end: str, hairdresser_id: str) -> bool:
+def date_available(date_start: datetime, date_end: datetime,
+                   hairdresser_id: str) -> bool:
     """
     Checks if the given date is available. Expected date example:
     05/04/2020 12:00
@@ -48,14 +57,10 @@ def date_available(date_start: str, date_end: str, hairdresser_id: str) -> bool:
     :param hairdresser_id:
     :return: Boolean stating whether the provided date is available for booking
     """
-    try:
-        date_start_converted = datetime.strptime(date_start, "%d/%m/%Y %H:%M")
-        date_end_converted = datetime.strptime(date_end, "%d/%m/%Y %H:%M")
-    except ValueError as e:
-        raise ValueError("The date format is wrong: " + e)
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
                                                 date_start.date()):
-        if dates_collide(visit, date_start_converted, date_end_converted):
+        print("Check" + str(visit.date_start))
+        if dates_collide(visit, date_start, date_end):
             return False
     return True
 
@@ -69,12 +74,14 @@ def dates_collide(visit: Visits, start: datetime, end: datetime) -> bool:
     :param end: End datetime of a potential new visit
     :return: Bool stating whether the dates collide with each other
     """
+    print(visit.date_start)
+    print(start)
     if (visit.date_start <= start < visit.date_end) \
             or (visit.date_start < end <= visit.date_end) \
             or (start < visit.date_start and end > visit.date_end):
-        return False
-    else:
         return True
+    else:
+        return False
 
 
 def add_services(visit_id: str, services: list) -> bool:
@@ -104,10 +111,11 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
+    print(date)
     with session_scope() as session:
         for visit in session.query(Visits).filter(
-                Visits.hairdresser_id == hairdresser_id) \
-                .filter(date(Visits.date_start) == date).all():
+                Visits.hairdresser_id == hairdresser_id).all():
+                #.filter(str(Visits.date_start)[:10] == str(date)).all():
             yield visit
 
 
