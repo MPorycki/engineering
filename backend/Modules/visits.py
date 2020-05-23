@@ -109,3 +109,12 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
                 Visits.hairdresser_id == hairdresser_id) \
                 .filter(date(Visits.date_start) == date).all():
             yield visit
+
+
+def delete_visit(visit_id: str):
+    """
+    Deletes a visit
+    :param visit_id: Id of the visit ot be deleted
+    :return:
+    """
+    pass

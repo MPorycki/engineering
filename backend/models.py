@@ -115,8 +115,11 @@ class Visits(base):
 class VisitsServices(base):
     __tablename__ = "visits_services"
 
-    service_id = Column(String, ForeignKey(Services.id), primary_key=True)
-    visit_id = Column(String, ForeignKey(Visits.id), primary_key=True)
+    service_id = Column(String, ForeignKey(Services.id, onupdate="CASCADE",
+                                           ondelete="CASCADE"),
+                        primary_key=True)
+    visit_id = Column(String, ForeignKey(Visits.id, onupdate="CASCADE",
+                                         ondelete="CASCADE"), primary_key=True)
 
 
 base.metadata.create_all(db)
