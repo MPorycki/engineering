@@ -17,8 +17,10 @@ def create_adress(adress: dict, salon_id: str) -> str:
     :param salon_id: ID of the salon that this adress is created for
     :return: UUID of the created adress object
     """
-    if not validate_adress(adress):
-        return None
+    try:
+        validate_adress(adress)
+    except ValueError as e:
+        raise e
     adress_id = uuid.uuid4().hex
     new_adress = Adresses(
         id=adress_id,
@@ -27,15 +29,14 @@ def create_adress(adress: dict, salon_id: str) -> str:
         zip_code=adress["zip_code"],
         street=adress["street"],
         building_no=adress["building_no"],
-        number_of_seats=adress["numbetr_of_seats"],
+        number_of_seats=adress["number_of_seats"],
         created_at=datetime.datetime.utcnow()
     )
     try:
         with session_scope() as session:
             session.add(new_adress)
     except IntegrityError as e:
-        print(str(e.__class__.__name__) + ": " + str(e))
-        return None
+        raise e
     return adress_id
 
 
@@ -51,27 +52,27 @@ def validate_adress(adress: dict) -> bool:
     if not city_regex.match(adress["city"]) or number_regex.match(
             adress["city"]
     ):
-        return False
+        raise ValueError("Nazwa miasta zawiera niedozwolone znaki.")
     elif len(adress["city"].split(" ")) > 3:
-        return False
+        raise ValueError("Nazwa miasta ma za duzo slow.")
 
     zip_regex = re.compile("[0-9]{2}-[0-9]{3}")
     if len(adress["zip_code"]) > 6 or len(adress["zip_code"]) == 0:
-        return False
+        raise ValueError("Kod pocztowy posiada niedozwolona dlugosc.")
     elif not zip_regex.match(adress["zip_code"]):
-        return False
+        raise ValueError("Niepoprawny format kodu pocztowego.")
 
     street_regex = re.compile("^[A-Z].*")
     if len(adress["street"]) > 32 or len(adress["street"]) == 0:
-        return False
+        raise ValueError("Niedozwolona dlugosc ulicy")
     elif not street_regex.match(adress["street"]):
-        return False
+        raise ValueError("W nazwie ulicy znajduja sie inedozwolone znaki")
 
     building_no_regex = re.compile("^[0-9]{1,3}[a-z]?$")
     if len(adress["building_no"]) == 0:
-        return False
+        raise ValueError("Numer budynku jest wymagany")
     elif not building_no_regex.match(adress["building_no"]):
-        return False
+        raise ValueError("W numerze budynku występuja niedozwolone znaki")
 
 
 def get_adress(salon_id: str) -> Adresses:

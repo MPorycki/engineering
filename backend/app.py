@@ -23,7 +23,8 @@ from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 from models import (
     Accounts,
     Services,
-    Salons
+    Salons,
+    Visits
 )
 from validation import ServiceInputs, SalonInputs, VisitInputs
 
@@ -72,7 +73,8 @@ class Account(Resource):
             last_name = data["last_name"]
             account_type = data["account_type"]
         except KeyError as e:
-            return make_response("Not enough data provided, missing data: " + str(e), 400)
+            return make_response(
+                "Not enough data provided, missing data: " + str(e), 400)
         registration = register_user(
             email, raw_password, fist_name, last_name, account_type
         )
@@ -163,7 +165,8 @@ class AccountLogout(Resource):
         if logout_result:
             return make_response("User logged out.", 200)
         else:
-            return make_response("Given session does not exists for given user.", 400)
+            return make_response(
+                "Given session does not exists for given user.", 400)
 
 
 api.add_resource(AccountLogout, "/account/logout")
@@ -282,6 +285,13 @@ class Visit(Resource):
             return make_response("Visit created successfully", 200)
         else:
             return make_response(jsonify(visit_creation), 401)
+
+    def delete(self, _id):
+        try:
+            delete = delete_object(object_table=Visits, object_id=_id)
+            return make_response(str(delete), 200)
+        except Exception as e:
+            return make_response(str(e), 400)
 
 
 api.add_resource(Visit, "/visit/", "/visit/<_id>")

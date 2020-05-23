@@ -15,7 +15,7 @@ def create_salon(salon_data: dict) -> dict:
     """
     try:
         validate_salon(salon_data)
-    except IntegrityError as e:
+    except ValueError as e:
         return {"success": False, "error": str(e)}
     _id = uuid.uuid4().hex
     try:
@@ -52,11 +52,13 @@ def validate_salon(data):
     opening_hour = minutes_into_the_day(data["opening_hour"])
     closing_hour = minutes_into_the_day(data["closing_hour"])
     if not 360 <= opening_hour <= 600:
-        raise IntegrityError("Godzina otwarcia musi byc miedzy 06:00 a 10:00.")
+        raise ValueError("Godzina otwarcia musi byc miedzy 06:00 a 10:00.")
     if not 960 <= closing_hour <= 1200:
-        raise IntegrityError("Godzina zamkniecia musi byc miedzy 16:00 a 20:00.")
-    if closing_hour - opening_hour < 640:
-        raise IntegrityError("Salon musi byc otwarty przez przynajmniej 8 godzin.")
+        raise ValueError(
+            "Godzina zamkniecia musi byc miedzy 16:00 a 20:00.")
+    if closing_hour - opening_hour + 60 < 540:
+        raise ValueError(
+            "Salon musi byc otwarty przez przynajmniej 8 godzin.")
 
 
 def minutes_into_the_day(time: str) -> int:
@@ -102,7 +104,8 @@ def delete_salon(salon_id):
     """
     try:
         with session_scope() as session:
-            adress_deletion = session.query(Adresses).filter(Salons.id == salon_id)
+            adress_deletion = session.query(Adresses).filter(
+                Salons.id == salon_id)
             salon_deletion = session.query(Salons).filter(Salons.id == salon_id)
             adress_deletion.delete()
             salon_deletion.delete()
