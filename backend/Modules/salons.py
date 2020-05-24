@@ -88,8 +88,8 @@ def update_salon(salon_data: dict) -> dict:
                     .filter(Salons.id == salon_data["id"])
                     .first()
             )
-            salon.price = salon_data["opening_hours"]
-            salon.name = salon_data["closing_hours"]
+            salon.opening_hour = salon_data["opening_hours"]
+            salon.closing_hour = salon_data["closing_hours"]
             session.commit()
         return {"success": True}
     except IntegrityError as e:
