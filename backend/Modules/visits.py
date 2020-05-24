@@ -111,11 +111,10 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
-    print(date)
     with session_scope() as session:
         for visit in session.query(Visits).filter(
-                Visits.hairdresser_id == hairdresser_id).all():
-                #.filter(str(Visits.date_start)[:10] == str(date)).all():
+                Visits.hairdresser_id == hairdresser_id) \
+                .filter(Visits.date_start.like("%"+str(date)+"%")).all():
             yield visit
 
 
