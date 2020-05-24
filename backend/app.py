@@ -16,7 +16,7 @@ from Modules.user_management import (
 )
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon
-from Modules.visits import create_visit
+from Modules.visits import create_visit, update_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -35,7 +35,7 @@ CORS(app)
 
 def verify_session(func):
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(**kwargs):
         try:
             data = request.get_json()
             session_id = data["session_id"]
@@ -123,7 +123,7 @@ class AccountLogin(Resource):
             email = data["email"]
         except KeyError as e:
             print(e)
-            return make_response("Not enough data provided" + e, 400)
+            return make_response("Not enough data provided" + str(e), 400)
         result = login(email=email, raw_password=raw_password)
         if result["session_id"]:
             return make_response(jsonify(result), 200)
@@ -157,7 +157,8 @@ class AccountLogout(Resource):
     def delete(self):
         """
         Logouts the user.
-        :return: HTTP Response: 200 if the logout was successful, 400 if the session does not exists for the user
+        :return: HTTP Response: 200 if the logout was successful, 400 if
+        the session does not exists for the user
         """
         data = request.get_json(force=True)
         account_id = data["account_id"]
@@ -268,8 +269,13 @@ api.add_resource(Salon, "/salon/", "/salon/<_id>")
 
 
 class Visit(Resource):
-    def get(self):
-        pass
+    def get(self, _id=None):
+        if _id:
+            result = fetch_object(Visits, _id)
+            return make_response(result, 200)
+        else:
+            result = fetch_all_objects(Visits)
+            return make_response(result, 200)
 
     def post(self):
         """
@@ -286,6 +292,18 @@ class Visit(Resource):
             return make_response("Visit created successfully", 200)
         else:
             return make_response(jsonify(visit_creation), 401)
+
+    def patch(self):
+        inputs = VisitInputs(request)
+        if inputs.validate():
+            visit_update = update_visit(request.get_json())
+        else:
+            return make_response(str(inputs.errors), 400)
+
+        if visit_update["success"]:
+            return make_response("Visit updated successfully", 200)
+        else:
+            return make_response(jsonify(visit_update), 401)
 
     def delete(self, _id):
         try:
