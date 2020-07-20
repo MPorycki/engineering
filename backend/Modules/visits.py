@@ -1,5 +1,4 @@
 import datetime
-import time
 import uuid
 
 from .crud_common import delete_object
@@ -48,17 +47,18 @@ def create_visit(visit: dict) -> dict:
 
 
 def date_available(date_start: datetime, date_end: datetime,
-                   hairdresser_id: str) -> bool:
+                   hairdresser_id: str, visit_id=None) -> bool:
     """
     Checks if the given date is available. Expected date example:
     05/04/2020 12:00
     :param date_start: Start date of the visit as string
     :param date_end:
     :param hairdresser_id:
+    :param visit_id
     :return: Boolean stating whether the provided date is available for booking
     """
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
-                                                date_start.date()):
+                                                date_start.date(), visit_id):
         print("Check" + str(visit.date_start))
         if dates_collide(visit, date_start, date_end):
             return False
@@ -102,8 +102,38 @@ def add_services(visit_id: str, services: list) -> bool:
     return True
 
 
+def update_services(visit_id: str, services: list) -> bool:
+    """
+    Adds and or removes services for a given visit based on a provided list
+    of services
+    :param visit_id:
+    :param services:
+    :return:
+    """
+    try:
+        with session_scope() as session:
+            old_services = session.query(VisitsServices.service_id).filter(
+                VisitsServices.visit_id == visit_id).all()
+            old_services = [x[0] for x in old_services]
+            for _id in old_services:
+                if _id not in services:
+                    deletion = session.query(VisitsServices).filter(
+                        VisitsServices.visit_id == visit_id).filter(
+                        VisitsServices.service_id == _id)
+                    deletion.delete()
+                    session.commit()
+            for _id in services:
+                if _id not in old_services:
+                    session.add(
+                        VisitsServices(service_id=_id, visit_id=visit_id))
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
 def get_hairdresser_visits_for_day(hairdresser_id: str,
-                                   date: datetime.date) -> list:
+                                   date: datetime.date, visit_id) -> list:
     """
     Returns list of hairdresser's visits on a provided day.
     :param hairdresser_id: ID of the hairdresser the visits should be returned
@@ -114,14 +144,38 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.hairdresser_id == hairdresser_id) \
-                .filter(Visits.date_start.like("%"+str(date)+"%")).all():
+                .filter(Visits.date_start.like("%" + str(date) + "%")) \
+                .filter(Visits.id != visit_id).all():
             yield visit
 
 
-def delete_visit(visit_id: str):
+def update_visit(visit_data: dict):
     """
-    Deletes a visit
-    :param visit_id: Id of the visit ot be deleted
+    Updates a visit based on provided data.
+    :param visit_data: Dict with the updated data of the visit
     :return:
     """
-    pass
+    try:
+        date_start = datetime.datetime.strptime(visit_data["visit_date_start"],
+                                                "%Y-%m-%d %H:%M")
+        date_end = datetime.datetime.strptime(visit_data["visit_date_end"],
+                                              "%Y-%m-%d %H:%M")
+    except ValueError as e:
+        raise ValueError("The date format is wrong: " + str(e))
+    if not date_available(date_start, date_end, visit_data["hairdresser_id"],
+                          visit_data["id"]):
+        return {"success": False}
+    try:
+        if update_services(visit_data["id"], visit_data["services"]):
+            with session_scope() as session:
+                visit = (
+                    session.query(Visits)
+                        .filter(Visits.id == visit_data["id"])
+                        .first()
+                )
+                visit.date_start = date_start
+                visit.date_end = date_end
+            return {"success": True}
+        return {"success": False}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
