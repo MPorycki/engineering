@@ -20,7 +20,7 @@ def create_visit(visit: dict) -> dict:
                                               "%Y-%m-%d %H:%M")
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
-    if not date_available(date_start, date_end, visit["hairdresser_id"]):
+    if not date_available(date_start, date_end, visit["hairdresser_id"], visit["customer_id"]):
         return {"success": False}
     _id = uuid.uuid4().hex
     visit_object = Visits(
@@ -47,19 +47,24 @@ def create_visit(visit: dict) -> dict:
 
 
 def date_available(date_start: datetime, date_end: datetime,
-                   hairdresser_id: str, visit_id=None) -> bool:
+                   hairdresser_id: str, customer_id: str) -> bool:
+
     """
     Checks if the given date is available. Expected date example:
     05/04/2020 12:00
     :param date_start: Start date of the visit as string
     :param date_end:
     :param hairdresser_id:
-    :param visit_id
+    :param customer_id:
     :return: Boolean stating whether the provided date is available for booking
     """
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
                                                 date_start.date(), visit_id):
         print("Check" + str(visit.date_start))
+        if dates_collide(visit, date_start, date_end):
+            return False
+
+    for visit in get_customer_visits_for_day(customer_id, date_start.date()):
         if dates_collide(visit, date_start, date_end):
             return False
     return True
@@ -141,11 +146,22 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
+    print(date) # TODO remove?
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.hairdresser_id == hairdresser_id) \
                 .filter(Visits.date_start.like("%" + str(date) + "%")) \
                 .filter(Visits.id != visit_id).all():
+            yield visit
+
+
+
+def get_customer_visits_for_day(customer_id: str,
+                                date: datetime.date) -> list:
+    with session_scope() as session:
+        for visit in session.query(Visits).filter(
+                Visits.customer_id == customer_id).all():
+                #.filter(str(Visits.date_start)[:10] == str(date)).all():
             yield visit
 
 
@@ -179,3 +195,25 @@ def update_visit(visit_data: dict):
         return {"success": False}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+def delete_visit(visit_id):
+    if delete_visit_services(visit_id):
+        with session_scope() as session:
+            session.query(Visits).filter(Visits.id == visit_id).delete()
+            session.commit()
+    else:
+        pass
+
+
+def delete_visit_services(visit_id: str) -> bool:
+    """
+    Deletes all services associated with the given visit
+    :param visit_id:
+    :return:
+    """
+    with session_scope() as session:
+        services = session.query(Visits).filter(Visits.id == visit_id).all()
+        for service in services:
+            service.delete()
+        session.commit()
+        return True
