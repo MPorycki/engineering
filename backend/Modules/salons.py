@@ -107,8 +107,8 @@ def delete_salon(salon_id):
             adress_deletion = session.query(Adresses).filter(
                 Salons.id == salon_id)
             salon_deletion = session.query(Salons).filter(Salons.id == salon_id)
-            adress_deletion.delete()
-            salon_deletion.delete()
+            session.delete(adress_deletion)
+            session.delete(salon_deletion)
             session.commit()
         return True
     except Exception as e:

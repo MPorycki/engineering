@@ -20,8 +20,10 @@ def create_visit(visit: dict) -> dict:
                                               "%Y-%m-%d %H:%M")
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
-    if not date_available(date_start, date_end, visit["hairdresser_id"], visit["customer_id"]):
-        return {"success": False}
+    date_check = date_available(date_start, date_end, visit["hairdresser_id"],
+                                visit["customer_id"])
+    if not date_check["success"]:
+        return date_check
     _id = uuid.uuid4().hex
     visit_object = Visits(
         id=_id,
@@ -47,8 +49,7 @@ def create_visit(visit: dict) -> dict:
 
 
 def date_available(date_start: datetime, date_end: datetime,
-                   hairdresser_id: str, customer_id: str) -> bool:
-
+                   hairdresser_id: str, customer_id: str) -> dict:
     """
     Checks if the given date is available. Expected date example:
     05/04/2020 12:00
@@ -59,15 +60,18 @@ def date_available(date_start: datetime, date_end: datetime,
     :return: Boolean stating whether the provided date is available for booking
     """
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
-                                                date_start.date(), visit_id):
+                                                date_start.date()):
         print("Check" + str(visit.date_start))
         if dates_collide(visit, date_start, date_end):
-            return False
+            return {"success": False, "hairdresser_taken": True,
+                    "customer_taken": False}
 
     for visit in get_customer_visits_for_day(customer_id, date_start.date()):
         if dates_collide(visit, date_start, date_end):
-            return False
-    return True
+            return {"success": False, "hairdresser_taken": False,
+                    "customer_taken": True}
+    return {"success": True, "hairdresser_taken": False,
+                    "customer_taken": False}
 
 
 def dates_collide(visit: Visits, start: datetime, end: datetime) -> bool:
@@ -138,7 +142,7 @@ def update_services(visit_id: str, services: list) -> bool:
 
 
 def get_hairdresser_visits_for_day(hairdresser_id: str,
-                                   date: datetime.date, visit_id) -> list:
+                                   date: datetime.date) -> list:
     """
     Returns list of hairdresser's visits on a provided day.
     :param hairdresser_id: ID of the hairdresser the visits should be returned
@@ -146,14 +150,12 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
-    print(date) # TODO remove?
+    print(date)  # TODO remove?
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.hairdresser_id == hairdresser_id) \
-                .filter(Visits.date_start.like("%" + str(date) + "%")) \
-                .filter(Visits.id != visit_id).all():
+                .filter(Visits.date_start.like("%" + str(date) + "%")).all():
             yield visit
-
 
 
 def get_customer_visits_for_day(customer_id: str,
@@ -161,7 +163,7 @@ def get_customer_visits_for_day(customer_id: str,
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.customer_id == customer_id).all():
-                #.filter(str(Visits.date_start)[:10] == str(date)).all():
+            # .filter(str(Visits.date_start)[:10] == str(date)).all():
             yield visit
 
 
@@ -196,13 +198,16 @@ def update_visit(visit_data: dict):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
 def delete_visit(visit_id):
     if delete_visit_services(visit_id):
         with session_scope() as session:
-            session.query(Visits).filter(Visits.id == visit_id).delete()
+            deletion = session.query(Visits).filter(Visits.id == visit_id).first()
+            session.delete(deletion)
             session.commit()
+            return True
     else:
-        pass
+        False
 
 
 def delete_visit_services(visit_id: str) -> bool:
@@ -212,8 +217,8 @@ def delete_visit_services(visit_id: str) -> bool:
     :return:
     """
     with session_scope() as session:
-        services = session.query(Visits).filter(Visits.id == visit_id).all()
+        services = session.query(VisitsServices).filter(Visits.id == visit_id).all()
         for service in services:
-            service.delete()
+            session.delete(service)
         session.commit()
         return True

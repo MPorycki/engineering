@@ -16,7 +16,7 @@ from Modules.user_management import (
 )
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon
-from Modules.visits import create_visit, update_visit
+from Modules.visits import create_visit, update_visit, delete_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -307,7 +307,7 @@ class Visit(Resource):
 
     def delete(self, _id):
         try:
-            delete = delete_object(object_table=Visits, object_id=_id)
+            delete = delete_visit(_id)
             return make_response(str(delete), 200)
         except Exception as e:
             return make_response(str(e), 400)
