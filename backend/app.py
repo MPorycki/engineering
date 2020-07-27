@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
 
+from Modules.admin import AccountAdmin, VisitsView, ServicesView, SalonsView
 from Modules.user_management import (
     login,
     register_user,
@@ -37,10 +38,10 @@ app.secret_key = "testowy" # TODO ogar tematu secre key i jak zrobić żeby to b
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
 admin = Admin(app, name="admin", template_mode="bootstrap3")
-admin.add_view(ModelView(Accounts, session))
-admin.add_view(ModelView(Visits, session))
-admin.add_view(ModelView(Services, session))
-admin.add_view(ModelView(Salons, session))
+admin.add_view(AccountAdmin(Accounts, session))
+admin.add_view(VisitsView(Visits, session))
+admin.add_view(ServicesView(Services, session))
+admin.add_view(SalonsView(Salons, session))
 
 
 def verify_session(func):
