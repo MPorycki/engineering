@@ -40,6 +40,7 @@ admin = Admin(app, name="admin", template_mode="bootstrap3")
 admin.add_view(ModelView(Accounts, session))
 admin.add_view(ModelView(Visits, session))
 admin.add_view(ModelView(Services, session))
+admin.add_view(ModelView(Salons, session))
 
 
 def verify_session(func):
