@@ -10,11 +10,11 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-db = create_engine("sqlite:///baza.db")
+db = create_engine("sqlite:///baza.db?check_same_thread=False")
 base = declarative_base()
-Session = sessionmaker(db)
+Session = scoped_session(sessionmaker(db))
 session = Session()
 
 

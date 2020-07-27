@@ -1,6 +1,8 @@
 from functools import wraps
 
 from flask import Flask, request, make_response
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
@@ -24,13 +26,20 @@ from models import (
     Accounts,
     Services,
     Salons,
-    Visits
+    Visits,
+    session
 )
 from validation import ServiceInputs, SalonInputs, VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
+app.secret_key = "testowy" # TODO ogar tematu secre key i jak zrobić żeby to bylo secure
+app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
+admin = Admin(app, name="admin", template_mode="bootstrap3")
+admin.add_view(ModelView(Accounts, session))
+admin.add_view(ModelView(Visits, session))
+admin.add_view(ModelView(Services, session))
 
 
 def verify_session(func):
