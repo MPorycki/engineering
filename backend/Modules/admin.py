@@ -1,5 +1,9 @@
 # https://flask-admin.readthedocs.io/en/latest/
+import datetime
+import uuid
+
 from flask_admin.contrib.sqla import ModelView
+
 
 
 class GeneralView(ModelView):
@@ -20,9 +24,17 @@ class AccountAdmin(GeneralView):
 
     form_excluded_columns = ['hashed_password', 'created_at']
 
+    def on_model_change(self, form, model, is_created): # TODO a co z haslem
+        if is_created:
+            model.id = uuid.uuid4().hex
+            model.created_at = datetime.datetime.utcnow()
+
 
 class VisitsView(GeneralView):
-    pass
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = uuid.uuid4().hex
+            model.created_at = datetime.datetime.utcnow()
 
 
 class ServicesView(GeneralView):
@@ -33,6 +45,16 @@ class ServicesView(GeneralView):
         ]
     }
 
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = uuid.uuid4().hex
+            model.created_at = datetime.datetime.utcnow()
+
 
 class SalonsView(GeneralView):
     column_exclude_list = ['adress_id', 'created_at']
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.id = uuid.uuid4().hex
+            model.created_at = datetime.datetime.utcnow()
