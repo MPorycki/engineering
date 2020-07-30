@@ -93,6 +93,10 @@ def update_user(user_data: dict) -> bool:
         return False
 
 
+def send_pass_reset_email(email: str): # TODO implement
+    print(f"Mail sent to {email}")
+
+
 def change_password(account_id: str, new_password: str) -> bool:
     """
     Changes the password for the user
