@@ -2,14 +2,17 @@
   <div id="app">
     <Menu />
     <router-view/>
+    <Footer/>
   </div>
 </template>
 
 <script>
 import Menu from './components/menubar.vue'
+import Footer from './components/footer.vue'
 export default {
     components: {
-      Menu
+      Menu,
+      Footer
     }
 }
 </script>
