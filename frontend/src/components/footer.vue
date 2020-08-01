@@ -42,7 +42,7 @@ import UM from '../utils/userManagement'
 export default {
     data() {
         return {
-            sessionData: {}
+            sessionData: UM.getSession()
         }
     },
     methods: {
@@ -50,10 +50,6 @@ export default {
             console.log(this.sessionData)
             return this.sessionData['sessionId']
         }
-    },
-    mounted() {
-        this.sessionData = UM.getSession()
-        console.log(this.sessionData)
     }
 }
 </script>
