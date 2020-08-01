@@ -2,7 +2,7 @@
     <div>
         <myForm>  
             <h3>Zarezerwuj wizytę</h3>
-                <form @submit.prevent="log_in">
+                <form @submit.prevent="createVisit">
                     <div class="form-group">
                         <label for="formControlSelect1">Wybierz salon</label>
                             <select class="form-control" id="formControlSelect1" v-model="salonSelected" @change="onSalonSelect()">
@@ -28,10 +28,17 @@
                         <datepicker id="date" :language="pl" v-model="dateSelected" @selected="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true"></datepicker>
                     </div>
                     <div class="form-group" v-if="suggestedHours != null">
-
+                        <label for="myTable">Dostępne godziny wizyty</label>
+                        <table class="col text-center" id="myTable">
+                            <tr id="tblrow" v-for="i in Math.ceil(suggestedHours.length / 3)" :key="i">
+                                <td >
+                                    <button @click="setHourSelected({hour})" :id="'H'+hour" style="margin-right: 15px" type="button" class="btn btn-outline-primary" v-for="hour in suggestedHours.slice((i - 1) * 3, i * 3)" :key="hour">{{hour}}</button>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="form-group">
-                        <input type="submit" class="btnSubmit" value="Zarezerwuj" />
+                        <input v-if="hourSelected != null" type="submit" class="btnSubmit" value="Zarezerwuj" />
                     </div>
                 </form> 
         </myForm>
@@ -61,7 +68,8 @@ export default {
             dateSelected: new Date().toLocaleString(),
             pl: pl,
             disabledDates:{to: new Date()},
-            suggestedHours: null
+            suggestedHours: null,
+            hourSelected: null
         }
     },
     methods: {
@@ -95,16 +103,34 @@ export default {
             return sum
         },
         loadHours(){
-            console.log(moment(this.dateSelected).format('DD/MM/YYYY'))
             var data = {
                 "date": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0],
                 "customerId": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
                 "hairdresserId": this.hairdresserSelected.id,
                 "serviceDuration": this.calculateServiceTime(),
                 "salonId": this.salonSelected.id,
-
             }
-            axios.post(this.$backend_url +"visit/availability/", data)
+            axios.post(this.$backend_url +"visit/availability/", data).then(res => this.renderHourButtons(res.data["availableHours"]))
+        },
+        renderHourButtons(hours){
+            this.suggestedHours = hours
+        },
+        setHourSelected(hour){
+            this.hourSelected = hour.hour
+            document.getElementById("H"+this.hourSelected).classList.add('btn-primary');
+
+            document.getElementById("H"+this.hourSelected).classList.remove('btn-outline-primary');
+        },
+        createVisit(){
+            var data = {
+                "visit_date_start": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0] + " " + this.hourSelected,
+                "customer_id": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
+                "hairdresser_id": this.hairdresserSelected.id,
+                "service_duration": this.calculateServiceTime(),
+                "salon_id": this.salonSelected.id,
+                "services": this.servicesSelected
+            }
+            axios.post(this.$backend_url +"visit/", data)
         }
     },
     mounted(){
@@ -115,7 +141,7 @@ export default {
 </script>
 
 <style scoped>
-    #date{
-        align-content: center;
+    #tblrow td {
+        margin-right: 10px;
     }
 </style>

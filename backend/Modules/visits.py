@@ -16,8 +16,7 @@ def create_visit(visit: dict) -> dict:
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")
-        date_end = datetime.datetime.strptime(visit["visit_date_end"],
-                                              "%d/%m/%Y %H:%M")  # TODO calculate end date based on duration
+        date_end = calculate_end_date(date_start, visit["service_duration"]) # TODO calculate end date based on duration
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     date_check = date_available(date_start, date_end, visit["hairdresser_id"],
@@ -61,7 +60,6 @@ def date_available(date_start: datetime, date_end: datetime,
     """
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
                                                 date_start.date()):
-        print("Check" + str(visit.date_start))
         if dates_collide(visit, date_start, date_end):
             return {"success": False, "hairdresser_taken": True,
                     "customer_taken": False}
@@ -83,8 +81,6 @@ def dates_collide(visit: Visits, start: datetime, end: datetime) -> bool:
     :param end: End datetime of a potential new visit
     :return: Bool stating whether the dates collide with each other
     """
-    print(visit.date_start)
-    print(start)
     if (visit.date_start <= start < visit.date_end) \
             or (visit.date_start < end <= visit.date_end) \
             or (start < visit.date_start and end > visit.date_end):
@@ -114,7 +110,6 @@ def get_available_hours(data: dict) -> dict:
      "salonId": salon where the service is supposed to take place}
     :return: Start dates that the user can pick
     """
-    print(data)
     available_hours = list()
     salon = fetch_object(Salons, data["salonId"])
     try:
@@ -144,11 +139,11 @@ def add_services(visit_id: str, services: list) -> bool:
     """
     try:
         with session_scope() as session:
-            for service_id in services:
+            for service in services:
                 session.add(
-                    VisitsServices(service_id=service_id, visit_id=visit_id))
+                    VisitsServices(service_id=service["id"], visit_id=visit_id))
     except Exception as e:
-        print(e)
+        print("Add services failed" + e)
         return False
     return True
 
@@ -192,7 +187,7 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
-    print(date)  # TODO remove?
+    print("Hairdresser check" + str(date))  # TODO remove?
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.hairdresser_id == hairdresser_id) \
