@@ -11,8 +11,10 @@
     "axios": "^0.19.2",
     "bootstrap-vue": "^2.9.0",
     "core-js": "^3.6.4",
+    "moment": "^2.27.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.5"
+    "vue-router": "^3.1.5",
+    "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",

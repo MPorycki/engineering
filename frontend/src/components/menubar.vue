@@ -11,6 +11,9 @@
                 <router-link to="/locations">Salony</router-link>
             </li>
             <li>
+                <router-link to="/visitCreate">Create visit</router-link>
+            </li>
+            <li>
                 <router-link to="/">Strona główna</router-link>
             </li>
         </ul>

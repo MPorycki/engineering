@@ -6,6 +6,7 @@ import Locations from '../views/Locations.vue'
 import Registration from '../views/Registration.vue'
 import PasswordResetVerification from '../views/PasswordResetVerification.vue'
 import PasswordReset from '../views/PasswordReset.vue'
+import VisitCreate from '../views/VisitCreate'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,12 @@ const routes = [
     path: '/locations',
     name: 'Locations',
     component: Locations
+  }
+  ,
+  {
+    path: '/visitCreate',
+    name: 'VisitCreate',
+    component: VisitCreate
   }
 ]
 

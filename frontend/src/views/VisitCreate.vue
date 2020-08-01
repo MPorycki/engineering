@@ -1,3 +1,121 @@
 <template>
-    
+    <div>
+        <myForm>  
+            <h3>Zarezerwuj wizytę</h3>
+                <form @submit.prevent="log_in">
+                    <div class="form-group">
+                        <label for="formControlSelect1">Wybierz salon</label>
+                            <select class="form-control" id="formControlSelect1" v-model="salonSelected" @change="onSalonSelect()">
+                                <option v-for="salon in salons" :value="salon" :key="salon.id">{{parseAdress(salon.address)}}</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="formControlSelect2">Wybierz fryzjera</label>
+                            <select class="form-control" id="formControlSelect2" v-model="hairdresserSelected" @change="onHairdresserSelect()">
+                                <option v-for="hairdresser in hairdressers" :value="hairdresser" :key="hairdresser.id">{{hairdresser.firstName + " " + hairdresser.lastName}}</option>
+                            </select>
+                    </div>
+                    <div class="form-group" v-if="hairdresserSelected != null">
+                        <label for="exampleFormControlSelect1">Wybierz usługi</label>
+                            <div class="form-check" v-for="service in services" :key="service.id"  @change="onServiceSelect()">
+                                <input class="form-check-input" type="checkbox" :id="service.name" :value=service v-model="servicesSelected">
+                                <label class="form-check-label" :for="service.name">{{service.name + " - " + service.price + " PLN"}}</label>
+                            </div>
+                            <p v-if="servicesSelected.length > 0"><b>Szacowany czas usługi to {{calculateServiceTime()}} minut.</b></p>
+                    </div>
+                    <div class="form-group" v-if="servicesSelected.length > 0">
+                        <label for="date">Wybierz dzień wizyty</label>
+                        <datepicker id="date" :language="pl" v-model="dateSelected" @selected="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true"></datepicker>
+                    </div>
+                    <div class="form-group" v-if="suggestedHours != null">
+
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btnSubmit" value="Zarezerwuj" />
+                    </div>
+                </form> 
+        </myForm>
+    </div>
 </template>
+
+<script>
+import myForm from '../components/myForm'
+
+import axios from 'axios'
+import datepicker from 'vuejs-datepicker' // https://www.npmjs.com/package/vuejs-datepicker
+import pl from 'vuejs-datepicker/dist/locale'
+import moment from 'moment'
+export default {
+    components: {
+        myForm,
+        datepicker
+    },
+    data() {
+        return {
+            salons: [],
+            salonSelected: null,
+            hairdressers: [],
+            hairdresserSelected: null,
+            services: [],
+            servicesSelected: [],
+            dateSelected: new Date().toLocaleString(),
+            pl: pl,
+            disabledDates:{to: new Date()},
+            suggestedHours: null
+        }
+    },
+    methods: {
+        getSalons(){
+            axios.get(this.$backend_url  + "salon/").then(res => this.salons = res.data["Salons"])
+        },
+        parseAdress(adressDict){
+            return adressDict["city"] + ", " + adressDict["street"] + " " + adressDict["building_no"]
+        },
+        onSalonSelect(){
+            this.getHairdressers(this.salonSelected.id)
+        },
+        getHairdressers(salonId){
+            axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
+        },
+        getServices(){
+            axios.get(this.$backend_url + "service/").then(res => this.services = res.data["Services"])
+        },
+        onHairdresserSelect(){
+            this.getServices()
+        },
+        onServiceSelect(){
+            console.log(this.servicesSelected)
+        },
+        calculateServiceTime(){
+            var sum = 0;
+            var service;
+            for (service of this.servicesSelected){
+                sum += service.service_duration
+            }
+            return sum
+        },
+        loadHours(){
+            console.log(moment(this.dateSelected).format('DD/MM/YYYY'))
+            var data = {
+                "date": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0],
+                "customerId": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
+                "hairdresserId": this.hairdresserSelected.id,
+                "serviceDuration": this.calculateServiceTime(),
+                "salonId": this.salonSelected.id,
+
+            }
+            axios.post(this.$backend_url +"visit/availability/", data)
+        }
+    },
+    mounted(){
+        this.getSalons();
+    }
+    
+}
+</script>
+
+<style scoped>
+    #date{
+        align-content: center;
+    }
+</style>
