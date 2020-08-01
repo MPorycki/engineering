@@ -88,11 +88,8 @@ def get_adress(salon_id: str) -> Adresses:
                 .first()
         )
         result = result.__dict__
-        """
+
         del result["_sa_instance_state"]
-        del result["id"]
-        del result["id_project"]
-        """
         return result
 
 

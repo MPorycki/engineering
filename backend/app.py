@@ -2,7 +2,6 @@ from functools import wraps
 
 from flask import Flask, request, make_response
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
@@ -18,7 +17,8 @@ from Modules.user_management import (
     get_hairdressers_in_salon
 )
 from Modules.services import (create_service, update_service)
-from Modules.salons import create_salon, update_salon, delete_salon
+from Modules.salons import create_salon, update_salon, delete_salon, \
+    get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
@@ -34,7 +34,7 @@ from validation import ServiceInputs, SalonInputs, VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
-app.secret_key = "testowy" # TODO ogar tematu secre key i jak zrobić żeby to bylo secure
+app.secret_key = "testowy"  # TODO ogar tematu secre key i jak zrobić żeby to bylo secure
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
 admin = Admin(app, name="admin", template_mode="bootstrap3")
@@ -82,7 +82,8 @@ class Account(Resource):
             raw_password = data["raw_password"]
             fist_name = data["first_name"]
             last_name = data["last_name"]
-            account_type = data["account_type"] # TODO add mechanism for hairdresser addition
+            account_type = data[
+                "account_type"]  # TODO add mechanism for hairdresser addition
             salon_id = data["salon_id"]
         except KeyError as e:
             return make_response(
@@ -238,7 +239,8 @@ class Salon(Resource):
             result = fetch_object(Salons, _id)
             return make_response(result, 200)
         else:
-            result = fetch_all_objects(Salons)
+            result = get_all_salons()
+            print(result)
             return make_response(result, 200)
 
     def post(self):

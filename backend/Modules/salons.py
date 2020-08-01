@@ -4,7 +4,8 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from models import Adresses, Salons, session_scope
-from Modules.adresses import create_adress, update_adress
+from Modules.adresses import create_adress, update_adress, get_adress
+from Modules.crud_common import fetch_all_objects
 
 
 def create_salon(salon_data: dict) -> dict:
@@ -114,3 +115,11 @@ def delete_salon(salon_id):
     except Exception as e:
         print(e)
         return False
+
+
+def get_all_salons():
+    salons = fetch_all_objects(Salons)
+    print(salons)
+    for salon in salons["Salons"]:
+        salon["address"] = get_adress(salon["id"])
+    return salons
