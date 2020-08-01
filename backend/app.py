@@ -209,7 +209,7 @@ class Service(Resource):
         if service_creation["success"]:
             return make_response("Registration successful", 200)
         else:
-            return make_response(jsonify(service_creation), 401)
+            return make_response(jsonify(service_creation), 400)
 
     def patch(self):
         inputs = ServiceInputs(request)
@@ -256,7 +256,7 @@ class Salon(Resource):
         if salon_creation["success"]:
             return make_response("Salon created successfully", 200)
         else:
-            return make_response(jsonify(salon_creation), 401)
+            return make_response(jsonify(salon_creation), 400)
 
     def patch(self):
         inputs = SalonInputs(request)
@@ -301,9 +301,9 @@ class Visit(Resource):
             return make_response(str(inputs.errors), 400)
 
         if visit_creation["success"]:
-            return make_response("Visit created successfully", 200)
+            return make_response(jsonify(visit_creation), 200)
         else:
-            return make_response(jsonify(visit_creation), 401)
+            return make_response(jsonify(visit_creation), 400)
 
     def patch(self):
         inputs = VisitInputs(request)
@@ -315,7 +315,7 @@ class Visit(Resource):
         if visit_update["success"]:
             return make_response("Visit updated successfully", 200)
         else:
-            return make_response(jsonify(visit_update), 401)
+            return make_response(jsonify(visit_update), 400)
 
     def delete(self, _id):
         try:

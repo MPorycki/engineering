@@ -81,6 +81,7 @@ export default {
         },
         onSalonSelect(){
             this.getHairdressers(this.salonSelected.id)
+            this.hairdresserSelected = null
         },
         getHairdressers(salonId){
             axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
@@ -116,21 +117,48 @@ export default {
             this.suggestedHours = hours
         },
         setHourSelected(hour){
-            this.hourSelected = hour.hour
-            document.getElementById("H"+this.hourSelected).classList.add('btn-primary');
+            if (this.hourSelected == null){
+                this.hourSelected = hour.hour
+                document.getElementById("H"+this.hourSelected).classList.add('btn-primary');
 
-            document.getElementById("H"+this.hourSelected).classList.remove('btn-outline-primary');
+                document.getElementById("H"+this.hourSelected).classList.remove('btn-outline-primary');
+            } else {
+                document.getElementById("H"+this.hourSelected).classList.remove('btn-primary');
+
+                document.getElementById("H"+this.hourSelected).classList.add('btn-outline-primary');
+
+                this.hourSelected = hour.hour
+                document.getElementById("H"+this.hourSelected).classList.add('btn-primary');
+
+                document.getElementById("H"+this.hourSelected).classList.remove('btn-outline-primary');
+            }
         },
         createVisit(){
-            var data = {
-                "visit_date_start": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0] + " " + this.hourSelected,
-                "customer_id": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
-                "hairdresser_id": this.hairdresserSelected.id,
-                "service_duration": this.calculateServiceTime(),
-                "salon_id": this.salonSelected.id,
-                "services": this.servicesSelected
+            if (this.validateData()){
+                var data = {
+                    "visit_date_start": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0] + " " + this.hourSelected,
+                    "customer_id": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
+                    "hairdresser_id": this.hairdresserSelected.id,
+                    "service_duration": this.calculateServiceTime(),
+                    "salon_id": this.salonSelected.id,
+                    "services": this.servicesSelected
+                }
+                axios.post(this.$backend_url +"visit/", data).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
+            } else{
+                alert("Uzupełnij wszystkie pola")
             }
-            axios.post(this.$backend_url +"visit/", data)
+        },
+        validateData(){
+                if (this.hairdresserSelected == null || this.calculateServiceTime() == 0 || this.salonSelected == null || this.servicesSelected.length == 0){ // TODO add customer id
+                    return false
+                }
+            return true
+        },
+        handleCreationSuccess(data){
+            if (data.success){
+                this.$router.push({ name: 'home', }) // TODO change to visits page
+            } 
+            //location.reload()
         }
     },
     mounted(){
