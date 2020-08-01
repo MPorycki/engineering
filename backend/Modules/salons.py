@@ -119,7 +119,6 @@ def delete_salon(salon_id):
 
 def get_all_salons():
     salons = fetch_all_objects(Salons)
-    print(salons)
     for salon in salons["Salons"]:
         salon["address"] = get_adress(salon["id"])
     return salons

@@ -93,7 +93,7 @@ def update_user(user_data: dict) -> bool:
         return False
 
 
-def send_pass_reset_email(email: str): # TODO implement
+def send_pass_reset_email(email: str):  # TODO implement
     print(f"Mail sent to {email}")
 
 
@@ -197,7 +197,12 @@ def get_hairdressers_in_salon(salon_id: str):
     :param salon_id: uuid of the salon
     :return:
     """
+    result = {"hairdressers": []}
     with session_scope() as session:
         hairdressers = session.query(Accounts).filter(
             Accounts.salon_id == salon_id).all()
-    return [x.first_name + " " + x.last_name for x in hairdressers]
+        for hairdresser in hairdressers:
+            result["hairdressers"].append(
+                {"id": hairdresser.id, "firstName": hairdresser.first_name,
+                 "lastName": hairdresser.last_name})
+        return result

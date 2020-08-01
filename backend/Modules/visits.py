@@ -1,8 +1,8 @@
 import datetime
 import uuid
 
-from .crud_common import delete_object
-from models import session_scope, Visits, VisitsServices
+from .crud_common import delete_object, fetch_object
+from models import session_scope, Visits, VisitsServices, Salons
 
 
 def create_visit(visit: dict) -> dict:
@@ -15,9 +15,9 @@ def create_visit(visit: dict) -> dict:
     """
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
-                                                "%Y-%m-%d %H:%M")
+                                                "%d/%m/%Y %H:%M")
         date_end = datetime.datetime.strptime(visit["visit_date_end"],
-                                              "%Y-%m-%d %H:%M")
+                                              "%d/%m/%Y %H:%M")  # TODO calculate end date based on duration
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     date_check = date_available(date_start, date_end, visit["hairdresser_id"],
@@ -71,7 +71,7 @@ def date_available(date_start: datetime, date_end: datetime,
             return {"success": False, "hairdresser_taken": False,
                     "customer_taken": True}
     return {"success": True, "hairdresser_taken": False,
-                    "customer_taken": False}
+            "customer_taken": False}
 
 
 def dates_collide(visit: Visits, start: datetime, end: datetime) -> bool:
@@ -91,6 +91,48 @@ def dates_collide(visit: Visits, start: datetime, end: datetime) -> bool:
         return True
     else:
         return False
+
+
+def calculate_end_date(start_date: datetime, duration: int) -> datetime:
+    """
+    Calculates the end date based on the provided start date
+    :param start_date: beginning of the visit
+    :param duration: duration to be added to start time
+    :return: datetime with added duration
+    """
+    return start_date + datetime.timedelta(minutes=duration)
+
+
+def get_available_hours(data: dict) -> dict:
+    """
+    Provide fronted dates that the user can use to register his or her visit.
+    :param data: Dict with the following schema {"date": date selected by user,
+    "hairdresserId": hairdresser whose availability needs to be checked,
+    "customerId" : customer whose availability needs to be checked,
+    "serviceDuration: amount of time neeeded for the visit based on services'
+     length,
+     "salonId": salon where the service is supposed to take place}
+    :return: Start dates that the user can pick
+    """
+    print(data)
+    available_hours = list()
+    salon = fetch_object(Salons, data["salonId"])
+    try:
+        date_start = datetime.datetime.strptime(
+            # TODO handle case when the visit is for today
+            f"{data['date']} {salon['opening_hour']}", "%d/%m/%Y %H:%M")
+        date_end = calculate_end_date(date_start, data["serviceDuration"])
+    except ValueError as e:
+        raise ValueError("The date format is wrong: " + str(e))
+    while date_end < datetime.datetime.strptime(
+            f"{data['date']} {salon['closing_hour']}", "%d/%m/%Y %H:%M"):
+        if date_available(date_start, date_end,
+                          data["hairdresserId"], data["customerId"]):
+            available_hours.append(
+                datetime.datetime.strftime(date_start, "%H:%M"))
+        date_start = date_start + datetime.timedelta(minutes=30)
+        date_end = date_end + datetime.timedelta(minutes=30)
+    return {"availableHours": available_hours}
 
 
 def add_services(visit_id: str, services: list) -> bool:
@@ -175,9 +217,9 @@ def update_visit(visit_data: dict):
     """
     try:
         date_start = datetime.datetime.strptime(visit_data["visit_date_start"],
-                                                "%Y-%m-%d %H:%M")
+                                                "%d/%m/%Y %H:%M")
         date_end = datetime.datetime.strptime(visit_data["visit_date_end"],
-                                              "%Y-%m-%d %H:%M")
+                                              "%d/%m/%Y %H:%M")
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     if not date_available(date_start, date_end, visit_data["hairdresser_id"],
@@ -202,7 +244,8 @@ def update_visit(visit_data: dict):
 def delete_visit(visit_id):
     if delete_visit_services(visit_id):
         with session_scope() as session:
-            deletion = session.query(Visits).filter(Visits.id == visit_id).first()
+            deletion = session.query(Visits).filter(
+                Visits.id == visit_id).first()
             session.delete(deletion)
             session.commit()
             return True
@@ -217,7 +260,8 @@ def delete_visit_services(visit_id: str) -> bool:
     :return:
     """
     with session_scope() as session:
-        services = session.query(VisitsServices).filter(Visits.id == visit_id).all()
+        services = session.query(VisitsServices).filter(
+            Visits.id == visit_id).all()
         for service in services:
             session.delete(service)
         session.commit()
