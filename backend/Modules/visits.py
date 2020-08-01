@@ -256,7 +256,7 @@ def delete_visit_services(visit_id: str) -> bool:
     """
     with session_scope() as session:
         services = session.query(VisitsServices).filter(
-            Visits.id == visit_id).all()
+            VisitsServices.visit_id == visit_id).all()
         for service in services:
             session.delete(service)
         session.commit()
