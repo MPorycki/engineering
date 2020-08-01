@@ -206,3 +206,9 @@ def get_hairdressers_in_salon(salon_id: str):
                 {"id": hairdresser.id, "firstName": hairdresser.first_name,
                  "lastName": hairdresser.last_name})
         return result
+
+
+def get_account_type(account_id: str) -> str:
+    with session_scope() as session:
+        user = session.query(Accounts).filter(Accounts.id == account_id).first()
+        return user.account_type

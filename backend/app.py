@@ -19,7 +19,8 @@ from Modules.user_management import (
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
-from Modules.visits import create_visit, update_visit, delete_visit, get_available_hours
+from Modules.visits import create_visit, update_visit, delete_visit, \
+    get_available_hours, get_account_visits
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -326,6 +327,15 @@ class Visit(Resource):
 
 
 api.add_resource(Visit, "/visit/", "/visit/<_id>")
+
+
+class AccountVisits(Resource):
+    def get(self, _id):
+        result = get_account_visits(_id)
+        return make_response(result, 200)
+
+
+api.add_resource(AccountVisits, "/accountVisits/<_id>")
 
 
 class DatesAvailability(Resource):

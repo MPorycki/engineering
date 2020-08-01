@@ -12,7 +12,7 @@
                     <h5 class="mb-1">Zarejestruj się i skorzystaj z naszych usług!</h5>
                 </li>
                 <li class="list-inline-item">
-                    <a href="#!" class="btn btn-outline-secondary rounded-pill">Rejestracja</a>
+                    <a href="#/registration" class="btn btn-outline-secondary rounded-pill">Rejestracja</a>
                 </li>
                 </ul>
                 <!-- Call to action -->

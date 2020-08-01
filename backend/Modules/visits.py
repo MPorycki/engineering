@@ -1,8 +1,10 @@
+import copy
 import datetime
 import uuid
 
 from .crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitsServices, Salons
+from Modules.user_management import get_account_type
 
 
 def create_visit(visit: dict) -> dict:
@@ -16,7 +18,8 @@ def create_visit(visit: dict) -> dict:
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")
-        date_end = calculate_end_date(date_start, visit["service_duration"]) # TODO calculate end date based on duration
+        date_end = calculate_end_date(date_start, visit[
+            "service_duration"])  # TODO calculate end date based on duration
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     date_check = date_available(date_start, date_end, visit["hairdresser_id"],
@@ -200,7 +203,7 @@ def get_customer_visits_for_day(customer_id: str,
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.customer_id == customer_id).all():
-            # .filter(str(Visits.date_start)[:10] == str(date)).all():
+            # .filter(str(Visits.date_start)[:10] == str(date)).all(): # TODO fix
             yield visit
 
 
@@ -261,3 +264,23 @@ def delete_visit_services(visit_id: str) -> bool:
             session.delete(service)
         session.commit()
         return True
+
+
+def get_account_visits(account_id):
+    result_temp = {"visits": []}
+    final_result = {}
+    with session_scope() as session:
+        if get_account_type(account_id) == "customer":
+            result = session.query(Visits).filter(
+                Visits.customer_id == account_id).order_by(
+                Visits.created_at.desc()).all()
+        else:
+            result = session.query(Visits).filter(
+                Visits.hairdresser_id == account_id).order_by(
+                Visits.created_at.desc()).all()
+        for item in result:
+            converted = item.__dict__
+            del converted['_sa_instance_state']
+            result_temp["visits"].append(converted)
+            final_result = copy.deepcopy(result_temp)
+        return final_result
