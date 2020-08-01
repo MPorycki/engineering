@@ -7,7 +7,7 @@
             <div class="container">
 
                 <!-- Call to action -->
-                <ul class="list-unstyled list-inline text-center py-2">
+                <ul v-if="this.validateSession().length == 0" class="list-unstyled list-inline text-center py-2">
                 <li class="list-inline-item">
                     <h5 class="mb-1">Zarejestruj się i skorzystaj z naszych usług!</h5>
                 </li>
@@ -16,6 +16,11 @@
                 </li>
                 </ul>
                 <!-- Call to action -->
+                <ul v-else class="list-unstyled list-inline text-center py-2">
+                    <li class="list-inline-item">
+                        Dziekujemy za korzystanie z naszych usług :)
+                    </li>
+                </ul>
 
             </div>
             <!-- Footer Elements -->
@@ -32,14 +37,23 @@
 </template>
 
 <script>
-import Menu from './menubar.vue'
+//https://mdbootstrap.com/docs/jquery/navigation/footer/
+import UM from '../utils/userManagement'
 export default {
+    data() {
+        return {
+            sessionData: {}
+        }
+    },
     methods: {
-
+        validateSession(){
+            console.log(this.sessionData)
+            return this.sessionData['sessionId']
+        }
     },
     mounted() {
-        Menu.get_session()
-        console.log("działa")
+        this.sessionData = UM.getSession()
+        console.log(this.sessionData)
     }
 }
 </script>
@@ -49,7 +63,9 @@ export default {
         background-color: #a4e6f4;
         width: 100%;
         height: wrap-content;
-    }
+        position: relative;
+        bottom: 0;
+        margin-top: 100px;    }
     p {
         text-align: center;
         padding: 25px 0;
