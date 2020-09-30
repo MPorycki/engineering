@@ -47,7 +47,7 @@ export default {
     },
     methods: {
         validateSession(){
-            console.log(this.sessionData)
+            //console.log(this.sessionData)
             return this.sessionData['sessionId']
         }
     }
