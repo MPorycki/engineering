@@ -4,7 +4,7 @@ import uuid
 
 from .crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitsServices, Salons
-from Modules.user_management import get_account_type
+from Modules.user_management import is_customer
 
 
 def create_visit(visit: dict) -> dict:
@@ -266,21 +266,31 @@ def delete_visit_services(visit_id: str) -> bool:
         return True
 
 
-def get_account_visits(account_id):
-    result_temp = {"visits": []}
-    final_result = {}
+def get_account_visits(account_id: str) -> dict:
+    """
+    Provides date, address/full name of customer, and id of the visits of the given account id
+    """
     with session_scope() as session:
-        if get_account_type(account_id) == "customer":
-            result = session.query(Visits).filter(
-                Visits.customer_id == account_id).order_by(
-                Visits.created_at.desc()).all()
+        if is_customer(account_id):
+            return get_customer_visits(account_id)
         else:
-            result = session.query(Visits).filter(
-                Visits.hairdresser_id == account_id).order_by(
-                Visits.created_at.desc()).all()
-        for item in result:
-            converted = item.__dict__
-            del converted['_sa_instance_state']
-            result_temp["visits"].append(converted)
-            final_result = copy.deepcopy(result_temp)
-        return final_result
+            return get_hairdresser_visits(account_id)
+
+
+def get_hairdresser_visits(account_id):
+    result = {"visits": []}
+    with session_scope() as session:
+        visits = session.query(Visits).filter(
+            Visits.customer_id == account_id).order_by(
+            Visits.created_at.desc()).all()
+        for visit in visits:
+            result["visits"].append(
+                {"visit_date": visit.date_start, "visit_data": visit.customer_id, "visit_id": visit.id})
+        return result
+
+
+def get_customer_visits(account_id):
+    with session_scope() as session:
+        result = session.query(Visits).filter(
+            Visits.hairdresser_id == account_id).order_by(
+            Visits.created_at.desc()).all()
