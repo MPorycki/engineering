@@ -208,7 +208,10 @@ def get_hairdressers_in_salon(salon_id: str):
         return result
 
 
-def get_account_type(account_id: str) -> str:
+def is_customer(account_id: str) -> bool:
     with session_scope() as session:
         user = session.query(Accounts).filter(Accounts.id == account_id).first()
-        return user.account_type
+        if user.account_type == "customer":
+            return True
+        else:
+            return False
