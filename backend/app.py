@@ -332,7 +332,7 @@ api.add_resource(Visit, "/visit/", "/visit/<_id>")
 class AccountVisits(Resource):
     def get(self, _id):
         result = get_account_visits(_id)
-        return make_response(result, 200)
+        return make_response(jsonify(result), 200)
 
 
 api.add_resource(AccountVisits, "/accountVisits/<_id>")
