@@ -5,6 +5,7 @@ import uuid
 from .crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitsServices, Salons
 from Modules.user_management import is_customer
+from Modules.adresses import adress_to_string
 
 
 def create_visit(visit: dict) -> dict:
@@ -284,8 +285,12 @@ def get_customer_visits(account_id):
             Visits.created_at.desc()).all()  # TODO add dates
         for visit in visits:
             result["visits"].append(
-                {"visit_date": visit.date_start, "visit_data": visit.salon_id, "visit_id": visit.id})
-        return result
+                {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
+                 "visit_data": visit.salon_id,
+                 "visit_id": visit.id})
+    for item in result["visits"]:
+        item["visit_data"] = adress_to_string(item["visit_data"])
+    return result
 
 
 def get_hairdresser_visits(account_id):
@@ -296,5 +301,6 @@ def get_hairdresser_visits(account_id):
             Visits.created_at.desc()).all()  # TODO add dates
         for visit in visits:
             result["visits"].append(
-                {"visit_date": visit.date_start, "visit_data": visit.customer_id, "visit_id": visit.id})
+                {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"), "visit_data": visit.customer_id,
+                 "visit_id": visit.id})
         return result

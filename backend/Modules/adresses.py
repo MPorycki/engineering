@@ -75,7 +75,7 @@ def validate_adress(adress: dict) -> bool:
         raise ValueError("W numerze budynku występuja niedozwolone znaki")
 
 
-def get_adress(salon_id: str) -> Adresses:
+def get_adress(salon_id: str) -> dict:
     """
     Get adress object based on salon_id
     :param salon_id: id of the salon the adress should be returned for
@@ -120,3 +120,11 @@ def update_adress(salon_id, adress_data: dict) -> str:
         print(str(e.__class__.__name__) + ": " + str(e))
         return False
     return True
+
+
+def adress_to_string(salon_id: str) -> str:
+    """
+    Provider adress in format {{street}} {{building_no}}, {{city}} as string
+    """
+    adress = get_adress(salon_id)
+    return f"{adress['street']} {adress['building_no']}, {adress['city']}"
