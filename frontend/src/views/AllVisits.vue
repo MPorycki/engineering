@@ -3,16 +3,13 @@
         <h2>Moje wizyty</h2>
         <router-link to='/visitCreate' class="btnSubmit" >Umów wizytę </router-link>
 
-           <table class="col text-center" id="myTable" v-for="visit in visits" :key="visit.id">
-                <tr id="tblrow" >
+           <table class="col text-center" id="myTable" v-for="visit in visits" :key="visit.visit_id">
+                <tr id="tblrow" class="shadow mb-5 bg-white rounded" v-on:click="goToVisitDetails(visit.visit_id)">
                     <td >
                         {{visit.visit_date}}
                     </td>
                     <td >
                         {{visit.visit_data}}
-                    </td>
-                    <td >
-                        {{visit.visit_id}}
                     </td>
                 </tr>
             </table>
@@ -41,8 +38,21 @@ export default {
             for (var i=0; i < visitsInput.length; i++) {
                 this.visits.push(visitsInput[i])
             }
+        },
+        goToVisitDetails(visitId){
+            console.log(visitId)
         }
 
     }
 }
 </script>
+
+<style scoped>
+    #myTable {
+      margin-top: 25px;
+    }
+
+    #tblrow {
+        height: 50px;
+    }
+</style>
