@@ -4,14 +4,14 @@
         <router-link to='/visitCreate' class="btnSubmit" >Umów wizytę </router-link>
 
            <table class="col text-center" id="myTable" v-for="visit in visits" :key="visit.visit_id">
-                <tr id="tblrow" class="shadow mb-5 bg-white rounded" v-on:click="goToVisitDetails(visit.visit_id)">
-                    <td >
+                <router-link tag="tr" id="tblrow" class="btn btn-light shadow" v-on:click="goToVisitDetails(visit.visit_id)" :to="{ path: 'visitDetails', query: { id: visit.visit_id }}">
+                    <td id="date">
                         {{visit.visit_date}}
                     </td>
                     <td >
                         {{visit.visit_data}}
                     </td>
-                </tr>
+                </router-link>
             </table>
     </myForm>
 </template>
@@ -38,11 +38,7 @@ export default {
             for (var i=0; i < visitsInput.length; i++) {
                 this.visits.push(visitsInput[i])
             }
-        },
-        goToVisitDetails(visitId){
-            console.log(visitId)
         }
-
     }
 }
 </script>
@@ -54,5 +50,12 @@ export default {
 
     #tblrow {
         height: 50px;
+        width: 100%;
+    }
+
+    #date{
+        padding-right: 100px;
+        padding-left:25px;
+        padding-top:10px;
     }
 </style>
