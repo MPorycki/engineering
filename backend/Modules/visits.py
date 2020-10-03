@@ -301,6 +301,19 @@ def get_hairdresser_visits(account_id):
             Visits.created_at.desc()).all()  # TODO add dates
         for visit in visits:
             result["visits"].append(
-                {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"), "visit_data": visit.customer_id,
+                {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
+                 "visit_data": visit.customer_id,
                  "visit_id": visit.id})
         return result
+
+
+def get_visit_details(visit_id):
+    """
+    Return required visit data for FE to render
+    :param visit_id:
+    :return:
+    """
+    details_list = []
+    visit_raw = fetch_object(Visits, visit_id)
+    details_list.append({"field_name": "Data wizyty",
+                         "field_value": visit_raw["date_start"].strftime("%d.%m.%y, %H:%M")})
