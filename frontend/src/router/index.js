@@ -8,6 +8,7 @@ import PasswordResetVerification from '../views/PasswordResetVerification.vue'
 import PasswordReset from '../views/PasswordReset.vue'
 import VisitCreate from '../views/VisitCreate'
 import AllVisits from '../views/AllVisits'
+import VisitDetails from '../views/VisitDetails'
 
 Vue.use(VueRouter)
 
@@ -60,6 +61,11 @@ const routes = [
     path: '/visitsAll',
     name: 'AllVisits',
     component: AllVisits
+  },
+  {
+    path: '/visitDetails',
+    name: 'VisitDetails',
+    component: VisitDetails
   }
 ]
 
