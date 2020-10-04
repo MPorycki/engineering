@@ -2,7 +2,7 @@
     <myForm>
         <H2>Szczegóły wizyty</H2>
         <div>
-            <router-link id="edit" to='/visitCreate' class="btn btn-primary" >Edytuj</router-link>
+            <router-link id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
             <button id="cancel" type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
         </div>
         <div id="fields" v-for="data in details" :key="data.id">
