@@ -3,7 +3,7 @@ import uuid
 
 from sqlalchemy.exc import IntegrityError
 
-from models import Services, session_scope
+from models import Services, VisitsServices, session_scope
 
 
 def create_service(data: dict) -> dict:
@@ -75,32 +75,36 @@ def update_service(service_updated_data: dict) -> bool:
         return False
 
 
-def get_specific_services(_ids: list):
+def get_visit_services(_id: str):
     """
     Return the list of service objects based on a list of their ids
-    :param _ids: ids of the services to be returned
+    :param _id: visit id for which the services are to be returned
     :return:
     """
     with session_scope() as session:
-        return session.query(Services).filter(Services.id.in_(_ids)).all()
+        visits_services = [x[0] for x in session.query(VisitsServices.service_id).filter(
+            VisitsServices.visit_id == _id).all()]  # Done to unpack the id from a tuple it comes in
+        result = [x.__dict__ for x in
+                  session.query(Services).filter(Services.id.in_(visits_services)).all()]
+        return result
 
 
 def services_to_string(services: list) -> str:
     result_string = ""
     for service in services:
-        result_string += service.name + ", "
-    return result_string
+        result_string += service["name"] + ", "
+    return result_string[:-2]
 
 
 def services_total_duration(services: list) -> str:
-    result = 0
+    duration = 0
     for service in services:
-        result += service.service_duration
-    return result
+        duration += service["service_duration"]
+    return str(duration) + " min"
 
 
 def services_total_price(services: list) -> str:
-    result = 0
+    price = 0
     for service in services:
-        result += service.price
-    return result
+        price += service["price"]
+    return str(price) + " zł"
