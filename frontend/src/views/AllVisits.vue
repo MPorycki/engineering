@@ -4,7 +4,7 @@
         <router-link to='/visitCreate' class="btnSubmit" >Umów wizytę </router-link>
 
            <table class="col text-center" id="myTable" v-for="visit in visits" :key="visit.visit_id">
-                <router-link tag="tr" id="tblrow" class="btn btn-light shadow" v-on:click="goToVisitDetails(visit.visit_id)" :to="{ path: 'visitDetails', query: { id: visit.visit_id }}">
+                <router-link tag="tr" id="tblrow" class="btn btn-light shadow" :to="{ path: 'visitDetails', query: { id: visit.visit_id }}">
                     <td id="date">
                         {{visit.visit_date}}
                     </td>
