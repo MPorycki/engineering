@@ -83,3 +83,24 @@ def get_specific_services(_ids: list):
     """
     with session_scope() as session:
         return session.query(Services).filter(Services.id.in_(_ids)).all()
+
+
+def services_to_string(services: list) -> str:
+    result_string = ""
+    for service in services:
+        result_string += service.name + ", "
+    return result_string
+
+
+def services_total_duration(services: list) -> str:
+    result = 0
+    for service in services:
+        result += service.service_duration
+    return result
+
+
+def services_total_price(services: list) -> str:
+    result = 0
+    for service in services:
+        result += service.price
+    return result

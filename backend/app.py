@@ -20,7 +20,7 @@ from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
-    get_available_hours, get_account_visits
+    get_available_hours, get_account_visits, get_visit_details
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -284,7 +284,7 @@ api.add_resource(Salon, "/salon/", "/salon/<_id>")
 class Visit(Resource):
     def get(self, _id=None):
         if _id:
-            result = fetch_object(Visits, _id)
+            result = get_visit_details(_id)
             return make_response(result, 200)
         else:
             result = fetch_all_objects(Visits)

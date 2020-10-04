@@ -6,6 +6,8 @@ from .crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitsServices, Salons
 from Modules.user_management import is_customer
 from Modules.adresses import adress_to_string
+from Modules.services import services_to_string, get_specific_services, services_total_duration, \
+    services_total_price
 
 
 def create_visit(visit: dict) -> dict:
@@ -317,3 +319,13 @@ def get_visit_details(visit_id):
     visit_raw = fetch_object(Visits, visit_id)
     details_list.append({"field_name": "Data wizyty",
                          "field_value": visit_raw["date_start"].strftime("%d.%m.%y, %H:%M")})
+    details_list.append({"field_name": "Salon",
+                         "field_value": adress_to_string(visit_raw["salon_id"])})
+    services = get_specific_services(visit_raw["salon_id"])
+    details_list.append({"field_name": "Usługi",
+                         "field_value": services_to_string(services)})
+    details_list.append({"field_name": "Czas trwania",
+                         "field_value": services_total_duration(services)})
+    details_list.append({"field_name": "Cena",
+                         "field_value": services_total_price(services)})
+    return {"details": details_list}
