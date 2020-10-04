@@ -1,9 +1,10 @@
 <template>
     <myForm>
         <H2>Szczegóły wizyty</H2>
-        <div v-for="data in details" :key="data.id">
-            <p>{{data["field_name"]}}</p> <br>
-            <p>{{data["field_value"]}}</p>
+        <button type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
+        <div id="fields" v-for="data in details" :key="data.id">
+            <h5><strong>{{data.field_name}}</strong></h5>
+            <p>{{data.field_value}}</p>
         </div>
     </myForm>
 </template>
@@ -18,16 +19,34 @@ export default {
     },
     data(){
         return {
-            visit: []
+            details: [],
+            id: ""
         }
     },
     mounted() {
-        axios.get(this.$backend_url + "visit/"+this.$route.query.id).then(res => this.renderDetails(res.data))
+        axios.get(this.$backend_url + "visit/"+this.$route.query.id).then(res => this.setDetails(res.data["details"]))
     },
     methods: {
-        renderDetails(details){
-            console.log(details)
+        setDetails(detailsInput){
+            for (var i=0; i < detailsInput.length; i++) {
+                this.details.push(detailsInput[i])
+            }
+            this.id = this.$route.query.id
+        },
+        cancelVisit(){
+            axios.delete(this.$backend_url + "visit/" + this.id).then(res => this.handleDeletionSuccess(res.data))
+        },
+        handleDeletionSuccess(data){
+            if (data){
+                this.$router.push('/visitsAll')
+            }
         }
     }
 }
 </script>
+
+<style scoped>
+    #fields{
+        margin-top: 20px;
+    }
+</style>

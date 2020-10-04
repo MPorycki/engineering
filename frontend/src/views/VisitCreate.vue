@@ -158,7 +158,6 @@ export default {
             if (data.success){
                 this.$router.push({ name: 'AllVisits', })
             } 
-            //location.reload()
         }
     },
     mounted(){
