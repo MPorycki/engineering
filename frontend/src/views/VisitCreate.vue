@@ -156,7 +156,7 @@ export default {
         },
         handleCreationSuccess(data){
             if (data.success){
-                this.$router.push({ name: 'home', }) // TODO change to visits page
+                this.$router.push({ name: 'AllVisits', })
             } 
             //location.reload()
         }
