@@ -1,7 +1,10 @@
 <template>
     <myForm>
         <H2>Szczegóły wizyty</H2>
-        <button type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
+        <div>
+            <router-link id="edit" to='/visitCreate' class="btn btn-primary" >Edytuj</router-link>
+            <button id="cancel" type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
+        </div>
         <div id="fields" v-for="data in details" :key="data.id">
             <h5><strong>{{data.field_name}}</strong></h5>
             <p>{{data.field_value}}</p>
@@ -48,5 +51,22 @@ export default {
 <style scoped>
     #fields{
         margin-top: 20px;
+    }
+
+    #cancel, #edit {
+        height: 40px;
+        width: 100px;
+    }
+    #edit {
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: #6998a3;
+        background-color: #a4e6f4;
+        margin-right:25px;
+    }
+    #edit:hover{
+        color: #fff;
+        background-color: #f3bac3;
     }
 </style>
