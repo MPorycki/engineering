@@ -160,7 +160,7 @@ export default {
             } 
         },
         fillUpData(details){
-           
+           console.log(details)
         }
     },
     mounted(){

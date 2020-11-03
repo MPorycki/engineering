@@ -9,6 +9,7 @@ import PasswordReset from '../views/PasswordReset.vue'
 import VisitCreate from '../views/VisitCreate'
 import AllVisits from '../views/AllVisits'
 import VisitDetails from '../views/VisitDetails'
+import VisitEdit from '../views/VisitEdit'
 
 Vue.use(VueRouter)
 
@@ -66,6 +67,11 @@ const routes = [
     path: '/visitDetails',
     name: 'VisitDetails',
     component: VisitDetails
+  },
+  {
+    path: '/visitEdit',
+    name: 'VisitEdit',
+    component: VisitEdit
   }
 ]
 

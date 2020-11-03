@@ -329,3 +329,11 @@ def get_visit_details(visit_id):
     details_list.append({"field_name": "Cena",
                          "field_value": services_total_price(services)})
     return {"details": details_list}
+
+
+def get_visit_details_for_edit(visit_id: str) -> dict:
+    """
+    Returns visit data needed to render the edit view.
+    """
+    details_list = {}
+    return {"details_for_edit": details_list}
