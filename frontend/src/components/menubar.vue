@@ -11,10 +11,10 @@
                 <router-link to="/locations">Salony</router-link>
             </li>
             <li>
-                <router-link to="/visitCreate">Dodaj wizytę</router-link>
+                <router-link to="/visitsAll">Moje wizyty</router-link>
             </li>
             <li>
-                <router-link to="/visitsAll">Moje wizyty</router-link>
+                <router-link to="/visitCreate">Umów się</router-link>
             </li>
             <li>
                 <router-link to="/">Strona główna</router-link>
