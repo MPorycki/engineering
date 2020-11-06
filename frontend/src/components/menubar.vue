@@ -8,7 +8,7 @@
                 <a>Wyloguj</a>
             </li>
              <li>
-                <router-link to="/locations">Salony</router-link>
+                <router-link to="/allSalons">Salony</router-link>
             </li>
             <li>
                 <router-link to="/visitsAll">Moje wizyty</router-link>

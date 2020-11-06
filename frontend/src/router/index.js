@@ -2,12 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import Locations from '../views/Locations.vue'
 import Registration from '../views/Registration.vue'
 import PasswordResetVerification from '../views/PasswordResetVerification.vue'
 import PasswordReset from '../views/PasswordReset.vue'
 import VisitCreate from '../views/VisitCreate'
 import AllVisits from '../views/AllVisits'
+import AllSalons from '../views/AllSalons'
 import VisitDetails from '../views/VisitDetails'
 import VisitEdit from '../views/VisitEdit'
 
@@ -46,11 +46,6 @@ const routes = [
     path: '/passreset',
     name: 'PasswordReset',
     component: PasswordReset
-  },
-  {
-    path: '/locations',
-    name: 'Locations',
-    component: Locations
   }
   ,
   {
@@ -72,6 +67,12 @@ const routes = [
     path: '/visitEdit',
     name: 'VisitEdit',
     component: VisitEdit
+  }
+  ,
+  {
+    path: '/allSalons',
+    name: 'AllSalons',
+    component: AllSalons
   }
 ]
 
