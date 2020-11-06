@@ -3,7 +3,7 @@ import datetime
 import uuid
 
 from .crud_common import delete_object, fetch_object
-from models import session_scope, Visits, VisitsServices, Salons
+from models import session_scope, Visits, VisitsServices, Salons, Accounts
 from Modules.user_management import is_customer
 from Modules.adresses import adress_to_string
 from Modules.services import services_to_string, get_visit_services, services_total_duration, \
@@ -336,4 +336,9 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     Returns visit data needed to render the edit view.
     """
     details_list = {}
+    visit = fetch_object(Visits, visit_id)
+    details_list["salon"] = fetch_object(Salons, visit["salon_id"])
+    details_list["hairdresser"] = fetch_object(Accounts, visit["hairdresser_id"]) #todo create method, too much data passed now
+
+    print (details_list)
     return {"details_for_edit": details_list}

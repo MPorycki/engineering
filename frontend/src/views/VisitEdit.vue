@@ -161,11 +161,15 @@ export default {
         },
         fillUpData(details){
            console.log(details)
+           this.salonSelected = details["salon"]
+           this.hairdresserSelected = details["hairdresser"]
         }
     },
     mounted(){
-         axios.get(this.$backend_url + "visit/"+this.$route.query.id).then(res => this.fillUpData(res.data["details"]))
-    }
+         axios.get(this.$backend_url + "visit/"+this.$route.query.id, {
+                        headers: {
+                        for_edit: "True"
+                        }}).then(res => this.fillUpData(res.data["details_for_edit"]))}
     
 }
 </script>
