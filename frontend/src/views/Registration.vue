@@ -49,7 +49,8 @@ export default {
                 first_name: document.getElementById("first_name").value,
                 last_name: document.getElementById("last_name").value,
                 raw_password: document.getElementById("password").value,
-                account_type: "customer"
+                account_type: "customer",
+                salon_id: ""
             }
             if (this.validate_form(data)){
                 axios.post(this.$backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));

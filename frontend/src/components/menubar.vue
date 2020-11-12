@@ -5,7 +5,7 @@
                 <router-link to="/login">Logowanie/Rejestracja</router-link>
             </li>
             <li v-else v-on:click="logout()">
-                <a>Wyloguj</a>
+                <router-link to="/">Wyloguj</router-link>
             </li>
              <li>
                 <router-link to="/allSalons">Salony</router-link>
@@ -60,7 +60,6 @@ export default {
         logout_success(){
             document.cookie = "session-id=;"
             document.cookie = "user-id=;"
-            this.$router.push({ name: 'home', })
             this.get_session()
         },
         logout_failed(){

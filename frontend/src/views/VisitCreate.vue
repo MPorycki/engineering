@@ -93,7 +93,7 @@ export default {
             this.getServices()
         },
         onServiceSelect(){
-            console.log(this.servicesSelected)
+            this.loadHours()
         },
         calculateServiceTime(){
             var sum = 0;
@@ -162,6 +162,9 @@ export default {
     },
     mounted(){
         this.getSalons();
+        var yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+        this.disabledDates = {to: yesterday}
     }
     
 }
