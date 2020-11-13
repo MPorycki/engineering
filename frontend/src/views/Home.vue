@@ -29,7 +29,7 @@ body {
     width: 100%;
     min-height: 720px;
     background-image: url(../assets/hairdress1.jpeg);
-    border-style: dotted;
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
