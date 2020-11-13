@@ -40,7 +40,8 @@ export default {
                 raw_password: document.getElementById("password").value
             }
             if (this.validate_login(data)){
-                axios.post(this.$backend_url  + "account/login", data).then(res => this.handle_login_success(res.data["account_id"], res.data["session_id"])).catch(error => this.handle_login_error(error.response.data))
+                axios.post(this.$backend_url  + "account/login", data).then(res => this.handle_login_success(res.data["account_id"], res.data["session_id"]))
+                .catch(error => this.handle_login_error(error.response.data))
             }
         },
         validate_login(data){
@@ -51,7 +52,8 @@ export default {
                 this.add_error("password", "Podane hasło jest za długie")
                 return false;
             }
-            else if ((data["email"].replace(/\s/g, '')).length == 0 || (data["raw_password"].replace(/\s/g, '')).length == 0){
+            else if ((data["email"].replace(/\s/g, '')).length == 0 || 
+            (data["raw_password"].replace(/\s/g, '')).length == 0){
                 return false;
             } else {
                 this.clear_error("email")

@@ -53,7 +53,8 @@ export default {
                 salon_id: ""
             }
             if (this.validate_form(data)){
-                axios.post(this.$backend_url + "account/", data).then(res => this.register_success(res.data)).catch(error => this.handle_error(error.response.data));
+                axios.post(this.$backend_url + "account/", data).then(res => this.register_success(res.data))
+                .catch(error => this.handle_error(error.response.data));
             }
         },
         register_success(message){
@@ -63,6 +64,8 @@ export default {
         handle_error(error_data){
             if (error_data["email_taken"]) {
                 this.add_error("email_error", "Podany mail jest zajety");
+            } else {
+                alert(error_data)
             }
         },
         validate_form(data){
