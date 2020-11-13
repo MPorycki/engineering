@@ -47,10 +47,9 @@
 
 <script>
 import myForm from '../components/myForm'
-
 import axios from 'axios'
 import datepicker from 'vuejs-datepicker' // https://www.npmjs.com/package/vuejs-datepicker
-import pl from 'vuejs-datepicker/dist/locale'
+import {pl} from 'vuejs-datepicker/dist/locale'
 import moment from 'moment'
 export default {
     components: {
