@@ -5,7 +5,7 @@
                 <router-link to="/login">Logowanie/Rejestracja</router-link>
             </li>
             <li v-else v-on:click="logout()">
-                <router-link to="/">Wyloguj</router-link>
+                <a>Wyloguj</a>
             </li>
              <li>
                 <router-link to="/allSalons">Salony</router-link>
@@ -92,6 +92,7 @@ ul {
 
 li {
     float: right;
+    cursor: pointer
 }
 
 li a {
