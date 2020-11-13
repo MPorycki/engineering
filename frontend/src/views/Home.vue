@@ -44,19 +44,7 @@ body {
   .btnSubmit
   {
     width: 20%;
-    border-radius: 1rem;
-    padding: 1.5%;
-    border: none;
-    cursor: pointer;
-  }
-.btnSubmit{
     font-weight: 800;
     font-size: 25px;
-    color: #6998a3;
-    background-color: #a4e6f4;
-  }
-.btnSubmit:hover{
-    color: #fff;
-    background-color: #f3bac3;
   }
 </style>

@@ -94,23 +94,6 @@ export default {
 .login-container form{
     padding: 10%;
 }
-.btnSubmit
-{
-    width: 50%;
-    border-radius: 1rem;
-    padding: 1.5%;
-    border: none;
-    cursor: pointer;
-}
-.btnSubmit{
-    font-weight: 600;
-    color: #6998a3;
-    background-color: #a4e6f4;
-}
-.btnSubmit:hover{
-    color: #fff;
-    background-color: #f3bac3;
-}
 .FormLinks{
     color: #6998a3;
     font-weight: 600;
