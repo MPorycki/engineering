@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group" v-if="servicesSelected.length > 0">
                         <label for="date">Wybierz dzień wizyty</label>
-                        <datepicker id="date" :language="pl" v-model="dateSelected" @selected="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true"></datepicker>
+                        <datepicker id="date" :language="pl" v-model="dateSelected" @input="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true"></datepicker>
                     </div>
                     <div class="form-group" v-if="suggestedHours != null">
                         <label for="myTable">Dostępne godziny wizyty</label>
