@@ -31,7 +31,7 @@ export default {
         }
     },
     mounted(){
-        axios.get(this.$backend_url + "accountVisits/ba0ea3715a514c52b2d8c6c917bec629").then(res => this.setVisits(res.data["visits"]))
+        axios.get(this.$backend_url + "accountVisits/" + this.$cookies.get('user-id')).then(res => this.setVisits(res.data["visits"]))
     },
     methods: {
         setVisits(visitsInput){

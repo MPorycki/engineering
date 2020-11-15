@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <ul>
-            <li v-if="this.session_id.length == 0">
+            <li v-if="this.sessionId == null">
                 <router-link to="/login">Logowanie/Rejestracja</router-link>
             </li>
             <li v-else v-on:click="logout()">
@@ -29,46 +29,31 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            user_id: "",
-            session_id: ""
+            userId: "",
+            sessionId: ""
         }
     },
     methods: {
-        get_session() {
-            this.user_id = this.get_cookie("user-id")
-            this.session_id = this.get_cookie("session-id")
-        },
-        get_cookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
+        getSession(){
+            this.userId = this.$cookies.get('user-id')
+            this.sessionId = this.$cookies.get('session-id')
         },
         logout() {
-            var data = { account_id: this.user_id, session_id: this.session_id }
-            axios.delete(this.$backend_url + "account/logout", {data: data}).then(this.logout_success())
+            var data = { account_id: this.userId, session_id: this.sessionId }
+            axios.delete(this.$backend_url + "account/logout", {data: data}).then(this.logoutSuccess()).catch(this.logoutFailed())
         },
-        logout_success(){
+        logoutSuccess(){
             document.cookie = "session-id=;"
             document.cookie = "user-id=;"
-            this.get_session()
+            this.getSession()
         },
-        logout_failed(){
+        logoutFailed(){
             alert("Wylogowanie nie powiodło się.")
         }
 
     },
     mounted() {
-        this.get_session()
+        this.getSession()
     }
 }
 </script>

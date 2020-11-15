@@ -8,6 +8,7 @@ import './assets/main.css';
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
+Vue.use(require('vue-cookies')) // https://github.com/cmp-cc/vue-cookies
 Vue.prototype.$backend_url = "http://localhost:5000/"
 
 new Vue({

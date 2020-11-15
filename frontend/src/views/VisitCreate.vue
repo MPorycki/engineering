@@ -105,7 +105,7 @@ export default {
         loadHours(){
             var data = {
                 "date": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0],
-                "customerId": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
+                "customerId": this.$cookies.get('user-id'),
                 "hairdresserId": this.hairdresserSelected.id,
                 "serviceDuration": this.calculateServiceTime(),
                 "salonId": this.salonSelected.id,
@@ -136,7 +136,7 @@ export default {
             if (this.validateData()){
                 var data = {
                     "visit_date_start": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0] + " " + this.hourSelected,
-                    "customer_id": "ba0ea3715a514c52b2d8c6c917bec629", // TODO ogarnac zeby nie bylo na sztywno wpisane
+                    "customer_id": this.$cookies.get('user-id'),
                     "hairdresser_id": this.hairdresserSelected.id,
                     "service_duration": this.calculateServiceTime(),
                     "salon_id": this.salonSelected.id,

@@ -7,13 +7,13 @@
             <div class="container">
 
                 <!-- Call to action -->
-                <ul v-if="this.validateSession().length == 0" class="list-unstyled list-inline text-center py-2">
-                <li class="list-inline-item">
-                    <h5 class="mb-1">Zarejestruj się i skorzystaj z naszych usług!</h5>
-                </li>
-                <li class="list-inline-item">
-                    <a href="#/registration" class="btn btn-outline-secondary rounded-pill">Rejestracja</a>
-                </li>
+                <ul v-if="this.validateSession == null" class="list-unstyled list-inline text-center py-2">
+                    <li class="list-inline-item">
+                        <h5 class="mb-1">Zarejestruj się i skorzystaj z naszych usług!</h5>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="#/registration" class="btn btn-outline-secondary rounded-pill">Rejestracja</a>
+                    </li>
                 </ul>
                 <!-- Call to action -->
                 <ul v-else class="list-unstyled list-inline text-center py-2">
@@ -38,17 +38,11 @@
 
 <script>
 //https://mdbootstrap.com/docs/jquery/navigation/footer/
-import UM from '../utils/userManagement'
+
 export default {
-    data() {
-        return {
-            sessionData: UM.getSession()
-        }
-    },
     methods: {
         validateSession(){
-            //console.log(this.sessionData)
-            return this.sessionData['sessionId']
+            return this.$cookies.get('user-id')
         }
     }
 }
