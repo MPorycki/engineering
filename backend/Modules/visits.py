@@ -128,7 +128,7 @@ def get_available_hours(data: dict) -> dict:
     while date_end < datetime.datetime.strptime(
             f"{data['date']} {salon['closing_hour']}", "%d/%m/%Y %H:%M"):
         if date_available(date_start, date_end,
-                          data["hairdresserId"], data["customerId"]):
+                          data["hairdresserId"], data["customerId"])["success"]:
             available_hours.append(
                 datetime.datetime.strftime(date_start, "%H:%M"))
         date_start = date_start + datetime.timedelta(minutes=30)
@@ -193,7 +193,6 @@ def get_hairdresser_visits_for_day(hairdresser_id: str,
     :param date: the day for which the visits should be returned
     :return: List of Visit objects
     """
-    print("Hairdresser check" + str(date))  # TODO remove?
     with session_scope() as session:
         for visit in session.query(Visits).filter(
                 Visits.hairdresser_id == hairdresser_id) \
@@ -205,8 +204,9 @@ def get_customer_visits_for_day(customer_id: str,
                                 date: datetime.date) -> list:
     with session_scope() as session:
         for visit in session.query(Visits).filter(
-                Visits.customer_id == customer_id).all():
-            # .filter(str(Visits.date_start)[:10] == str(date)).all(): # TODO fix
+                Visits.customer_id == customer_id) \
+                .filter(Visits.date_start.like("%" + str(date) + "%")).all():
+            print(f"Yielded customer date {visit.date_start}")
             yield visit
 
 
@@ -301,7 +301,7 @@ def get_hairdresser_visits(account_id):
     with session_scope() as session:
         visits = session.query(Visits).filter(
             Visits.hairdresser_id == account_id).order_by(
-            Visits.date_start.desc()).all() 
+            Visits.date_start.desc()).all()
         for visit in visits:
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
