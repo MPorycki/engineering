@@ -301,12 +301,13 @@ def get_hairdresser_visits(account_id):
     with session_scope() as session:
         visits = session.query(Visits).filter(
             Visits.hairdresser_id == account_id).order_by(
-            Visits.created_at.desc()).all()  # TODO add dates
+            Visits.date_start.desc()).all() 
         for visit in visits:
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
                  "visit_data": visit.customer_id,
-                 "visit_id": visit.id})
+                 "visit_id": visit.id,
+                 "visit_status": visit.status})
         return result
 
 
