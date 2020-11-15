@@ -271,7 +271,7 @@ def delete_visit_services(visit_id: str) -> bool:
 
 def get_account_visits(account_id: str) -> dict:
     """
-    Provides date, address/full name of customer, and id of the visits from today onwards of the given account id
+    Provides date, address/full name of customer, and id of the visits of the given account id
     """
     if is_customer(account_id):
         return get_customer_visits(account_id)
@@ -284,12 +284,13 @@ def get_customer_visits(account_id):
     with session_scope() as session:
         visits = session.query(Visits).filter(
             Visits.customer_id == account_id).order_by(
-            Visits.created_at.desc()).all()  # TODO add dates
+            Visits.date_start.desc()).all()
         for visit in visits:
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
                  "visit_data": visit.salon_id,
-                 "visit_id": visit.id})
+                 "visit_id": visit.id,
+                 "visit_status": visit.status})
     for item in result["visits"]:
         item["visit_data"] = adress_to_string(item["visit_data"])
     return result
