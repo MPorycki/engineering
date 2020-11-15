@@ -29,7 +29,8 @@ body {
     width: 100%;
     min-height: 720px;
     background-image: url(../assets/hairdress1.jpeg);
-    
+    background-repeat: no-repeat;
+    opacity: 0.6;
     display: flex;
     flex-direction: column;
     justify-content: center;
