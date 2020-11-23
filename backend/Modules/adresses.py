@@ -66,7 +66,7 @@ def validate_adress(adress: dict) -> bool:
     if len(adress["street"]) > 32 or len(adress["street"]) == 0:
         raise ValueError("Niedozwolona dlugosc ulicy")
     elif not street_regex.match(adress["street"]):
-        raise ValueError("W nazwie ulicy znajduja sie inedozwolone znaki")
+        raise ValueError("W nazwie ulicy znajduja sie niedozwolone znaki")
 
     building_no_regex = re.compile("^[0-9]{1,3}[a-z]?$")
     if len(adress["building_no"]) == 0:
