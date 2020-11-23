@@ -208,7 +208,7 @@ class Service(Resource):
         else:
             return make_response(str(inputs.errors), 400)
         if service_creation["success"]:
-            return make_response("Registration successful", 200)
+            return make_response("Service creation was successful", 200)
         else:
             return make_response(jsonify(service_creation), 400)
 
