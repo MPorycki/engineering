@@ -35,7 +35,7 @@ from validation import ServiceInputs, SalonInputs, VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
-app.secret_key = "testowy"  # TODO ogar tematu secre key i jak zrobić żeby to bylo secure
+app.secret_key = "testowy"  # TODO ogar tematu secret key i jak zrobić żeby to bylo secure
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
 admin = Admin(app, name="admin", template_mode="bootstrap3")
@@ -47,11 +47,10 @@ admin.add_view(SalonsView(Salons, session))
 
 def verify_session(func):
     @wraps(func)
-    def wrapper(**kwargs):
+    def wrapper(*args, **kwargs):
         try:
-            data = request.get_json()
-            session_id = data["session_id"]
-            account_id = data["account_id"]
+            session_id = request.headers.get("session_id")
+            account_id = request.headers.get("account_id")
         except Exception as e:
             print(e)
             return make_response("Invalid session", 401)
@@ -60,7 +59,7 @@ def verify_session(func):
         else:
             return make_response("Invalid session", 401)
 
-    return wrapper()
+    return wrapper
 
 
 class Account(Resource):
@@ -282,6 +281,8 @@ api.add_resource(Salon, "/salon/", "/salon/<_id>")
 
 
 class Visit(Resource):
+    method_decorators = [verify_session]
+
     def get(self, _id=None):
         for_edit = request.headers.get("for_edit")
         if _id and for_edit:
@@ -306,9 +307,9 @@ class Visit(Resource):
             return make_response(str(inputs.errors), 400)
 
         if visit_creation["success"]:
-            return make_response(jsonify(visit_creation), 200)
+            return make_response(visit_creation, 200)
         else:
-            return make_response(jsonify(visit_creation), 400)
+            return make_response(visit_creation, 400)
 
     def patch(self):
         inputs = VisitInputs(request)

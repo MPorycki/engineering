@@ -142,7 +142,8 @@ export default {
                     "salon_id": this.salonSelected.id,
                     "services": this.servicesSelected
                 }
-                axios.post(this.$backend_url +"visit/", data).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
+                var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+                axios.post(this.$backend_url +"visit/", data, config).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
             } else{
                 alert("Uzupełnij wszystkie pola")
             }
