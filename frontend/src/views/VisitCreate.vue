@@ -136,7 +136,6 @@ export default {
             if (this.validateData()){
                 var data = {
                     "visit_date_start": moment(this.dateSelected).format('DD/MM/YYYY').split(",")[0] + " " + this.hourSelected,
-                    "customer_id": this.$cookies.get('user-id'),
                     "hairdresser_id": this.hairdresserSelected.id,
                     "service_duration": this.calculateServiceTime(),
                     "salon_id": this.salonSelected.id,

@@ -335,6 +335,8 @@ api.add_resource(Visit, "/visit/", "/visit/<_id>")
 
 
 class AccountVisits(Resource):
+    method_decorators = [verify_session]
+
     def get(self, _id):
         result = get_account_visits(_id)
         return make_response(jsonify(result), 200)

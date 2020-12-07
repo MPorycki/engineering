@@ -31,7 +31,8 @@ export default {
         }
     },
     mounted(){
-        axios.get(this.$backend_url + "accountVisits/" + this.$cookies.get('user-id')).then(res => this.setVisits(res.data["visits"]))
+        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+        axios.get(this.$backend_url + "accountVisits/" + this.$cookies.get('user-id'), config).then(res => this.setVisits(res.data["visits"]))
     },
     methods: {
         setVisits(visitsInput){

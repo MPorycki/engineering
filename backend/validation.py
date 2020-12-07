@@ -57,10 +57,6 @@ class SalonInputs(Inputs):
 visit_schema = {
     'type': 'object',
     'properties': {
-        'customer_id': {
-            'type': 'string',
-            'pattern': r'^[a-f0-9]{32}$'
-        },
         'hairdresser_id': {
             'type': 'string',
             'pattern': r'^[a-f0-9]{32}$'
@@ -78,7 +74,7 @@ visit_schema = {
             'type': "array"
         }
     },
-    'required': ['customer_id', 'hairdresser_id', 'salon_id',
+    'required': ['hairdresser_id', 'salon_id',
                  'visit_date_start', 'service_duration', 'services']
 }
 
