@@ -302,7 +302,7 @@ class Visit(Resource):
         """
         inputs = VisitInputs(request)
         if inputs.validate():
-            visit_creation = create_visit(request.get_json())
+            visit_creation = create_visit(request)
         else:
             return make_response(str(inputs.errors), 400)
 

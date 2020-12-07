@@ -10,14 +10,16 @@ from Modules.services import services_to_string, get_visit_services, services_to
     services_total_price
 
 
-def create_visit(visit: dict) -> dict:
+def create_visit(visit_request: dict) -> dict:
     """
     Creates a visit based on provided data
-    :param visit: A dict with the following keys: ["customer_id",
+    :param visit_request: A dict with the following keys: ["customer_id",
     "hairdresser_id", "salon_id", "visit_date_start", "visit_date_end",
     "services"]
     :return: Dict with information about the result of the creation
     """
+    visit = visit_request.get_json()
+    account_id = visit_request.headers.get("account_id")
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")
@@ -26,13 +28,13 @@ def create_visit(visit: dict) -> dict:
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     date_check = date_available(date_start, date_end, visit["hairdresser_id"],
-                                visit["customer_id"])
+                                account_id)
     if not date_check["success"]:
         return date_check
     _id = uuid.uuid4().hex
     visit_object = Visits(
         id=_id,
-        customer_id=visit["customer_id"],
+        customer_id=account_id,
         hairdresser_id=visit["hairdresser_id"],
         salon_id=visit["salon_id"],
         created_at=datetime.datetime.utcnow(),
