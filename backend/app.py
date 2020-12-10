@@ -20,7 +20,7 @@ from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
-    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit
+    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, authorized_to_see_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -284,15 +284,18 @@ class Visit(Resource):
     method_decorators = [verify_session]
 
     def get(self, _id=None):
-        for_edit = request.headers.get("for_edit")
-        if _id and for_edit:
-            result = get_visit_details_for_edit(_id)
-            return make_response(result, 200)
-        elif _id and not for_edit:
-            result = get_visit_details(_id)
-            return make_response(result, 200)
+        if authorized_to_see_visit(_id, request.headers.get("account_id")):
+            for_edit = request.headers.get("for_edit")
+            if _id and for_edit:
+                result = get_visit_details_for_edit(_id)
+                return make_response(result, 200)
+            elif _id and not for_edit:
+                result = get_visit_details(_id)
+                return make_response(result, 200)
+            else:
+                return make_response("No visit id provided", 400)
         else:
-            return make_response("No visit id provided", 400)
+            return make_response("User not authorized to see this visit", 401)
 
     def post(self):
         """

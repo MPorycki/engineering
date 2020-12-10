@@ -342,7 +342,16 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list = {}
     visit = fetch_object(Visits, visit_id)
     details_list["salon"] = fetch_object(Salons, visit["salon_id"])
-    details_list["hairdresser"] = fetch_object(Accounts, visit["hairdresser_id"]) #todo create method, too much data passed now
+    details_list["hairdresser"] = fetch_object(Accounts, visit["hairdresser_id"]) # todo create method, too much data passed now
 
     print (details_list)
     return {"details_for_edit": details_list}
+
+
+def authorized_to_see_visit(visit_id: str, account_id: str) -> bool:
+    """
+    Checks whether the provided user_id has access to this visit.
+    Only the customer and hairdresser that are related to a given visit are authorized to see it.
+    """
+    visit = fetch_object(Visits, visit_id)
+    return visit["customer_id"] == account_id or visit["hairdresser_id"] == account_id
