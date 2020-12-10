@@ -337,18 +337,20 @@ api.add_resource(Visit, "/visit/", "/visit/<_id>")
 class AccountVisits(Resource):
     method_decorators = [verify_session]
 
-    def get(self, _id):
-        result = get_account_visits(_id)
+    def get(self):
+        result = get_account_visits(request.headers.get("account_id"))
         return make_response(jsonify(result), 200)
 
 
-api.add_resource(AccountVisits, "/accountVisits/<_id>")
+api.add_resource(AccountVisits, "/accountVisits/")
 
 
 class DatesAvailability(Resource):
+    method_decorators = [verify_session]
+
     def post(self):
         data = request.get_json()
-        result = get_available_hours(data)
+        result = get_available_hours(data, request.headers.get("account_id"))
         return make_response(jsonify(result), 200)
 
 
