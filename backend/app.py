@@ -291,6 +291,8 @@ class Visit(Resource):
         elif _id and not for_edit:
             result = get_visit_details(_id)
             return make_response(result, 200)
+        else:
+            return make_response("No visit id provided", 400)
 
     def post(self):
         """
