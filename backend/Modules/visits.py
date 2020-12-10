@@ -10,16 +10,14 @@ from Modules.services import services_to_string, get_visit_services, services_to
     services_total_price
 
 
-def create_visit(visit_request: dict) -> dict:
+def create_visit(visit: dict, account_id: str) -> dict:
     """
     Creates a visit based on provided data
-    :param visit_request: A dict with the following keys: ["customer_id",
-    "hairdresser_id", "salon_id", "visit_date_start", "visit_date_end",
-    "services"]
+    :param visit: A dict with the following keys: ["hairdresser_id",
+    "salon_id", "visit_date_start", "visit_date_end", "services"]
+    :param account_id: account_id of the customer for whom the visit should be created
     :return: Dict with information about the result of the creation
     """
-    visit = visit_request.get_json()
-    account_id = visit_request.headers.get("account_id")
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")

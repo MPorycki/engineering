@@ -111,7 +111,8 @@ export default {
                 "serviceDuration": this.calculateServiceTime(),
                 "salonId": this.salonSelected.id,
             }
-            axios.post(this.$backend_url +"visit/availability/", data).then(res => this.renderHourButtons(res.data["availableHours"]))
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.post(this.$backend_url +"visit/availability/", data, config).then(res => this.renderHourButtons(res.data["availableHours"]))
         },
         renderHourButtons(hours){
             this.suggestedHours = hours

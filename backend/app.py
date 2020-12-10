@@ -304,7 +304,8 @@ class Visit(Resource):
         """
         inputs = VisitInputs(request)
         if inputs.validate():
-            visit_creation = create_visit(request)
+            data = request.get_json()
+            visit_creation = create_visit(data, request.headers.get("account_id"))
         else:
             return make_response(str(inputs.errors), 400)
 
@@ -314,16 +315,20 @@ class Visit(Resource):
             return make_response(visit_creation, 400)
 
     def patch(self):
-        inputs = VisitInputs(request)
-        if inputs.validate():
-            visit_update = update_visit(request.get_json())
-        else:
-            return make_response(str(inputs.errors), 400)
+        if authorized_to_see_visit(request.data.get("id"), request.headers.get("account_id")):
+            inputs = VisitInputs(request)
+            if inputs.validate():
+                data = request.get_json()
+                visit_update = update_visit(data)
+            else:
+                return make_response(str(inputs.errors), 400)
 
-        if visit_update["success"]:
-            return make_response("Visit updated successfully", 200)
+            if visit_update["success"]:
+                return make_response("Visit updated successfully", 200)
+            else:
+                return make_response(jsonify(visit_update), 400)
         else:
-            return make_response(jsonify(visit_update), 400)
+            return make_response("User not authorized to edit this visit", 401)
 
     def delete(self, _id):
         try:
