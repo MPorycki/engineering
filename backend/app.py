@@ -291,9 +291,6 @@ class Visit(Resource):
         elif _id and not for_edit:
             result = get_visit_details(_id)
             return make_response(result, 200)
-        else:
-            result = fetch_all_objects(Visits)
-            return make_response(result, 200)
 
     def post(self):
         """
