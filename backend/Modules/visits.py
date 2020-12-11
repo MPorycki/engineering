@@ -346,7 +346,7 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     return {"details_for_edit": details_list}
 
 
-def authorized_to_see_visit(visit_id: str, account_id: str) -> bool:
+def authorized_to_access_visit(visit_id: str, account_id: str) -> bool:
     """
     Checks whether the provided user_id has access to this visit.
     Only the customer and hairdresser that are related to a given visit are authorized to see it.

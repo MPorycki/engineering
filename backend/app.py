@@ -20,7 +20,7 @@ from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
-    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, authorized_to_see_visit
+    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, authorized_to_access_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -284,7 +284,7 @@ class Visit(Resource):
     method_decorators = [verify_session]
 
     def get(self, _id=None):
-        if authorized_to_see_visit(_id, request.headers.get("account_id")):
+        if authorized_to_access_visit(_id, request.headers.get("account_id")):
             for_edit = request.headers.get("for_edit")
             if _id and for_edit:
                 result = get_visit_details_for_edit(_id)
@@ -315,7 +315,7 @@ class Visit(Resource):
             return make_response(visit_creation, 400)
 
     def patch(self):
-        if authorized_to_see_visit(request.data.get("id"), request.headers.get("account_id")):
+        if authorized_to_access_visit(request.data.get("id"), request.headers.get("account_id")):
             inputs = VisitInputs(request)
             if inputs.validate():
                 data = request.get_json()
