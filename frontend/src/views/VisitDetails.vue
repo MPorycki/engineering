@@ -38,7 +38,8 @@ export default {
             this.id = this.$route.query.id
         },
         cancelVisit(){
-            axios.delete(this.$backend_url + "visit/" + this.id).then(res => this.handleDeletionSuccess(res.data))
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.delete(this.$backend_url + "visit/" + this.id, config).then(res => this.handleDeletionSuccess(res.data))
         },
         handleDeletionSuccess(data){
             if (data){

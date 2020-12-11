@@ -331,11 +331,14 @@ class Visit(Resource):
             return make_response("User not authorized to edit this visit", 401)
 
     def delete(self, _id):
-        try:
-            delete = delete_visit(_id)
-            return make_response(str(delete), 200)
-        except Exception as e:
-            return make_response(str(e), 400)
+        if authorized_to_access_visit(_id, request.headers.get("account_id")):
+            try:
+                delete = delete_visit(_id)
+                return make_response(str(delete), 200)
+            except Exception as e:
+                return make_response(str(e), 400)
+        else:
+            return make_response("User not authorized to delete this visit", 401)
 
 
 api.add_resource(Visit, "/visit/", "/visit/<_id>")
