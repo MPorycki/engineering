@@ -39,8 +39,8 @@ export default {
             this.sessionId = this.$cookies.get('session-id')
         },
         logout() {
-            var data = { account_id: this.userId, session_id: this.sessionId }
-            axios.delete(this.$backend_url + "account/logout", {data: data}).then(this.logoutSuccess()).catch(this.logoutFailed())
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.delete(this.$backend_url + "account/logout", config).then(this.logoutSuccess()).catch(this.logoutFailed())
         },
         logoutSuccess(){
             document.cookie = "session-id=;"

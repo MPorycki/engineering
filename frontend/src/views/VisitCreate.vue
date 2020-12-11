@@ -86,7 +86,8 @@ export default {
             axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
         },
         getServices(){
-            axios.get(this.$backend_url + "service/").then(res => this.services = res.data["Services"])
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.get(this.$backend_url + "service/", config).then(res => this.services = res.data["Services"])
         },
         onHairdresserSelect(){
             this.getServices()

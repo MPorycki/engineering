@@ -20,7 +20,8 @@ from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
-    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, authorized_to_access_visit
+    get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, \
+    authorized_to_access_visit
 
 from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
@@ -63,6 +64,9 @@ def verify_session(func):
 
 
 class Account(Resource):
+    method_decorators = {"get": [verify_session], "patch": [verify_session],
+                         "delete": [verify_session]}
+
     def get(self, _id=None):
         if _id:
             result = fetch_object(Accounts, _id)
@@ -166,15 +170,17 @@ api.add_resource(AccountResetPassword, "/account/reset")
 
 
 class AccountLogout(Resource):
+    method_decorators = [verify_session]
+
     def delete(self):
         """
         Logouts the user.
         :return: HTTP Response: 200 if the logout was successful, 400 if
         the session does not exists for the user
         """
-        data = request.get_json(force=True)
-        account_id = data["account_id"]
-        session_id = data["session_id"]
+        print("dotarlem")
+        account_id = request.headers.get("account_id")
+        session_id = request.headers.get("session_id")
         logout_result = logout(session_id, account_id)
         if logout_result:
             return make_response("User logged out.", 200)
@@ -187,6 +193,8 @@ api.add_resource(AccountLogout, "/account/logout")
 
 
 class Service(Resource):
+    method_decorators = {"get": [verify_session]}
+
     def get(self, _id=None):
         if _id:
             result = fetch_object(Services, _id)
