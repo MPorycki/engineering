@@ -31,7 +31,7 @@ export default {
         reset_password(){
             var data = {"new_password": document.getElementById("password").value, "reset_id": this.$route.query.reset_id}
             if (this.validate_password(data["new_password"], document.getElementById("password_confirm").value)){
-                axios.patch(this.$backend_url+ "account/reset", data).then(this.reset_success()).catch(this.reset_fail())
+                axios.patch(this.$backend_url+ "account/reset", data).then(() => this.reset_success()).catch(() => this.reset_fail())
             }
         },
         reset_success(){
