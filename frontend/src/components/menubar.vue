@@ -10,11 +10,14 @@
              <li>
                 <router-link to="/allSalons">Salony</router-link>
             </li>
-            <li>
+            <li v-if="this.sessionId != ''">
                 <router-link to="/visitsAll">Moje wizyty</router-link>
             </li>
-            <li>
+            <li v-if="this.sessionId != ''">
                 <router-link to="/visitCreate">Umów się</router-link>
+            </li>
+            <li v-else v-on:click="redirectToLogin()">
+                <a>Umów się</a>
             </li>
             <li>
                 <router-link to="/">Strona główna</router-link>
@@ -62,6 +65,9 @@ export default {
             } else {
                 this.logoutSuccess()
             }
+        },
+        redirectToLogin(){
+            this.$router.push({ name: 'Login', })
         }
 
     },
@@ -107,6 +113,7 @@ a:hover {
 
 li:hover {
     display: block;
+    color: #fff;
     background-color: #f3bac3;
 }
 
