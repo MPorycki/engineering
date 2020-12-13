@@ -40,7 +40,7 @@ export default {
         },
         logout() {
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.delete(this.$backend_url + "account/logout", config).then(this.logoutSuccess()).catch(this.logoutFailed())
+            axios.delete(this.$backend_url + "account/logout", config).then(() => this.logoutSuccess()).catch(() => this.logoutFailed())
         },
         logoutSuccess(){
             document.cookie = "session-id=;"

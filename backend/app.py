@@ -178,7 +178,6 @@ class AccountLogout(Resource):
         :return: HTTP Response: 200 if the logout was successful, 400 if
         the session does not exists for the user
         """
-        print("dotarlem")
         account_id = request.headers.get("account_id")
         session_id = request.headers.get("session_id")
         logout_result = logout(session_id, account_id)
