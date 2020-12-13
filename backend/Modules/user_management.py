@@ -174,22 +174,24 @@ def session_is_valid(session_id: str, account_id: str) -> bool:
         if not session:
             return False
         if session.created_at < (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
+            logout(session_id)
             return False
         return True
 
 
-def logout(session_id: str, account_id: str) -> bool:
+def logout(session_id: str) -> bool:
     """
     Logouts the user based on session_id and account_id
     :return: True if the session was removed, False if the given session does not exists for this account
     """
-    if session_is_valid(session_id, account_id):
+    try:
         with session_scope() as session:
             session.query(Sessions).filter(
                 Sessions.session_id == session_id
             ).delete()
             return True
-    return False
+    except Exception as e:
+        return False
 
 
 def get_hairdressers_in_salon(salon_id: str):
