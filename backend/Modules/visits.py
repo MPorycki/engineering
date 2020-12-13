@@ -8,6 +8,7 @@ from Modules.user_management import is_customer
 from Modules.adresses import adress_to_string
 from Modules.services import services_to_string, get_visit_services, services_total_duration, \
     services_total_price
+from Modules.salons import hairdresser_matches_salon
 
 
 def create_visit(visit: dict, account_id: str) -> dict:
@@ -18,6 +19,7 @@ def create_visit(visit: dict, account_id: str) -> dict:
     :param account_id: account_id of the customer for whom the visit should be created
     :return: Dict with information about the result of the creation
     """
+    creation_result = {"success": False}
     try:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")
@@ -29,6 +31,8 @@ def create_visit(visit: dict, account_id: str) -> dict:
                                 account_id)
     if not date_check["success"]:
         return date_check
+    if not hairdresser_matches_salon(visit["salon_id"], visit["hairdresser_id"]):
+        return creation_result
     _id = uuid.uuid4().hex
     visit_object = Visits(
         id=_id,
@@ -45,12 +49,13 @@ def create_visit(visit: dict, account_id: str) -> dict:
             session.add(visit_object)
     except Exception as e:
         raise e
-        return {"success": False}
+        creation_success
     if add_services(_id, visit["services"]):
-        return {"success": True}
+        creation_result["success"] = True
+        return creation_result
     else:
         delete_object(Visits, _id)
-        return {"success": False}
+        return creation_result
 
 
 def date_available(date_start: datetime, date_end: datetime,

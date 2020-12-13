@@ -3,9 +3,9 @@ import uuid
 
 from sqlalchemy.exc import IntegrityError
 
-from models import Adresses, Salons, session_scope
+from models import Accounts, Adresses, Salons, session_scope
 from Modules.adresses import create_adress, update_adress, get_adress
-from Modules.crud_common import fetch_all_objects
+from Modules.crud_common import fetch_all_objects, get_object
 
 
 def create_salon(salon_data: dict) -> dict:
@@ -97,7 +97,7 @@ def update_salon(salon_data: dict) -> dict:
         return {"success": False, "error": str(e)}
 
 
-def delete_salon(salon_id):
+def delete_salon(salon_id) -> bool:
     """
     Deletes salon and the corresponding adress
     :param salon_id:
@@ -122,3 +122,11 @@ def get_all_salons():
     for salon in salons["Salons"]:
         salon["address"] = get_adress(salon["id"])
     return salons
+
+
+def hairdresser_matches_salon(salon_id: str, hairdresser_id: str) -> bool:
+    hairdresser = get_object(Accounts, hairdresser_id)
+    if hairdresser.salon_id == salon_id:
+        return True
+    else:
+        return False
