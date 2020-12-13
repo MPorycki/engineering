@@ -12,7 +12,7 @@ from Modules.user_management import (
     register_user,
     logout,
     change_password,
-    session_exists,
+    session_is_valid,
     update_user,
     get_hairdressers_in_salon
 )
@@ -55,7 +55,7 @@ def verify_session(func):
         except Exception as e:
             print(e)
             return make_response("Invalid session", 401)
-        if session_exists(session_id, account_id):
+        if session_is_valid(session_id, account_id):
             return func(**kwargs)
         else:
             return make_response("Invalid session", 401)
@@ -189,6 +189,19 @@ class AccountLogout(Resource):
 
 
 api.add_resource(AccountLogout, "/account/logout")
+
+
+class Session(Resource):
+    def get(self):
+        account_id = request.headers.get("account_id")
+        session_id = request.headers.get("session_id")
+        if session_is_valid(session_id, account_id):
+            return make_response("Session is valid", 200)
+        else:
+            return make_response("Invalid session", 401)
+
+
+api.add_resource(Session, "/session/")
 
 
 class Service(Resource):

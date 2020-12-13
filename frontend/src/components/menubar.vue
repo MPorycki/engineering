@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <ul>
-            <li v-if="this.sessionId == null">
+            <li v-if="this.sessionId == ''">
                 <router-link to="/login">Logowanie/Rejestracja</router-link>
             </li>
             <li v-else v-on:click="logout()">
@@ -35,8 +35,16 @@ export default {
     },
     methods: {
         getSession(){
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.get(this.$backend_url + "session/", config).then(() => this.sessionStilValid()).catch(() => this.sessionInvalid()) 
+        },
+        sessionStilValid(){
             this.userId = this.$cookies.get('user-id')
             this.sessionId = this.$cookies.get('session-id')
+        },
+        sessionInvalid(){
+            document.cookie = "session-id=;"
+            document.cookie = "user-id=;"
         },
         logout() {
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}

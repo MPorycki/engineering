@@ -160,21 +160,22 @@ def create_session_for_user(account_id: str) -> str:
     return session_id
 
 
-def session_exists(session_id: str, account_id: str) -> bool:
+def session_is_valid(session_id: str, account_id: str) -> bool:
     """
-    Verifies whether a particular session exists for a particular user
+    Verifies whether a particular session exists and is still valid for a particular user.
+    Session invalidates after 7 days.
     :return: Boolean value confirming whether the session exists or not
     """
     with session_scope() as session:
-        exists_object = (
-            session.query(Sessions)
-                .filter(
-                Sessions.session_id == session_id,
-                Sessions.account_id == account_id,
-            )
-                .exists()
+        session = (
+            session.query(Sessions).filter(Sessions.session_id == session_id,
+                                           Sessions.account_id == account_id, ).first()
         )
-        return session.query(exists_object).scalar()
+        if not session:
+            return False
+        if session.created_at < (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
+            return False
+        return True
 
 
 def logout(session_id: str, account_id: str) -> bool:
@@ -182,7 +183,7 @@ def logout(session_id: str, account_id: str) -> bool:
     Logouts the user based on session_id and account_id
     :return: True if the session was removed, False if the given session does not exists for this account
     """
-    if session_exists(session_id, account_id):
+    if session_is_valid(session_id, account_id):
         with session_scope() as session:
             session.query(Sessions).filter(
                 Sessions.session_id == session_id
