@@ -146,10 +146,10 @@ def send_reset_link(token_id: str, account_email: str, account_first_name):
         server.sendmail(MAIL_ADRESS, account_email, text)
 
 
-def change_password(account_id: str, new_password: str) -> bool:
+def change_password(token_id: str, new_password: str) -> bool:
     """
     Changes the password for the user
-    :param account_id: user's account_id
+    :param token_id: Token that is used to change password. Should be removed upon completion
     :param new_password: user's new password
     :return: True if the change was successful, False if there were any errors
     """

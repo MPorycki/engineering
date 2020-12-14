@@ -162,8 +162,7 @@ class AccountResetPassword(Resource):
         if _id:
             data = request.get_json()
             new_password = data["new_password"]
-            account_id = data["account_id"]
-            password_change = change_password(account_id, new_password)
+            password_change = change_password(_id, new_password)
             if password_change:
                 return make_response("Password changed", 200)
             else:
