@@ -74,6 +74,17 @@ class Sessions(base):
     created_at = Column(TIMESTAMP)
 
 
+class ResetTokens(base):
+    __tablename__ = "reset_tokens"
+
+    token_id = Column(String(length=32), primary_key=True)
+    account_id = Column(
+        String(length=32),
+        ForeignKey(Accounts.id, onupdate="CASCADE", ondelete="CASCADE"),
+    )
+    created_at = Column(TIMESTAMP)
+
+
 class Services(base):
     __tablename__ = "services"
 
