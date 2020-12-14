@@ -174,7 +174,6 @@ class AccountResetPassword(Resource):
             return make_response("Request handled successfully", 200)
 
 
-
 api.add_resource(AccountResetPassword, "/account_reset/", "/account_reset/<_id>")
 
 
