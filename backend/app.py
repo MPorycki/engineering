@@ -8,13 +8,14 @@ from flask_restful import Api, Resource
 
 from Modules.admin import AccountAdmin, VisitsView, ServicesView, SalonsView
 from Modules.user_management import (
+    get_hairdressers_in_salon,
     login,
-    register_user,
     logout,
     change_password,
+    register_user,
+    send_password_reset_email,
     session_is_valid,
-    update_user,
-    get_hairdressers_in_salon
+    update_user
 )
 from Modules.services import (create_service, update_service)
 from Modules.salons import create_salon, update_salon, delete_salon, \
@@ -151,22 +152,30 @@ api.add_resource(AccountLogin, "/account/login")
 
 
 class AccountResetPassword(Resource):
-    def patch(self):
+    def patch(self, _id=None):
         """
         Handle password change initiated by the user.
+        Request without an id sends link to the given user, with token id resets the password if
+        the token is still valid.
         :return: HTTP response: 200 if the change was successful, 403 otherwise.
         """
-        data = request.get_json()
-        new_password = data["new_password"]
-        account_id = data["account_id"]
-        password_change = change_password(account_id, new_password)
-        if password_change:
-            return make_response("Password changed", 200)
+        if _id:
+            data = request.get_json()
+            new_password = data["new_password"]
+            account_id = data["account_id"]
+            password_change = change_password(account_id, new_password)
+            if password_change:
+                return make_response("Password changed", 200)
+            else:
+                return make_response("Password was not changed", 403)
         else:
-            return make_response("Password was not changed", 403)
+            data = request.get_json()
+            send_password_reset_email(data["email"])
+            return make_response("Request handled successfully", 200)
 
 
-api.add_resource(AccountResetPassword, "/account/reset")
+
+api.add_resource(AccountResetPassword, "/account_reset/", "/account_reset/<_id>")
 
 
 class AccountLogout(Resource):
