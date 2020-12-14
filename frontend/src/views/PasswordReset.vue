@@ -29,9 +29,9 @@ export default {
     },
     methods:{
         reset_password(){
-            var data = {"new_password": document.getElementById("password").value, "reset_id": this.$route.query.reset_id}
+            var data = {"new_password": document.getElementById("password").value}
             if (this.validate_password(data["new_password"], document.getElementById("password_confirm").value)){
-                axios.patch(this.$backend_url+ "account_reset", data).then(() => this.reset_success()).catch(() => this.reset_fail())
+                axios.patch(this.$backend_url+ "account_reset/" + this.$route.query.token, data).then(() => this.reset_success()).catch(() => this.reset_fail())
             }
         },
         reset_success(){
@@ -40,7 +40,7 @@ export default {
             location.reload()
         },
         reset_fail(){
-            alert("Zmiana hasłą nie powiodła się.")
+            alert("Zmiana hasła nie powiodła się.")
         },
         validate_password(password, repeated_password){
              if ((password.replace(/\s/g, '')).length == 0){
