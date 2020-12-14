@@ -1,11 +1,16 @@
 import datetime
+import smtplib
+import ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import uuid
 
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 
-from models import Accounts, Sessions, session_scope
+from models import Accounts, Sessions, ResetTokens, session_scope
 from .crud_common import *
+from settings import FRONTEND_URL, MAIL_ADRESS, MAIL_PASSWORD
 
 
 # CREATE
@@ -93,8 +98,52 @@ def update_user(user_data: dict) -> bool:
         return False
 
 
-def send_pass_reset_email(email: str):  # TODO implement
-    print(f"Mail sent to {email}")
+def send_password_reset_email(email: str):
+    """
+    Sends a reset password link on users' email
+    """
+    try:
+        with session_scope() as session:
+            account = session.query(Accounts).filter(Accounts.email == email).first()
+            if account:
+                _id = uuid.uuid4().hex
+                token = ResetTokens(
+                    token_id=_id,
+                    account_id=account.id,
+                    created_at=datetime.datetime.utcnow()
+                )
+                session.add(token)
+                send_reset_link(_id, account.email, account.first_name)
+            return True
+    except Exception as e:
+        return False
+
+
+def send_reset_link(token_id: str, account_email: str, account_first_name):
+    # Prepare the message
+    message = MIMEMultipart()
+    message_body = (
+        "<html><head></head>"
+        "<body>"
+        f"Cześć, {account_first_name}!<br><br> "
+        f"Pod tym <a href={FRONTEND_URL}#/passreset?token={token_id}>linkiem<a/> możesz zresetować swoje hasło.<br>"
+        "<br>Salony Marco Polo"
+        "</body>"
+        "</html>"
+    )
+    message["From"] = "Salony Fryzjerskie Marco Polo"
+    message["To"] = account_email
+    message["Subject"] = "Twoja prośba o reset hasła"
+    message.attach(MIMEText(message_body, "html"))
+
+    text = message.as_string()
+
+    # Login to the mailbox
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", port=465, context=context) as server:
+        server.login(MAIL_ADRESS, MAIL_PASSWORD)
+        print("Probuje wyslac")
+        server.sendmail(MAIL_ADRESS, account_email, text)
 
 
 def change_password(account_id: str, new_password: str) -> bool:

@@ -29,7 +29,7 @@ export default {
         send_link(){
             var data = {"email": document.getElementById("email").value}
             if (this.validate_email(data["email"])){
-                axios.patch(this.$backend_url + 'account/reset_link', data).then(() => this.reset_link_sent()).catch(() => this.reset_link_sent_fail())
+                axios.patch(this.$backend_url + 'account_reset/', data).then(() => this.reset_link_sent()).catch(() => this.reset_link_sent_fail())
             }
         },
         validate_email(email){

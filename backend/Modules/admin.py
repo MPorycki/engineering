@@ -5,7 +5,7 @@ import uuid
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 
-from Modules.user_management import send_pass_reset_email
+from Modules.user_management import send_password_reset_email
 from Modules.visits import delete_visit_services
 
 
@@ -37,7 +37,7 @@ class AccountAdmin(GeneralView):
 
     def after_model_change(self, form, model, is_created):
         if is_created:
-            send_pass_reset_email(model.email)
+            send_password_reset_email(model.email)
 
 
 class VisitsView(GeneralView):
