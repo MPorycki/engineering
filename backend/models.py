@@ -77,7 +77,7 @@ class Sessions(base):
 class ResetTokens(base):
     __tablename__ = "reset_tokens"
 
-    token_id = Column(String(length=32), primary_key=True)
+    id = Column(String(length=32), primary_key=True)
     account_id = Column(
         String(length=32),
         ForeignKey(Accounts.id, onupdate="CASCADE", ondelete="CASCADE"),
