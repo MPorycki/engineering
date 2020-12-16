@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from models import Accounts, Adresses, Salons, session_scope
 from Modules.adresses import create_adress, update_adress, get_adress
-from Modules.crud_common import fetch_all_objects, get_object
+from Modules.crud_common import fetch_all_objects, fetch_object
 
 
 def create_salon(salon_data: dict) -> dict:
@@ -125,8 +125,8 @@ def get_all_salons():
 
 
 def hairdresser_matches_salon(salon_id: str, hairdresser_id: str) -> bool:
-    hairdresser = get_object(Accounts, hairdresser_id)
-    if hairdresser.salon_id == salon_id:
+    hairdresser = fetch_object(Accounts, hairdresser_id)
+    if hairdresser["salon_id"] == salon_id:
         return True
     else:
         return False
