@@ -108,7 +108,7 @@ def send_password_reset_email(email: str):
             if account:
                 _id = uuid.uuid4().hex
                 token = ResetTokens(
-                    token_id=_id,
+                    id=_id,
                     account_id=account.id,
                     created_at=datetime.datetime.utcnow()
                 )
@@ -153,13 +153,26 @@ def change_password(token_id: str, new_password: str) -> bool:
     :param new_password: user's new password
     :return: True if the change was successful, False if there were any errors
     """
-    with session_scope() as session:
-        user = get_object(Accounts, account_id)
-        new_password_hash = sha256_crypt.hash(new_password)
-        user.hashed_password = new_password_hash
-        session.commit()
+    try:
+        with session_scope() as session:
+            token = fetch_object(ResetTokens, token_id)
+            if not token_valid(token):
+                return False
+            user = session.query(Accounts).filter(Accounts.id == token["account_id"]).first()
+            new_password_hash = sha256_crypt.hash(new_password)
+            user.hashed_password = new_password_hash
+            delete_object(ResetTokens, token_id)
+            return True
+    except Exception as e:
+        print(e)
+        return False
+
+
+def token_valid(token: dict) -> bool:
+    if token["created_at"] < (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
+        return False
+    else:
         return True
-    return False
 
 
 # AUTHENTICATION
