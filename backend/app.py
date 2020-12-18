@@ -1,7 +1,7 @@
 from functools import wraps
 
-from flask import Flask, request, make_response
-from flask_admin import Admin
+from flask import Flask, request, make_response, redirect
+from flask_admin import Admin, AdminIndexView, expose
 from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
@@ -40,11 +40,6 @@ api = Api(app)
 app.secret_key = "testowy"  # TODO ogar tematu secret key i jak zrobić żeby to bylo secure
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
-admin = Admin(app, name="admin", template_mode="bootstrap3")
-admin.add_view(AccountAdmin(Accounts, session))
-admin.add_view(VisitsView(Visits, session))
-admin.add_view(ServicesView(Services, session))
-admin.add_view(SalonsView(Salons, session))
 
 
 def verify_session(func):
@@ -195,6 +190,39 @@ class AccountLogout(Resource):
 
 
 api.add_resource(AccountLogout, "/account/logout")
+
+
+class MyAdminIndexView(AdminIndexView):
+
+    @expose('/')
+    def index(self):
+        if not True:
+            return redirect("http://localhost:5000/admin/login")  # TODO make it dynamic
+        return super(MyAdminIndexView, self).index()
+
+    @expose('/login/', methods=('GET', 'POST'))
+    def login_view(self):
+        # handle user login
+        pass
+        """
+        form = LoginForm(request.form)
+        if helpers.validate_form_on_submit(form):
+            user = form.get_user()
+            login.login_user(user)
+
+        if login.current_user.is_authenticated:
+            return redirect(url_for('.index'))
+        link = '<p>Don\'t have an account? <a href="' + url_for(
+            '.register_view') + '">Click here to register.</a></p>'
+        self._template_args['form'] = form
+        self._template_args['link'] = link
+        return super(MyAdminIndexView, self).index()
+        """
+
+    @expose('/logout/')
+    def logout_view(self):
+        login.logout_user()
+        return redirect("http://localhost:5000/admin/login")
 
 
 class Session(Resource):
@@ -410,3 +438,9 @@ class Main(Resource):
 
 
 api.add_resource(Main, "/")
+
+admin = Admin(app, name="admin", template_mode="bootstrap3", index_view=MyAdminIndexView())
+admin.add_view(AccountAdmin(Accounts, session))
+admin.add_view(VisitsView(Visits, session))
+admin.add_view(ServicesView(Services, session))
+admin.add_view(SalonsView(Salons, session))
