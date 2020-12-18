@@ -8,6 +8,7 @@ from flask_restful import Api, Resource
 
 from Modules.admin import AccountAdmin, VisitsView, ServicesView, SalonsView
 from Modules.user_management import (
+    can_access_admin,
     get_hairdressers_in_salon,
     login,
     logout,
@@ -196,33 +197,13 @@ class MyAdminIndexView(AdminIndexView):
 
     @expose('/')
     def index(self):
-        if not True:
-            return redirect("http://localhost:5000/admin/login")  # TODO make it dynamic
-        return super(MyAdminIndexView, self).index()
-
-    @expose('/login/', methods=('GET', 'POST'))
-    def login_view(self):
-        # handle user login
-        pass
-        """
-        form = LoginForm(request.form)
-        if helpers.validate_form_on_submit(form):
-            user = form.get_user()
-            login.login_user(user)
-
-        if login.current_user.is_authenticated:
-            return redirect(url_for('.index'))
-        link = '<p>Don\'t have an account? <a href="' + url_for(
-            '.register_view') + '">Click here to register.</a></p>'
-        self._template_args['form'] = form
-        self._template_args['link'] = link
-        return super(MyAdminIndexView, self).index()
-        """
-
-    @expose('/logout/')
-    def logout_view(self):
-        login.logout_user()
-        return redirect("http://localhost:5000/admin/login")
+        user = request.cookies.get("user-id")
+        session = request.cookies.get("session-id")
+        if not session_is_valid(session, user):
+            return redirect("http://localhost:8080/#/login")  # TODO make it dynamic
+        if can_access_admin(session, user):
+            return super(MyAdminIndexView, self).index()
+        return redirect("http://localhost:8080/#/")
 
 
 class Session(Resource):

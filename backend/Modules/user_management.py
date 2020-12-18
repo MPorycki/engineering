@@ -8,7 +8,7 @@ import uuid
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 
-from models import Accounts, Sessions, ResetTokens, session_scope
+from models import Accounts, Administrators, Sessions, ResetTokens, session_scope
 from .crud_common import *
 from settings import FRONTEND_URL, MAIL_ADRESS, MAIL_PASSWORD
 
@@ -280,3 +280,11 @@ def is_customer(account_id: str) -> bool:
             return True
         else:
             return False
+
+
+def can_access_admin(session_id, account_id):
+    if session_is_valid(session_id, account_id):
+        with session_scope() as session:
+            if session.query(Administrators).get(account_id):
+                return True
+    return False
