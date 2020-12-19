@@ -24,12 +24,13 @@ class AccountAdmin(GeneralView):
     form_choices = {
         'account_type': [
             ('hairdresser', 'hairdresser'),
-            ('customer', 'customer'),
-            ('admin', 'admin')
+            ('customer', 'customer')
         ]
     }
 
     form_excluded_columns = ['hashed_password', 'created_at']
+
+    column_details_exclude_list = ['hashed_password']
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -68,6 +69,8 @@ class ServicesView(GeneralView):
         ]
     }
 
+    form_excluded_columns = ['created_at']
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             model.id = uuid.uuid4().hex
@@ -81,7 +84,7 @@ class ServicesView(GeneralView):
 
 
 class SalonsView(GeneralView):
-    column_exclude_list = ['adress_id', 'created_at']
+    column_exclude_list = ['created_at']
 
     def on_model_change(self, form, model, is_created):
         if is_created:
