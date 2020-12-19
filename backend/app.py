@@ -6,7 +6,7 @@ from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
 
-from Modules.admin import AccountAdmin, VisitsView, ServicesView, SalonsView
+from Modules.admin import AccountAdmin, AdressView, VisitsView, ServicesView, SalonsView
 from Modules.user_management import (
     can_access_admin,
     get_hairdressers_in_salon,
@@ -29,6 +29,7 @@ from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
 
 from models import (
     Accounts,
+    Adresses,
     Services,
     Salons,
     Visits,
@@ -425,3 +426,4 @@ admin.add_view(AccountAdmin(Accounts, session))
 admin.add_view(VisitsView(Visits, session))
 admin.add_view(ServicesView(Services, session))
 admin.add_view(SalonsView(Salons, session))
+admin.add_view(AdressView(Adresses, session))
