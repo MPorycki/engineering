@@ -6,7 +6,7 @@ from flask import request, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 
-from Modules.user_management import send_password_reset_email, can_access_admin
+from Modules.user_management import send_password_reset_email, can_access_admin, is_customer
 from Modules.salons import validate_salon
 from Modules.visits import delete_visit_services
 
@@ -20,9 +20,10 @@ class GeneralView(ModelView):
     edit_modal = True
 
 
-class AccountAdmin(GeneralView):
+class AccountView(GeneralView):
     column_exclude_list = ['hashed_password']
     form_columns = ["first_name", "last_name", "email", "account_type", "salon_id"]
+    column_list = ["first_name", "last_name", "email", "account_type", "salon_id", "created_at"]
     form_choices = {
         'account_type': [
             ('hairdresser', 'hairdresser'),
@@ -42,6 +43,23 @@ class AccountAdmin(GeneralView):
     def after_model_change(self, form, model, is_created):
         if is_created:
             send_password_reset_email(model.email)
+
+    def is_accessible(self):
+        return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect("http://localhost:8080/#/")
+
+
+class AdministratorView(GeneralView):
+    can_edit = False
+
+    form_columns = ["account_id"]
+    column_list = ["account_id"]
+
+    def on_model_change(self, form, model, is_created):
+        if is_created and is_customer(form.account_id.data):
+            raise(AttributeError("Klient nie może byc administratorem"))
 
     def is_accessible(self):
         return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
