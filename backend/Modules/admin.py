@@ -7,6 +7,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 
 from Modules.user_management import send_password_reset_email, can_access_admin
+from Modules.salons import validate_salon
 from Modules.visits import delete_visit_services
 
 
@@ -84,7 +85,27 @@ class ServicesView(GeneralView):
 
 
 class SalonsView(GeneralView):
+    column_display_pk = True
     column_exclude_list = ['created_at']
+    form_excluded_columns = ['created_at']
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            data = {"opening_hour": form.opening_hour.data, "closing_hour": form.closing_hour.data}
+            if validate_salon(data):
+                model.id = uuid.uuid4().hex
+                model.created_at = datetime.datetime.utcnow()
+
+    def is_accessible(self):
+        return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect("http://localhost:8080/#/")
+
+
+class AdressView(GeneralView):
+    column_display_pk = True
+    form_excluded_columns = ['hashed_password', 'created_at']
 
     def on_model_change(self, form, model, is_created):
         if is_created:
