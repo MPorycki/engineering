@@ -70,6 +70,8 @@ class AdministratorView(GeneralView):
 
 class VisitsView(GeneralView):
     can_create = False
+    form_columns = ["hairdresser_id", "date_start", "date_end", "status"]
+    column_list = ["customer_id", "hairdresser_id", "date_start", "status"]
 
     def after_model_delete(self, model):
         delete_visit_services(model.id)
