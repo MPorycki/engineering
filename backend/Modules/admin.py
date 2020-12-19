@@ -44,7 +44,6 @@ class AccountAdmin(GeneralView):
         return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
 
     def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
         return redirect("http://localhost:8080/#/")
 
 
@@ -53,6 +52,12 @@ class VisitsView(GeneralView):
 
     def after_model_delete(self, model):
         delete_visit_services(model.id)
+
+    def is_accessible(self):
+        return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect("http://localhost:8080/#/")
 
 
 class ServicesView(GeneralView):
@@ -68,6 +73,12 @@ class ServicesView(GeneralView):
             model.id = uuid.uuid4().hex
             model.created_at = datetime.datetime.utcnow()
 
+    def is_accessible(self):
+        return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect("http://localhost:8080/#/")
+
 
 class SalonsView(GeneralView):
     column_exclude_list = ['adress_id', 'created_at']
@@ -76,3 +87,9 @@ class SalonsView(GeneralView):
         if is_created:
             model.id = uuid.uuid4().hex
             model.created_at = datetime.datetime.utcnow()
+
+    def is_accessible(self):
+        return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect("http://localhost:8080/#/")
