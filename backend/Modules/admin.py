@@ -21,7 +21,8 @@ class GeneralView(ModelView):
 
 
 class AccountAdmin(GeneralView):
-    column_exclude_list = ['hashed_password', ]
+    column_exclude_list = ['hashed_password']
+    form_columns = ["first_name", "last_name", "email", "account_type", "salon_id"]
     form_choices = {
         'account_type': [
             ('hairdresser', 'hairdresser'),
