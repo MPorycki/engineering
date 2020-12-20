@@ -7,6 +7,9 @@
             <li v-else v-on:click="logout()">
                 <a>Wyloguj</a>
             </li>
+            <li v-if="this.isAdmin == true">
+               <a href="http://localhost:5000/admin/" target="_blank">Admin</a>
+            </li>
              <li>
                 <router-link to="/allSalons">Salony</router-link>
             </li>
@@ -33,18 +36,25 @@ export default {
     data() {
         return {
             userId: "",
-            sessionId: ""
+            sessionId: "",
+            isAdmin: false
         }
     },
     methods: {
         getSession(){
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.get(this.$backend_url + "session/", config).then(() => this.sessionStilValid()).catch(() => this.sessionInvalid()) 
+            axios.get(this.$backend_url + "session/", config).then(() => this.sessionStilValid()).catch(() => this.sessionInvalid())
         },
         sessionStilValid(){
             this.userId = this.$cookies.get('user-id')
             this.sessionId = this.$cookies.get('session-id')
+            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            axios.get(this.$backend_url + "admin_access/", config).then(() => this.setIsAdmin()).catch(() => this.handleAdminError())
         },
+        setIsAdmin(){
+            this.isAdmin = true
+        },
+        handleAdminError(){},
         sessionInvalid(){
             document.cookie = "session-id=;"
             document.cookie = "user-id=;"
