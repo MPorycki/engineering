@@ -304,13 +304,11 @@ def get_customer_visits(account_id):
 def get_hairdresser_visits(account_id):
     result = {"visits": []}
     with session_scope() as session:
-        visits = session.query(Visits).filter(
-            Visits.hairdresser_id == account_id).order_by(
-            Visits.date_start.desc()).all()
-        for visit in visits:
+        for visit, customer in session.query(Visits, Accounts).filter(Visits.customer_id == Accounts.id).filter(
+                Visits.hairdresser_id == account_id).order_by(Visits.date_start.desc()).all():
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
-                 "visit_data": visit.customer_id,
+                 "visit_data": f"{customer.first_name} {customer.last_name}",
                  "visit_id": visit.id,
                  "visit_status": visit.status})
         return result
@@ -345,9 +343,10 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list = {}
     visit = fetch_object(Visits, visit_id)
     details_list["salon"] = fetch_object(Salons, visit["salon_id"])
-    details_list["hairdresser"] = fetch_object(Accounts, visit["hairdresser_id"]) # todo create method, too much data passed now
+    details_list["hairdresser"] = fetch_object(Accounts,
+                                               visit["hairdresser_id"])  # todo create method, too much data passed now
 
-    print (details_list)
+    print(details_list)
     return {"details_for_edit": details_list}
 
 
