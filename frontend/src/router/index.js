@@ -10,6 +10,7 @@ import AllVisits from '../views/AllVisits'
 import AllSalons from '../views/AllSalons'
 import VisitDetails from '../views/VisitDetails'
 import VisitEdit from '../views/VisitEdit'
+import AccountDetails from '../views/AccountDetails'
 
 Vue.use(VueRouter)
 
@@ -73,6 +74,11 @@ const routes = [
     path: '/allSalons',
     name: 'AllSalons',
     component: AllSalons
+  },
+  {
+    path: '/accountDetails',
+    name: 'AccountDetails',
+    component: AccountDetails
   }
 ]
 

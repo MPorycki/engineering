@@ -296,4 +296,4 @@ def get_account_data(account_id: str) -> dict:
     del result["account_type"]
     if not result["salon_id"]:
         del result["salon_id"]
-    return result
+    return {"account": result}
