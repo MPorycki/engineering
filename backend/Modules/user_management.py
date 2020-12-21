@@ -297,3 +297,10 @@ def get_account_data(account_id: str) -> dict:
     if not result["salon_id"]:
         del result["salon_id"]
     return {"account": result}
+
+
+def get_all_accounts_data() -> dict:
+    with session_scope() as session:
+        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
+                               Accounts.id).filter(Accounts.account_type == "customer").all()
+        return {"accounts": result}
