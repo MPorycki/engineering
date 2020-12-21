@@ -70,8 +70,11 @@ class Account(Resource):
 
     def get(self, _id=None):
         if _id:
-            result = get_account_data(_id)
-            return make_response(result, 200)
+            if _id == request.headers.get("account_id"):
+                result = get_account_data(_id)
+                return make_response(result, 200)
+            else:
+                return make_response("User not authorized to view this data", 401)
         else:
             result = fetch_all_objects(Accounts)
             return make_response(result, 200)
