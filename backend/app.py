@@ -10,6 +10,7 @@ from Modules.admin import AccountView, AdministratorView, AdressView, VisitsView
     SalonsView
 from Modules.user_management import (
     can_access_admin,
+    get_account_data,
     get_hairdressers_in_salon,
     login,
     logout,
@@ -69,7 +70,7 @@ class Account(Resource):
 
     def get(self, _id=None):
         if _id:
-            result = fetch_object(Accounts, _id)
+            result = get_account_data(_id)
             return make_response(result, 200)
         else:
             result = fetch_all_objects(Accounts)

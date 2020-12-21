@@ -288,3 +288,12 @@ def can_access_admin(session_id, account_id):
             if session.query(Administrators).get(account_id):
                 return True
     return False
+
+
+def get_account_data(account_id: str) -> dict:
+    result = fetch_object(Accounts, account_id)
+    del result["hashed_password"]
+    del result["account_type"]
+    if not result["salon_id"]:
+        del result["salon_id"]
+    return result
