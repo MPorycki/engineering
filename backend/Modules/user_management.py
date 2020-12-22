@@ -301,5 +301,4 @@ def get_all_accounts_data() -> dict:
     with session_scope() as session:
         result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
                                Accounts.id).filter(Accounts.account_type == "customer").all()
-        result = convert_to_dict(result)
         return {"accounts": result}
