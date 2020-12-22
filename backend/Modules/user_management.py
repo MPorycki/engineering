@@ -291,12 +291,11 @@ def can_access_admin(session_id, account_id):
 
 
 def get_account_data(account_id: str) -> dict:
-    result = fetch_object(Accounts, account_id)
-    del result["hashed_password"]
-    del result["account_type"]
-    if not result["salon_id"]:
-        del result["salon_id"]
-    return {"account": result}
+    with session_scope() as session:
+        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
+                               Accounts.id).filter(Accounts.id == account_id).first()
+        result = convert_to_dict(result)
+        return {"account": result}
 
 
 def get_all_accounts_data() -> dict:
