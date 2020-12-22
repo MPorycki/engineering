@@ -4,13 +4,18 @@
             <li v-if="this.sessionId == ''">
                 <router-link to="/login">Logowanie/Rejestracja</router-link>
             </li>
-            <li v-else v-on:click="logout()">
-                <a>Wyloguj</a>
-            </li>
+            <div  v-else>
+                <li v-on:click="logout()">
+                    <a>Wyloguj</a>
+                </li>
+                <li>
+                    <router-link to="/accountDetails">Konto</router-link>
+                </li>
+            </div>
             <li v-if="this.isAdmin == true">
                <a href="http://localhost:5000/admin/" target="_blank">Admin</a>
             </li>
-             <li>
+            <li>
                 <router-link to="/allSalons">Salony</router-link>
             </li>
             <li v-if="this.sessionId != ''">
