@@ -294,7 +294,6 @@ def get_account_data(account_id: str) -> dict:
     with session_scope() as session:
         result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
                                Accounts.id).filter(Accounts.id == account_id).first()
-        result = convert_to_dict(result)
         return {"account": result}
 
 
