@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from models import Accounts, Administrators, Sessions, ResetTokens, session_scope
 from .crud_common import *
+from .salons import salon_has_hairdresser_spot
 from settings import FRONTEND_URL, MAIL_ADRESS, MAIL_PASSWORD
 
 
@@ -38,6 +39,9 @@ def register_user(
     payload["email_taken"] = user_with_given_email_exists(email)
     if payload["email_taken"]:
         return payload
+    if account_type == "hairdresser":
+        if not salon_has_hairdresser_spot(salon_id):
+            return payload
     account_id = uuid.uuid4().hex
     password = sha256_crypt.hash(raw_password)
     new_user = Accounts(
