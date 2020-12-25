@@ -130,3 +130,13 @@ def hairdresser_matches_salon(salon_id: str, hairdresser_id: str) -> bool:
         return True
     else:
         return False
+
+
+def salon_has_hairdresser_spot(_salon_id: str) -> bool:
+    with session_scope() as session:
+        max_count = session.query(Adresses.number_of_seats).filter(
+            Adresses.salon_id == _salon_id).scalar()
+        if max_count <= session.query(Accounts).filter(Accounts.salon_id == _salon_id).count():
+            return False
+        else:
+            return True
