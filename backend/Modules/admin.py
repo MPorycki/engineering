@@ -7,7 +7,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 
 from Modules.user_management import send_password_reset_email, can_access_admin, is_customer
-from Modules.salons import validate_salon
+from Modules.salons import validate_salon, salon_has_hairdresser_spot
 from Modules.visits import delete_visit_services
 
 
@@ -37,8 +37,12 @@ class AccountView(GeneralView):
 
     def on_model_change(self, form, model, is_created):
         if is_created:
-            model.id = uuid.uuid4().hex
-            model.created_at = datetime.datetime.utcnow()
+            if form.account_type.data == "hairdresser" and not salon_has_hairdresser_spot(
+                    form.salon_id.data):
+                raise AttributeError("Dany salon nie może przyjąć więcej fryzjerów.")
+            else:
+                model.id = uuid.uuid4().hex
+                model.created_at = datetime.datetime.utcnow()
 
     def after_model_change(self, form, model, is_created):
         if is_created:
@@ -59,7 +63,7 @@ class AdministratorView(GeneralView):
 
     def on_model_change(self, form, model, is_created):
         if is_created and is_customer(form.account_id.data):
-            raise(AttributeError("Klient nie może byc administratorem"))
+            raise (AttributeError("Klient nie może byc administratorem"))
 
     def is_accessible(self):
         return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))
