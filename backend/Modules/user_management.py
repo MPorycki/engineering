@@ -296,13 +296,17 @@ def can_access_admin(session_id, account_id):
 
 def get_account_data(account_id: str) -> dict:
     with session_scope() as session:
-        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
-                               Accounts.id).filter(Accounts.id == account_id).first()
-        return {"account": result}
+        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
+                               Accounts.email, Accounts.id).filter(
+            Accounts.id == account_id).first()
+        result = {"id": result.id, "firstName": result.first_name, "lastName": result.last_name,
+                  "email": result.email}
+        return result
 
 
 def get_all_accounts_data() -> dict:
     with session_scope() as session:
-        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
-                               Accounts.id).filter(Accounts.account_type == "customer").all()
+        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
+                               Accounts.email, Accounts.id).filter(
+            Accounts.account_type == "customer").all()
         return {"accounts": result}
