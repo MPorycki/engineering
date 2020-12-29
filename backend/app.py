@@ -231,17 +231,19 @@ class Session(Resource):
 api.add_resource(Session, "/session/")
 
 
-class AdminAccess(Resource):
+class EmployeeAccess(Resource):
     def get(self):
         account_id = request.headers.get("account_id")
         session_id = request.headers.get("session_id")
+        access_results = {"isHairdresser": False, "isAdmin": False}
+        if not is_customer(account_id):
+            access_results["isHairdresser"] = True
         if can_access_admin(session_id, account_id):
-            return make_response("User has admin rights", 200)
-        else:
-            return make_response("User does not have admin rights", 401)
+            access_results["isAdmin"] = True
+        return make_response(access_results, 200)
 
 
-api.add_resource(AdminAccess, "/admin_access/")
+api.add_resource(EmployeeAccess, "/employee_access/")
 
 
 class Service(Resource):
