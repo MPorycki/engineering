@@ -11,6 +11,7 @@ import AllSalons from '../views/AllSalons'
 import VisitDetails from '../views/VisitDetails'
 import VisitEdit from '../views/VisitEdit'
 import AccountDetails from '../views/AccountDetails'
+import AllCustomers from '../views/AllCustomers'
 
 Vue.use(VueRouter)
 
@@ -79,6 +80,11 @@ const routes = [
     path: '/accountDetails',
     name: 'AccountDetails',
     component: AccountDetails
+  },
+  {
+    path: '/allCustomers',
+    name: 'AllCustomers',
+    component: AllCustomers
   }
 ]
 
