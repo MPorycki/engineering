@@ -9,7 +9,7 @@
                     <a>Wyloguj</a>
                 </li>
                 <li>
-                    <router-link to="/accountDetails">Konto</router-link>
+                    <router-link :to="{ path: 'accountDetails', query: { id: this.userId }}">Konto</router-link>
                 </li>
             </div>
             <li v-if="this.isAdmin == true">
