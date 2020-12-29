@@ -97,8 +97,7 @@ class Account(Resource):
             raw_password = data["raw_password"]
             fist_name = data["first_name"]
             last_name = data["last_name"]
-            account_type = data[
-                "account_type"]
+            account_type = data["account_type"]
             salon_id = data["salon_id"]
         except KeyError as e:
             return make_response(
