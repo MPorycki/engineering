@@ -98,7 +98,7 @@ class Account(Resource):
             fist_name = data["first_name"]
             last_name = data["last_name"]
             account_type = data[
-                "account_type"]  # TODO add mechanism for hairdresser addition
+                "account_type"]
             salon_id = data["salon_id"]
         except KeyError as e:
             return make_response(
