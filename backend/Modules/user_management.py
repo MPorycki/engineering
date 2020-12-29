@@ -295,11 +295,21 @@ def can_access_admin(session_id, account_id):
 
 
 def account_data_to_dict(account: Accounts) -> dict:
+    """
+    Converts account data to a dict with keys relevant to what is shown on the frontend
+    :param account: Account from which the data should be extracted
+    :return: Dict with id, first, last names and email of the provided account
+    """
     return {"id": account.id, "firstName": account.first_name, "lastName": account.last_name,
             "email": account.email}
 
 
 def get_account_data(account_id: str) -> dict:
+    """
+    Provides relevant account data
+    :param account_id: Id for which the data isto be returned
+    :return: Dict with the relevant data
+    """
     with session_scope() as session:
         account = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
                                 Accounts.email, Accounts.id).filter(
@@ -308,9 +318,13 @@ def get_account_data(account_id: str) -> dict:
 
 
 def get_all_customers_data() -> dict:
+    """
+    Provides relevant data about all customers.
+    :return: Dict with basic data of all customers
+    """
     with session_scope() as session:
         accounts = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
-                               Accounts.email, Accounts.id).filter(
+                                 Accounts.email, Accounts.id).filter(
             Accounts.account_type == "customer").all()
         result = []
         for account in accounts:
