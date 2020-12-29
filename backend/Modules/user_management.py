@@ -294,19 +294,25 @@ def can_access_admin(session_id, account_id):
     return False
 
 
+def account_data_to_dict(account: Accounts) -> dict:
+    return {"id": account.id, "firstName": account.first_name, "lastName": account.last_name,
+            "email": account.email}
+
+
 def get_account_data(account_id: str) -> dict:
     with session_scope() as session:
         account = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
-                               Accounts.email, Accounts.id).filter(
+                                Accounts.email, Accounts.id).filter(
             Accounts.id == account_id).first()
-        result = {"id": account.id, "firstName": account.first_name, "lastName": account.last_name,
-                  "email": account.email}
-        return result
+        return account_data_to_dict(account)
 
 
-def get_all_accounts_data() -> dict:
+def get_all_customers_data() -> dict:
     with session_scope() as session:
-        result = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
+        accounts = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
                                Accounts.email, Accounts.id).filter(
             Accounts.account_type == "customer").all()
+        result = []
+        for account in accounts:
+            result.append(account_data_to_dict(account))
         return {"accounts": result}

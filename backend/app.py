@@ -11,7 +11,7 @@ from Modules.admin import AccountView, AdministratorView, AdressView, VisitsView
 from Modules.user_management import (
     can_access_admin,
     get_account_data,
-    get_all_accounts_data,
+    get_all_customers_data,
     get_hairdressers_in_salon,
     is_customer,
     login,
@@ -79,7 +79,7 @@ class Account(Resource):
                 return make_response("User not authorized to view this data", 401)
         else:
             if not is_customer(request.headers.get("account_id")):
-                result = get_all_accounts_data()
+                result = get_all_customers_data()
                 return make_response(result, 200)
             else:
                 return make_response("Not authorized to see all users data", 401)
