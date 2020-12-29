@@ -72,7 +72,9 @@ class Account(Resource):
 
     def get(self, _id=None):
         if _id:
-            if _id == request.headers.get("account_id"):
+            account_id = request.headers.get("account_id")
+            if _id == account_id or (not is_customer(account_id) and is_customer(
+                    _id)):  # to not allow hairdresses to check other hairdressers
                 result = get_account_data(_id)
                 return make_response(result, 200)
             else:
