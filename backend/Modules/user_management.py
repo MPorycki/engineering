@@ -323,10 +323,12 @@ def get_all_customers_data() -> dict:
     :return: Dict with basic data of all customers
     """
     with session_scope() as session:
-        accounts = session.query(Accounts.first_name, Accounts.last_name, Accounts.created_at,
-                                 Accounts.email, Accounts.id).filter(
-            Accounts.account_type == "customer").all()
-        result = []
-        for account in accounts:
-            result.append(account_data_to_dict(account))
-        return {"accounts": result}
+        accounts = session \
+            .query(Accounts.first_name, Accounts.last_name, Accounts.created_at, Accounts.email,
+                   Accounts.id) \
+            .filter(Accounts.account_type == "customer") \
+            .order_by(Accounts.last_name).all()
+    result = []
+    for account in accounts:
+        result.append(account_data_to_dict(account))
+    return {"accounts": result}
