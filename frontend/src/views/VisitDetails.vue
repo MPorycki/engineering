@@ -23,12 +23,14 @@ export default {
     data(){
         return {
             details: [],
-            id: ""
+            id: "",
+            isHairdresser: false
         }
     },
     mounted() {
         var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
         axios.get(this.$backend_url + "visit/" + this.$route.query.id, config).then(res => this.setDetails(res.data["details"]))
+        axios.get(this.$backend_url + "employee_access/", config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
     },
     methods: {
         setDetails(detailsInput){
@@ -37,6 +39,10 @@ export default {
             }
             this.id = this.$route.query.id
         },
+        setAccess(accessResults){
+            this.isHairdresser = accessResults.isHairdresser
+        },
+        handleAccessError(){},
         cancelVisit(){
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
             axios.delete(this.$backend_url + "visit/" + this.id, config).then(res => this.handleDeletionSuccess(res.data))
