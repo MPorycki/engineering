@@ -110,7 +110,8 @@ def get_all_services() -> dict:
     result = []
     with session_scope() as session:
         services = session.query(Services.id, Services.description, Services.gender, Services.name,
-                                 Services.price, Services.service_duration).all()
+                                 Services.price, Services.service_duration).order_by(
+            Services.gender).order_by(Services.name).all()
         for service in services:
             result.append(services_data_to_dict(service))
         return {"Services": result}
