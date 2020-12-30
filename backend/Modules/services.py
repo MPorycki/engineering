@@ -76,6 +76,18 @@ def update_service(service_updated_data: dict) -> bool:
         return False
 
 
+def translate_gender(gender: str) -> str:
+    """
+    Translate gender from MALE to M and FEMALE to K, to represent it in polish
+    :param gender: gender to be translated
+    :return: Letter corresponding to either male or female
+    """
+    if gender.lower() == "male":
+        return "M"
+    else:
+        return "K"
+
+
 def services_data_to_dict(service: Services) -> dict:
     """
     Converts relevant service information to dict
@@ -83,11 +95,11 @@ def services_data_to_dict(service: Services) -> dict:
     :return: Dict with servcie data
     """
     return {"id": service.id,
-                "description": service.description,
-                "gender": service.gender,
-                "name": service.name,
-                "price": service.price,
-                "service_duration": service.service_duration}
+            "description": service.description,
+            "gender": translate_gender(service.gender),
+            "name": service.name,
+            "price": service.price,
+            "service_duration": service.service_duration}
 
 
 def get_all_services() -> dict:

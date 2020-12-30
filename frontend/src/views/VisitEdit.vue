@@ -13,7 +13,7 @@
                         <label for="exampleFormControlSelect1">Wybierz usługi</label>
                             <div class="form-check" v-for="service in services" :key="service.id"  @change="onServiceSelect()">
                                 <input class="form-check-input" type="checkbox" :id="service.name" :value=service v-model="servicesSelected">
-                                <label class="form-check-label" :for="service.name">{{service.name + " - " + service.price + " PLN"}}</label>
+                                <label class="form-check-label" :for="service.name">{{service.name + "[" + service.gender + "] - " + service.price + " PLN"}}</label>
                             </div>
                             <p v-if="servicesSelected.length > 0"><b>Szacowany czas usługi to {{calculateServiceTime()}} minut.</b></p>
                     </div>
