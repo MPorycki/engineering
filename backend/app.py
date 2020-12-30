@@ -258,40 +258,6 @@ class Service(Resource):
             result = get_all_services()
             return make_response(result, 200)
 
-    def post(self):
-        """
-        Create a new service based on provided data
-        :return: HTTP status of the creation attempt
-        """
-        data = request.get_json()
-        inputs = ServiceInputs(request)
-        if inputs.validate():
-            service_creation = create_service(data)
-        else:
-            return make_response(str(inputs.errors), 400)
-        if service_creation["success"]:
-            return make_response("Service creation was successful", 200)
-        else:
-            return make_response(jsonify(service_creation), 400)
-
-    def patch(self):
-        inputs = ServiceInputs(request)
-        if inputs.validate():
-            result = update_service(request.get_json())
-        else:
-            return make_response(str(inputs.errors), 422)
-        if result:
-            return make_response(str(result), 200)
-        else:
-            return make_response(str(result), 400)
-
-    def delete(self, _id):
-        try:
-            delete = delete_object(object_table=Services, object_id=_id)
-            return make_response(str(delete), 200)
-        except Exception as e:
-            return make_response(str(e), 400)
-
 
 api.add_resource(Service, "/service/", "/service/<_id>")
 
