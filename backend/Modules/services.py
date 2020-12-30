@@ -97,7 +97,7 @@ def get_all_services() -> dict:
         return {"Services": result}
 
 
-def get_visit_services(_id: str):
+def get_visit_services(_id: str) -> list:
     """
     Return the list of service objects based on a list of their ids
     :param _id: visit id for which the services are to be returned
@@ -107,7 +107,9 @@ def get_visit_services(_id: str):
         visits_services = [x[0] for x in session.query(VisitsServices.service_id).filter(
             VisitsServices.visit_id == _id).all()]  # Done to unpack the id from a tuple it comes in
         result = [x.__dict__ for x in
-                  session.query(Services).filter(Services.id.in_(visits_services)).all()]
+                  session.query(Services.id, Services.description, Services.gender, Services.name,
+                                Services.price, Services.service_duration)
+                      .filter(Services.id.in_(visits_services)).all()]
         return result
 
 
