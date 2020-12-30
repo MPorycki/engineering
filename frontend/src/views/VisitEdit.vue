@@ -22,7 +22,7 @@
                         <datepicker id="date" :language="pl" v-model="dateSelected" @input="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true" ></datepicker>
                     </div>
                     <div class="form-group" v-if="suggestedHours != null">
-                        <label for="myTable">Dostępne godziny wizyty</label>
+                        <label for="myTable">Dostępne godziny wizyty (obecnie wybrana {{this.originalHour}})</label>
                         <table class="col text-center" id="myTable">
                             <tr id="tblrow" v-for="i in Math.ceil(suggestedHours.length / 3)" :key="i">
                                 <td >
@@ -64,6 +64,7 @@ export default {
             disabledDates:{to: new Date()},
             suggestedHours: null,
             hourSelected: null,
+            originalHour: null,
             config: {}
         }
     },
@@ -155,7 +156,7 @@ export default {
            var datetime = details["datetime"] 
            this.dateSelected = new Date(datetime.split(", ")[0])
            this.loadHours()
-           this.hourSelected = datetime.split(", ")[1]
+           this.originalHour = datetime.split(", ")[1]
         }
     },
     mounted(){
