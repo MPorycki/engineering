@@ -410,12 +410,16 @@ api.add_resource(Visit, "/visit/", "/visit/<_id>")
 class AccountVisits(Resource):
     method_decorators = [verify_session]
 
-    def get(self):
-        result = get_account_visits(request.headers.get("account_id"))
-        return make_response(jsonify(result), 200)
+    def get(self, _id):
+        account_id = request.headers.get("account_id")
+        if _id == account_id or (not is_customer(account_id) and is_customer(_id)):
+            result = get_account_visits(_id)
+            return make_response(jsonify(result), 200)
+        else:
+            return make_response("Invalid request, account id needed", 400)
 
 
-api.add_resource(AccountVisits, "/accountVisits/")
+api.add_resource(AccountVisits, "/accountVisits/<_id>")
 
 
 class DatesAvailability(Resource):
