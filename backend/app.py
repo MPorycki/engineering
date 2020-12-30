@@ -22,14 +22,13 @@ from Modules.user_management import (
     session_is_valid,
     update_user
 )
-from Modules.services import (create_service, update_service, get_all_services)
-from Modules.salons import create_salon, update_salon, delete_salon, \
-    get_all_salons
+from Modules.services import get_all_services
+from Modules.salons import get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
     get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, \
     authorized_to_access_visit
 
-from Modules.crud_common import fetch_all_objects, fetch_object, delete_object
+from Modules.crud_common import fetch_object, delete_object
 
 from models import (
     Accounts,
@@ -40,7 +39,7 @@ from models import (
     Visits,
     session
 )
-from validation import ServiceInputs, SalonInputs, VisitInputs
+from validation import VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
