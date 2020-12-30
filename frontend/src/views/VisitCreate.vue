@@ -64,7 +64,7 @@ export default {
             hairdresserSelected: null,
             services: [],
             servicesSelected: [],
-            dateSelected: new Date().toLocaleString(),
+            dateSelected: new Date(),
             pl: pl,
             disabledDates:{to: new Date()},
             suggestedHours: null,
