@@ -4,7 +4,7 @@ import uuid
 
 from .crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitsServices, Salons, Accounts
-from Modules.user_management import is_customer
+from Modules.user_management import is_customer, get_account_data
 from Modules.adresses import adress_to_string
 from Modules.services import services_to_string, get_visit_services, services_total_duration, \
     services_total_price
@@ -343,8 +343,7 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list = {}
     visit = fetch_object(Visits, visit_id)
     details_list["salon"] = fetch_object(Salons, visit["salon_id"])
-    details_list["hairdresser"] = fetch_object(Accounts,
-                                               visit["hairdresser_id"])  # todo create method, too much data passed now
+    details_list["hairdresser"] = get_account_data(visit["hairdresser_id"])
 
     return {"details_for_edit": details_list}
 
