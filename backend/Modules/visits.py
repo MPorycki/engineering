@@ -346,7 +346,6 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list["hairdresser"] = fetch_object(Accounts,
                                                visit["hairdresser_id"])  # todo create method, too much data passed now
 
-    print(details_list)
     return {"details_for_edit": details_list}
 
 
