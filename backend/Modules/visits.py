@@ -211,7 +211,6 @@ def get_customer_visits_for_day(customer_id: str,
         for visit in session.query(Visits).filter(
                 Visits.customer_id == customer_id) \
                 .filter(Visits.date_start.like("%" + str(date) + "%")).all():
-            print(f"Yielded customer date {visit.date_start}")
             yield visit
 
 
