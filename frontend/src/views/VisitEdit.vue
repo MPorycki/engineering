@@ -19,7 +19,7 @@
                     </div>
                     <div class="form-group" v-if="servicesSelected.length > 0">
                         <label for="date">Wybierz dzień wizyty</label>
-                        <datepicker id="date" :language="pl" v-model="dateSelected" @selected="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true"></datepicker>
+                        <datepicker id="date" :language="pl" v-model="dateSelected" @input="loadHours()" format="dd/MM/yyyy" :disabled-dates="disabledDates" :bootstrap-styling="true" ></datepicker>
                     </div>
                     <div class="form-group" v-if="suggestedHours != null">
                         <label for="myTable">Dostępne godziny wizyty</label>
@@ -32,7 +32,7 @@
                         </table>
                     </div>
                     <div class="form-group">
-                        <input v-if="hourSelected != null" type="submit" class="btnSubmit" value="Zarezerwuj" />
+                        <input v-if="hourSelected != null" type="submit" class="btnSubmit" value="Zapisz" />
                     </div>
                 </form> 
         </myForm>
@@ -59,7 +59,7 @@ export default {
             hairdresserSelected: null,
             services: [],
             servicesSelected: [],
-            dateSelected: new Date().toLocaleString(),
+            dateSelected: new Date(),
             pl: pl,
             disabledDates:{to: new Date()},
             suggestedHours: null,
@@ -151,10 +151,18 @@ export default {
            this.getHairdressers(this.salonSelected.id)
            this.hairdresserSelected = details["hairdresser"]
            this.getServices()
-           this.servicesSelected = null
+           this.servicesSelected = details["services"]
+           var datetime = details["datetime"] 
+           this.dateSelected = new Date(datetime.split(", ")[0])
+           this.loadHours()
+           this.hourSelected = datetime.split(", ")[1]
         }
     },
     mounted(){
+        var yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+        this.disabledDates = {to: yesterday}
+
         this.config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id'), for_edit: "True"}}
          axios.get(this.$backend_url + "visit/"+this.$route.query.id, 
                     this.config)

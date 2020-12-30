@@ -345,6 +345,7 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list["salon"] = fetch_object(Salons, visit["salon_id"])
     details_list["hairdresser"] = get_account_data(visit["hairdresser_id"])
     details_list["services"] = get_visit_services(visit["id"])
+    details_list["datetime"] = visit["date_start"].strftime("%Y-%m-%d, %H:%M")
 
     return {"details_for_edit": details_list}
 
