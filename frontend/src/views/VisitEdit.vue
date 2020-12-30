@@ -4,12 +4,6 @@
             <h3>Edytuj wizytę</h3>
                 <form @submit.prevent="createVisit">
                     <div class="form-group">
-                        <label for="formControlSelect1">Wybierz salon</label>
-                            <select class="form-control" id="formControlSelect1" v-model="salonSelected" @change="onSalonSelect()">
-                                <option v-for="salon in salons" :value="salon" :key="salon.id">{{parseAdress(salon.address)}}</option>
-                            </select>
-                    </div>
-                    <div class="form-group">
                         <label for="formControlSelect2">Wybierz fryzjera</label>
                             <select class="form-control" id="formControlSelect2" v-model="hairdresserSelected" @change="onHairdresserSelect()">
                                 <option v-for="hairdresser in hairdressers" :value="hairdresser" :key="hairdresser.id">{{hairdresser.firstName + " " + hairdresser.lastName}}</option>
@@ -69,25 +63,16 @@ export default {
             pl: pl,
             disabledDates:{to: new Date()},
             suggestedHours: null,
-            hourSelected: null
+            hourSelected: null,
+            config: {}
         }
     },
     methods: {
-        getSalons(){
-            axios.get(this.$backend_url  + "salon/").then(res => this.salons = res.data["Salons"])
-        },
-        parseAdress(adressDict){
-            return adressDict["city"] + ", " + adressDict["street"] + " " + adressDict["building_no"]
-        },
-        onSalonSelect(){
-            this.getHairdressers(this.salonSelected.id)
-            this.hairdresserSelected = null
-        },
         getHairdressers(salonId){
-            axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
+            axios.get(this.$backend_url + "hairdresser/" + salonId, this.config).then(res => this.hairdressers = res.data["hairdressers"])
         },
         getServices(){
-            axios.get(this.$backend_url + "service/").then(res => this.services = res.data["Services"])
+            axios.get(this.$backend_url + "service/", this.config).then(res => this.services = res.data["Services"])
         },
         onHairdresserSelect(){
             this.getServices()
@@ -111,8 +96,7 @@ export default {
                 "serviceDuration": this.calculateServiceTime(),
                 "salonId": this.salonSelected.id,
             }
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.post(this.$backend_url +"visit/availability/", data, config).then(res => this.renderHourButtons(res.data["availableHours"]))
+            axios.post(this.$backend_url +"visit/availability/", data, this.config).then(res => this.renderHourButtons(res.data["availableHours"]))
         },
         renderHourButtons(hours){
             this.suggestedHours = hours
@@ -144,16 +128,18 @@ export default {
                     "salon_id": this.salonSelected.id,
                     "services": this.servicesSelected
                 }
-                axios.post(this.$backend_url +"visit/", data).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
+                axios.post(this.$backend_url +"visit/", data, this.config).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
             } else{
                 alert("Uzupełnij wszystkie pola")
             }
         },
         validateData(){
-                if (this.hairdresserSelected == null || this.calculateServiceTime() == 0 || this.salonSelected == null || this.servicesSelected.length == 0){ // TODO add customer id
-                    return false
-                }
-            return true
+            if (this.hairdresserSelected == null || this.calculateServiceTime() == 0 
+                || this.servicesSelected.length == 0){
+                return false
+            } else {
+                return true
+            }
         },
         handleCreationSuccess(data){
             if (data.success){
@@ -161,16 +147,18 @@ export default {
             } 
         },
         fillUpData(details){
-           console.log(details)
            this.salonSelected = details["salon"]
+           this.getHairdressers(this.salonSelected.id)
            this.hairdresserSelected = details["hairdresser"]
+           this.getServices()
+           this.servicesSelected = null
         }
     },
     mounted(){
-         axios.get(this.$backend_url + "visit/"+this.$route.query.id, {
-                        headers: {
-                        for_edit: "True"
-                        }}).then(res => this.fillUpData(res.data["details_for_edit"]))}
+        this.config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id'), for_edit: "True"}}
+         axios.get(this.$backend_url + "visit/"+this.$route.query.id, 
+                    this.config)
+                    .then(res => this.fillUpData(res.data["details_for_edit"]))}
     
 }
 </script>
