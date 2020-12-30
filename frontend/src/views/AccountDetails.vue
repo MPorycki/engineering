@@ -1,6 +1,6 @@
 <template>
     <myForm>
-        <H2>Twoje konto</H2>
+        <H2>Szczegóły konta</H2>
         <h5><strong>Imię</strong></h5>
         <p>{{details.firstName}}</p>
         <h5><strong>Nazwisko</strong></h5>

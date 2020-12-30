@@ -317,8 +317,8 @@ def get_hairdresser_visits(account_id):
 def get_visit_details(visit_id):
     """
     Return required visit data for FE to render
-    :param visit_id:
-    :return:
+    :param visit_id: Id of the visit to be returned
+    :return: Visit data and id
     """
     details_list = []
     visit_raw = fetch_object(Visits, visit_id)
@@ -333,7 +333,7 @@ def get_visit_details(visit_id):
                          "field_value": services_total_duration(services)})
     details_list.append({"field_name": "Cena",
                          "field_value": services_total_price(services)})
-    return {"details": details_list}
+    return {"details": details_list, "customerId": visit_raw["customer_id"]}
 
 
 def get_visit_details_for_edit(visit_id: str) -> dict:

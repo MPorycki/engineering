@@ -3,6 +3,7 @@
         <H2>Szczegóły wizyty</H2>
         <div>
             <router-link id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
+            <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
             <button id="cancel" type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
         </div>
         <div id="fields" v-for="data in details" :key="data.id">
@@ -24,20 +25,23 @@ export default {
         return {
             details: [],
             id: "",
+            customerId: "",
             isHairdresser: false
         }
     },
     mounted() {
         var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-        axios.get(this.$backend_url + "visit/" + this.$route.query.id, config).then(res => this.setDetails(res.data["details"]))
+        axios.get(this.$backend_url + "visit/" + this.$route.query.id, config).then(res => this.setDetails(res.data))
         axios.get(this.$backend_url + "employee_access/", config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
     },
     methods: {
-        setDetails(detailsInput){
+        setDetails(input){
+            var detailsInput = input.details
             for (var i=0; i < detailsInput.length; i++) {
                 this.details.push(detailsInput[i])
             }
             this.id = this.$route.query.id
+            this.customerId = input.customerId
         },
         setAccess(accessResults){
             this.isHairdresser = accessResults.isHairdresser
@@ -61,11 +65,11 @@ export default {
         margin-top: 20px;
     }
 
-    #cancel, #edit {
+    #cancel, #edit, #customer {
         height: 40px;
         width: 100px;
     }
-    #edit {
+    #edit, #customer {
         border: none;
         cursor: pointer;
         font-weight: 600;
@@ -73,7 +77,7 @@ export default {
         background-color: #a4e6f4;
         margin-right:25px;
     }
-    #edit:hover{
+    #edit:hover, #customer:hover{
         color: #fff;
         background-color: #f3bac3;
     }
