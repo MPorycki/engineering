@@ -23,10 +23,10 @@ def get_object(object_table, object_id: str):
 
 def fetch_object(object_table, object_id: str) -> dict:
     """
-    Prepares object data to be sent as JSON to the frontend
+    Return the object as dict
     :param object_table: the table where the requested object resides
     :param object_id: account_id of the user that is supposed to be returned
-    :return: User data as dict
+    :return: Object data as dict
     """
     for obj in get_object(object_table, object_id):
         result = convert_to_dict(obj)
