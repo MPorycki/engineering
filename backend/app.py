@@ -22,7 +22,7 @@ from Modules.user_management import (
     session_is_valid,
     update_user
 )
-from Modules.services import (create_service, update_service)
+from Modules.services import (create_service, update_service, get_all_services)
 from Modules.salons import create_salon, update_salon, delete_salon, \
     get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
@@ -255,7 +255,7 @@ class Service(Resource):
             result = fetch_object(Services, _id)
             return make_response(result, 200)
         else:
-            result = fetch_all_objects(Services)
+            result = get_all_services()
             return make_response(result, 200)
 
     def post(self):

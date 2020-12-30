@@ -4,6 +4,7 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from models import Services, VisitsServices, session_scope
+from .crud_common import fetch_all_objects
 
 
 def create_service(data: dict) -> dict:
@@ -73,6 +74,26 @@ def update_service(service_updated_data: dict) -> bool:
     except Exception as e:
         print(e)
         return False
+
+
+def get_all_services() -> dict:
+    """
+    Returns relevant data for all services
+    :return: Dict with services data
+    """
+    result = []
+    with session_scope() as session:
+        services = session.query(Services.description, Services.gender, Services.name,
+                                 Services.price, Services.service_duration).all()
+        for service in services:
+            result.append({
+                "description": service.description,
+                "gender": service.gender,
+                "name": service.name,
+                "price": service.price,
+                "service_duration": service.service_duration
+            })
+        return {"Services": result}
 
 
 def get_visit_services(_id: str):
