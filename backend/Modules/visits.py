@@ -353,7 +353,8 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
 def authorized_to_access_visit(visit_id: str, account_id: str) -> bool:
     """
     Checks whether the provided user_id has access to this visit.
-    Only the customer and hairdresser that are related to a given visit are authorized to see it.
+    Only the customer and all hairdressers are allowed to see the visit
     """
     visit = fetch_object(Visits, visit_id)
-    return visit["customer_id"] == account_id or visit["hairdresser_id"] == account_id
+    account = fetch_object(Accounts, account_id)
+    return visit["customer_id"] == account_id or account["account_type"] == "hairdresser"
