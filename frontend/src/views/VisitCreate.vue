@@ -19,7 +19,8 @@
                         <label for="exampleFormControlSelect1">Wybierz usługi</label>
                             <div class="form-check" v-for="service in services" :key="service.id"  @change="onServiceSelect()">
                                 <input class="form-check-input" type="checkbox" :id="service.name" :value=service v-model="servicesSelected">
-                                <label class="form-check-label" :for="service.name">{{service.name + " [" + service.gender + "] - " + service.price + " PLN"}}</label>
+                                <label :id="service.id" class="form-check-label" :for="service.name">{{service.name + " [" + service.gender + "] - " + service.price + " PLN"}}</label>
+                                <b-tooltip :target="service.id" id="serviceDescription" class="rtooltips" triggers="hover" placement="top"  :disabled=false>{{service.description}}</b-tooltip>
                             </div>
                             <p v-if="servicesSelected.length > 0"><b>Szacowany czas usługi to {{calculateServiceTime()}} minut.</b></p>
                     </div>
