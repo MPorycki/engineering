@@ -27,7 +27,7 @@
             <li v-if="this.sessionId != '' && this.isHairdresser == false">
                 <router-link to="/visitCreate">Umów się</router-link>
             </li>
-            <li v-else v-on:click="redirectToLogin()">
+            <li v-if="this.sessionId == ''" v-on:click="redirectToLogin()">
                 <a>Umów się</a>
             </li>
             <li>
