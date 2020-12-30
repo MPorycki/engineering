@@ -76,6 +76,20 @@ def update_service(service_updated_data: dict) -> bool:
         return False
 
 
+def services_data_to_dict(service: Services) -> dict:
+    """
+    Converts relevant service information to dict
+    :param service: Service that needs to be converted
+    :return: Dict with servcie data
+    """
+    return {"id": service.id,
+                "description": service.description,
+                "gender": service.gender,
+                "name": service.name,
+                "price": service.price,
+                "service_duration": service.service_duration}
+
+
 def get_all_services() -> dict:
     """
     Returns relevant data for all services
@@ -86,14 +100,7 @@ def get_all_services() -> dict:
         services = session.query(Services.id, Services.description, Services.gender, Services.name,
                                  Services.price, Services.service_duration).all()
         for service in services:
-            result.append({
-                "id": service.id,
-                "description": service.description,
-                "gender": service.gender,
-                "name": service.name,
-                "price": service.price,
-                "service_duration": service.service_duration
-            })
+            result.append(services_data_to_dict(service))
         return {"Services": result}
 
 
@@ -106,7 +113,7 @@ def get_visit_services(_id: str) -> list:
     with session_scope() as session:
         visits_services = [x[0] for x in session.query(VisitsServices.service_id).filter(
             VisitsServices.visit_id == _id).all()]  # Done to unpack the id from a tuple it comes in
-        result = [x.__dict__ for x in
+        result = [services_data_to_dict(service) for service in
                   session.query(Services.id, Services.description, Services.gender, Services.name,
                                 Services.price, Services.service_duration)
                       .filter(Services.id.in_(visits_services)).all()]

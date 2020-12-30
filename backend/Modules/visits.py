@@ -344,6 +344,7 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     visit = fetch_object(Visits, visit_id)
     details_list["salon"] = fetch_object(Salons, visit["salon_id"])
     details_list["hairdresser"] = get_account_data(visit["hairdresser_id"])
+    details_list["services"] = get_visit_services(visit["id"])
 
     return {"details_for_edit": details_list}
 
