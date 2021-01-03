@@ -5,7 +5,7 @@
         Umów wizytę 
         </router-link>
         <table class="col text-center" id="myTable" v-for="visit in visits" :key="visit.visit_id">
-            <router-link tag="tr" id="tblrow" class="btn btn-light shadow" :to="{ path: 'visitDetails', query: { id: visit.visit_id }}">
+            <router-link tag="tr" :style="[visit.visit_status=='FINISHED' ? {'background': '#D8D8D8'} : {'background': '#FFF'}]" id="tblrow" class="btn btn-light shadow" :to="{ path: 'visitDetails', query: { id: visit.visit_id }}">
                 <td id="date">
                     {{visit.visit_date}}
                 </td>
@@ -29,7 +29,7 @@ export default {
     data(){
         return {
             visits: [],
-            ifHairdresser: false
+            isHairdresser: false
         }
     },
     mounted(){
