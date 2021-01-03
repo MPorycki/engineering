@@ -247,8 +247,6 @@ api.add_resource(EmployeeAccess, "/employee_access/")
 
 
 class Service(Resource):
-    method_decorators = {"get": [verify_session]}
-
     def get(self, _id=None):
         if _id:
             result = fetch_object(Services, _id)

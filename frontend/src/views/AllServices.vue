@@ -31,8 +31,7 @@ export default {
         }
     },
     mounted(){
-        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-        axios.get(this.$backend_url + "service/", config).then(res => this.setServices(res.data["Services"]))
+        axios.get(this.$backend_url + "service/").then(res => this.setServices(res.data["Services"]))
     },
     methods: {
         setServices(servicesInput){
