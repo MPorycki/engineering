@@ -21,6 +21,9 @@
             <li>
                 <router-link to="/allSalons">Salony</router-link>
             </li>
+            <li>
+                <router-link to="/allServices">Usługi</router-link>
+            </li>
             <li v-if="this.sessionId != ''">
                 <router-link to="/visitsAll">Moje wizyty</router-link>
             </li>
