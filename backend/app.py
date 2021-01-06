@@ -117,13 +117,6 @@ class Account(Resource):
         else:
             return make_response(str(result), 400)
 
-    def delete(self, _id):
-        try:
-            delete = delete_object(object_table=Accounts, object_id=_id)
-            return make_response(str(delete), 200)
-        except Exception as e:
-            return make_response(str(e), 400)
-
 
 api.add_resource(Account, "/account/", "/account/<_id>")
 
