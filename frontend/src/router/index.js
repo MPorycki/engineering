@@ -14,6 +14,7 @@ import AccountDetails from '../views/AccountDetails'
 import AllCustomers from '../views/AllCustomers'
 import AllServices from '../views/AllServices'
 import ServiceDetails from '../views/ServiceDetails'
+import VisitClose from '../views/VisitClose'
 
 Vue.use(VueRouter)
 
@@ -97,6 +98,11 @@ const routes = [
     path: '/serviceDetails',
     name: 'ServiceDetails',
     component: ServiceDetails
+  },
+  {
+    path: '/visitClose',
+    name: 'VisitClose',
+    component: VisitClose
   }
 ]
 

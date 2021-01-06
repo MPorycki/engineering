@@ -4,7 +4,7 @@
         <div>
             <router-link id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
             <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
-            <button id="cancel" type="button" class="btn btn-danger" v-on:click="cancelVisit()">Odwołaj</button>
+            <router-link v-if="this.isHairdresser == true" id="visitClose" :to="{ path: 'VisitClose', query: { id: this.id }}" class="btn btn-primary" >Zakończ</router-link>
         </div>
         <div id="fields" v-for="data in details" :key="data.id">
             <h5><strong>{{data.field_name}}</strong></h5>
@@ -65,11 +65,9 @@ export default {
         margin-top: 20px;
     }
 
-    #cancel, #edit, #customer {
+    #edit, #customer, #visitClose{
         height: 40px;
         width: 100px;
-    }
-    #edit, #customer {
         border: none;
         cursor: pointer;
         font-weight: 600;
@@ -77,7 +75,7 @@ export default {
         background-color: #a4e6f4;
         margin-right:25px;
     }
-    #edit:hover, #customer:hover{
+    #edit:hover, #customer:hover, #visitClose:hover{
         color: #fff;
         background-color: #f3bac3;
     }
