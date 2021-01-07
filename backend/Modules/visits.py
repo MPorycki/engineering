@@ -303,7 +303,8 @@ def get_customer_visits(account_id):
 def get_hairdresser_visits(account_id):
     result = {"visits": []}
     with session_scope() as session:
-        for visit, customer in session.query(Visits, Accounts).filter(Visits.customer_id == Accounts.id).filter(
+        for visit, customer in session.query(Visits, Accounts).filter(
+                Visits.customer_id == Accounts.id).filter(
                 Visits.hairdresser_id == account_id).order_by(Visits.date_start.desc()).all():
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
@@ -357,3 +358,22 @@ def authorized_to_access_visit(visit_id: str, account_id: str) -> bool:
     visit = fetch_object(Visits, visit_id)
     account = fetch_object(Accounts, account_id)
     return visit["customer_id"] == account_id or account["account_type"] == "hairdresser"
+
+
+def add_visit_summary(visit_summary_data: dict) -> bool:
+    """
+    Adds summary note, ids of photos stored in firebase and change visit status to FINISHED
+    :param visit_summary_data: Consists of visit id, summary note, ids of photos to remember
+    for this visit
+    :return:
+    """
+    with session_scope() as session:
+        visit = session.query(Visits).filter(Visits.id == visit_summary_data["id"]).first()
+        visit.summary_note = visit_summary_data["summary"]
+        add_picture_ids(visit.id, visit_summary_data["pictures"])
+        visit.status = "FINISHED"
+    return True
+
+
+def add_picture_ids(visit_id: str, visit_pictures: list):
+    pass

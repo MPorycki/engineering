@@ -299,21 +299,25 @@ class Visit(Resource):
         else:
             return make_response(visit_creation, 400)
 
-    def patch(self):
-        if authorized_to_access_visit(request.data.get("id"), request.headers.get("account_id")):
-            inputs = VisitInputs(request)
-            if inputs.validate():
-                data = request.get_json()
-                visit_update = update_visit(data)
-            else:
-                return make_response(str(inputs.errors), 400)
-
-            if visit_update["success"]:
-                return make_response("Visit updated successfully", 200)
-            else:
-                return make_response(jsonify(visit_update), 400)
+    def patch(self, _id):
+        if request.data.get("add_summary"):
+            if not is_customer(request.headers.get("account_id")):
+                visit_summary_update = add_visit_summary(request.get_json())
         else:
-            return make_response("User not authorized to edit this visit", 401)
+            if authorized_to_access_visit(request.data.get("id"), request.headers.get("account_id")):
+                inputs = VisitInputs(request)
+                if inputs.validate():
+                    data = request.get_json()
+                    visit_update = update_visit(data)
+                else:
+                    return make_response(str(inputs.errors), 400)
+
+                if visit_update["success"]:
+                    return make_response("Visit updated successfully", 200)
+                else:
+                    return make_response(jsonify(visit_update), 400)
+            else:
+                return make_response("User not authorized to edit this visit", 401)
 
     def delete(self, _id):
         if authorized_to_access_visit(_id, request.headers.get("account_id")):
