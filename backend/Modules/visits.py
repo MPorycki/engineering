@@ -3,7 +3,7 @@ import datetime
 import uuid
 
 from .crud_common import delete_object, fetch_object
-from models import session_scope, Visits, VisitsServices, Salons, Accounts
+from models import session_scope, Visits, VisitPictures, VisitsServices, Salons, Accounts
 from Modules.user_management import is_customer, get_account_data
 from Modules.adresses import adress_to_string
 from Modules.services import services_to_string, get_visit_services, services_total_duration, \
@@ -376,4 +376,7 @@ def add_visit_summary(visit_summary_data: dict) -> bool:
 
 
 def add_picture_ids(visit_id: str, visit_pictures: list):
-    pass
+    with session_scope() as session:
+        for picture_id in visit_pictures:
+            picture = VisitPictures(visit_id=visit_id, firebase_id=picture_id)
+            session.add(picture)

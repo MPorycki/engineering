@@ -26,7 +26,7 @@ from Modules.services import get_all_services
 from Modules.salons import get_all_salons
 from Modules.visits import create_visit, update_visit, delete_visit, \
     get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, \
-    authorized_to_access_visit
+    authorized_to_access_visit, add_visit_summary
 
 from Modules.crud_common import fetch_object, delete_object
 
@@ -303,6 +303,10 @@ class Visit(Resource):
         if request.data.get("add_summary"):
             if not is_customer(request.headers.get("account_id")):
                 visit_summary_update = add_visit_summary(request.get_json())
+                if visit_summary_update:
+                    return make_response("Visit updated successfully", 200)
+                else:
+                    return make_response(jsonify(visit_summary_update), 400)
         else:
             if authorized_to_access_visit(request.data.get("id"), request.headers.get("account_id")):
                 inputs = VisitInputs(request)
