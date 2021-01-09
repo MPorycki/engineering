@@ -131,16 +131,23 @@ class Visits(base):
     date_start = Column(TIMESTAMP)
     date_end = Column(TIMESTAMP)
     status = Column(String)
+    summary_note = Column(String)
 
 
 class VisitsServices(base):
     __tablename__ = "visits_services"
 
     service_id = Column(String, ForeignKey(Services.id, onupdate="CASCADE",
-                                           ondelete="CASCADE"),
-                        primary_key=True)
+                                           ondelete="CASCADE"),primary_key=True)
     visit_id = Column(String, ForeignKey(Visits.id, onupdate="CASCADE",
                                          ondelete="CASCADE"), primary_key=True)
+
+
+class VisitPictures(base):
+    __tablename__ = "visits_pictures"
+
+    visit_id = Column(String, ForeignKey(Visits.id, onupdate="CASCADE", ondelete="CASCADE"))
+    firebase_id = Column(String, primary_key=True)
 
 
 base.metadata.create_all(db)
