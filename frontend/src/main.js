@@ -5,6 +5,7 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/main.css';
+import firebase from 'firebase'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
@@ -13,5 +14,18 @@ Vue.prototype.$backend_url = "http://localhost:5000/"
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAB7fXb4mw73hcyZYcGXtwmTezMglHwag0",
+      authDomain: "salonymarcopolo.firebaseapp.com",
+      projectId: "salonymarcopolo",
+      storageBucket: "salonymarcopolo.appspot.com",
+      messagingSenderId: "1049631200726",
+      appId: "1:1049631200726:web:45b0be378568b157734077"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  }
 }).$mount('#app')
