@@ -300,7 +300,7 @@ class Visit(Resource):
             return make_response(visit_creation, 400)
 
     def patch(self, _id):
-        if request.data.get("add_summary"):
+        if request.data.get("summary"):
             if not is_customer(request.headers.get("account_id")):
                 visit_summary_update = add_visit_summary(request.get_json())
                 if visit_summary_update:
