@@ -4,12 +4,11 @@
 
         <form @submit.prevent="sendSummary">
             <div class="form-group">
-                <input type="textbox" id="summary" class="form-control" placeholder="Notka" value="" />
-                <b-tooltip target="summary" id="summary" class="rtooltips" triggers="hover" placement="right"  :disabled=true >{{email_text}}</b-tooltip>
+                <input type="textbox" id="summary" class="form-control" v-model="summary" placeholder="Notka" value="" />
             </div>
             <div class="form-group">
-                <input type="file" id="pictureInput" class="form-control" placeholder="Obrazy" value="" />
-                <b-tooltip target="password" id="password_error" class="rtooltips" triggers="hover" placement="right"  :disabled=true>{{password_text}}</b-tooltip>
+                <h4>Wgraj zdjęcia</h4>
+                <input type="file" id="pictureInput" class="form-control" placeholder="Obrazy" value="" accept="image/x-png,image/gif,image/jpeg" v-on:change="this.onFileUpload"/>
             </div>
             <div class="form-group">
                 <input type="submit" class="btnSubmit" value="Podsumuj" />
@@ -31,35 +30,45 @@ export default {
         return {
             id: "",
             summary: "",
-            picture_ids: []
+            picture: null
         }
     },
     mounted(){
-        this.id = this.query.route.id
+        this.id = this.$route.query.id
     },
     methods:{
         sendSummary(){
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            var data = {"id": this.id, "summary": this.summary, "pictures": this.pictures}
+            var ids = this.sendToFirebase();
+            console.log(ids)
+            var data = {"id": this.id, "summary": this.summary, "pictures": [ids]}
             axios.patch(this.$backend_url + "visit/" + this.id, data, config)
         },
-        onUpload(){
-            this.picture=null;
-            const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
+        onFileUpload(event){
+            var files = event.target.files
+            this.picture = files
+        },
+        sendToFirebase(){
+            var pictureIds;
+            const storageRef=firebase.storage().ref(`${this.picture[0].name}`).put(this.picture[0]);
             storageRef.on(`state_changed`,snapshot=>{
                 this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
             }, error=>{console.log(error.message)},
             ()=>{this.uploadValue=100;
                 storageRef.snapshot.ref.getDownloadURL().then((url)=>{
-                this.picture =url;
+                pictureIds =url;
+                console.log(url)
                 });
             }
             );
+            return pictureIds;
         }
     }
 }
 </script>
 
 <style scoped>
-
+    #pictureInput{
+        border: none;
+    }
 </style>
