@@ -301,7 +301,7 @@ class Visit(Resource):
 
     def patch(self, _id):
         data = request.get_json()
-        if data["summary"]:
+        if data["summary"] or data["pictures"]:
             if not is_customer(request.headers.get("account_id")):
                 visit_summary_update = add_visit_summary(request.get_json())
                 if visit_summary_update:
