@@ -2,7 +2,7 @@
     <myForm>
         <h2>Podsumuj wizytę</h2>
 
-        <form @submit.prevent="sendSummary">
+        <form @submit.prevent="prepareSummary">
             <div class="form-group">
                 <input type="textbox" id="summary" class="form-control" v-model="summary" placeholder="Notka" value="" />
             </div>
@@ -30,38 +30,43 @@ export default {
         return {
             id: "",
             summary: "",
-            picture: null
+            picture: null,
+            pictureIds: []
         }
     },
     mounted(){
         this.id = this.$route.query.id
     },
     methods:{
+        prepareSummary(){
+            this.sendToFirebase();
+        },
         sendSummary(){
             var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            var ids = this.sendToFirebase();
-            console.log(ids)
-            var data = {"id": this.id, "summary": this.summary, "pictures": [ids]}
+            var data = {"id": this.id, "summary": this.summary, "pictures": this.pictureIds}
             axios.patch(this.$backend_url + "visit/" + this.id, data, config)
+            console.log("Ids po wysylce " + this.pictureIds)
         },
         onFileUpload(event){
             var files = event.target.files
             this.picture = files
         },
+        addPictureId(id){
+            this.pictureIds.push(id)
+            this.sendSummary()
+        },
         sendToFirebase(){
-            var pictureIds;
             const storageRef=firebase.storage().ref(`${this.picture[0].name}`).put(this.picture[0]);
             storageRef.on(`state_changed`,snapshot=>{
                 this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
             }, error=>{console.log(error.message)},
             ()=>{this.uploadValue=100;
                 storageRef.snapshot.ref.getDownloadURL().then((url)=>{
-                pictureIds =url;
+                this.addPictureId(url);
                 console.log(url)
                 });
             }
             );
-            return pictureIds;
         }
     }
 }
