@@ -4,8 +4,8 @@
             <H2>Szczegóły wizyty</H2>
             <div>
                 <router-link v-if="this.summary == null" id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
-                <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
                 <router-link v-if="this.isHairdresser == true && this.summary == null" id="visitClose" :to="{ path: 'VisitClose', query: { id: this.id }}" class="btn btn-primary" >Zakończ</router-link>
+                <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
             </div>
             <div id="fields" v-for="data in details" :key="data.id">
                 <h5><strong>{{data.field_name}}</strong></h5>
@@ -92,6 +92,10 @@ export default {
         color: #6998a3;
         background-color: #a4e6f4;
         margin-right:25px;
+    }
+
+    #customer{
+        margin-right: 0px;
     }
     #edit:hover, #customer:hover, #visitClose:hover{
         color: #fff;
