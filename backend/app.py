@@ -275,7 +275,7 @@ class Visit(Resource):
                 result = get_visit_details_for_edit(_id)
                 return make_response(result, 200)
             elif _id and not for_edit:
-                result = get_visit_details(_id)
+                result = get_visit_details(_id, is_customer(request.headers.get("account_id")))
                 return make_response(result, 200)
             else:
                 return make_response("No visit id provided", 400)

@@ -305,7 +305,7 @@ def get_hairdresser_visits(account_id):
     with session_scope() as session:
         for visit, customer in session.query(Visits, Accounts).filter(
                 Visits.customer_id == Accounts.id).filter(
-                Visits.hairdresser_id == account_id).order_by(Visits.date_start.desc()).all():
+            Visits.hairdresser_id == account_id).order_by(Visits.date_start.desc()).all():
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
                  "visit_data": f"{customer.first_name} {customer.last_name}",
@@ -314,10 +314,11 @@ def get_hairdresser_visits(account_id):
         return result
 
 
-def get_visit_details(visit_id):
+def get_visit_details(visit_id: str, is_customer: bool):
     """
     Return required visit data for FE to render
     :param visit_id: Id of the visit to be returned
+    :param is_customer:
     :return: Visit data and id
     """
     details_list = []
@@ -333,7 +334,13 @@ def get_visit_details(visit_id):
                          "field_value": services_total_duration(services)})
     details_list.append({"field_name": "Cena",
                          "field_value": services_total_price(services)})
-    return {"details": details_list, "customerId": visit_raw["customer_id"]}
+    pictures = get_picture_ids(visit_id)
+    summary_data = {}
+    if not is_customer and (visit_raw["status"] == "FINISHED"):
+        summary_data["summary"] = visit_raw["summary_note"]
+        summary_data["pictures"] = pictures
+    return {"details": details_list, "customerId": visit_raw["customer_id"],
+            "summary": summary_data}
 
 
 def get_visit_details_for_edit(visit_id: str) -> dict:
@@ -346,7 +353,6 @@ def get_visit_details_for_edit(visit_id: str) -> dict:
     details_list["hairdresser"] = get_account_data(visit["hairdresser_id"])
     details_list["services"] = get_visit_services(visit["id"])
     details_list["datetime"] = visit["date_start"].strftime("%Y-%m-%d, %H:%M")
-
     return {"details_for_edit": details_list}
 
 
@@ -380,3 +386,16 @@ def add_picture_ids(visit_id: str, visit_pictures: list):
         for picture_id in visit_pictures:
             picture = VisitPictures(visit_id=visit_id, firebase_id=picture_id)
             session.add(picture)
+
+
+def get_picture_ids(visit_id: str) -> list:
+    """
+    Return a list of picture URLs for the provided visit
+    :param visit_id: Id of the visit we want to get pictures for
+    :return: List of strings with URL of the pictures
+    """
+    result = []
+    with session_scope() as session:
+        for item in session.query(VisitPictures).filter(VisitPictures.visit_id == visit_id).all():
+            result.append(item.firebase_id)
+    return result
