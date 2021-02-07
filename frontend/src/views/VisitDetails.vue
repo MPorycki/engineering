@@ -1,16 +1,27 @@
 <template>
-    <myForm>
-        <H2>Szczegóły wizyty</H2>
-        <div>
-            <router-link id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
-            <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
-            <router-link v-if="this.isHairdresser == true" id="visitClose" :to="{ path: 'VisitClose', query: { id: this.id }}" class="btn btn-primary" >Zakończ</router-link>
-        </div>
-        <div id="fields" v-for="data in details" :key="data.id">
-            <h5><strong>{{data.field_name}}</strong></h5>
-            <p>{{data.field_value}}</p>
-        </div>
-    </myForm>
+    <div>
+        <myForm>
+            <H2>Szczegóły wizyty</H2>
+            <div>
+                <router-link v-if="this.summary == null" id="edit" :to="{ path: 'visitEdit', query: { id: this.id }}" class="btn btn-primary" >Edytuj</router-link>
+                <router-link v-if="this.isHairdresser == true" id="customer" :to="{ path: 'AccountDetails', query: { id: this.customerId }}" class="btn btn-primary" >Klient</router-link>
+                <router-link v-if="this.isHairdresser == true && this.summary == null" id="visitClose" :to="{ path: 'VisitClose', query: { id: this.id }}" class="btn btn-primary" >Zakończ</router-link>
+            </div>
+            <div id="fields" v-for="data in details" :key="data.id">
+                <h5><strong>{{data.field_name}}</strong></h5>
+                <p>{{data.field_value}}</p>
+            </div>
+        </myForm>
+        <myForm v-if="this.summary != null">
+            <H2>Podsumowanie</H2>
+            <h5><strong>Notka</strong></h5>
+            <p>{{this.summary.summary}}</p>
+            <h5><strong>Zdjęcia</strong></h5>
+            <div id="photos" v-for="photo in summary.pictures" :key="photo">
+                <img id="photo" :src="photo" alt="">
+            </div>
+        </myForm>
+    </div>
 </template>
 
 <script>
@@ -24,6 +35,7 @@ export default {
     data(){
         return {
             details: [],
+            summary: null,
             id: "",
             customerId: "",
             isHairdresser: false
@@ -42,6 +54,12 @@ export default {
             }
             this.id = this.$route.query.id
             this.customerId = input.customerId
+            if (Object.keys(input.summary).length > 0){
+                this.summary = {}
+                this.summary.summary = input.summary.summary
+                this.summary.pictures = input.summary.pictures
+                console.log(this.summary)
+            }
         },
         setAccess(accessResults){
             this.isHairdresser = accessResults.isHairdresser
@@ -78,5 +96,10 @@ export default {
     #edit:hover, #customer:hover, #visitClose:hover{
         color: #fff;
         background-color: #f3bac3;
+    }
+
+    #photo{
+        width: 75%;
+        margin-top: 10px;
     }
 </style>
