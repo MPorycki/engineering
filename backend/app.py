@@ -6,7 +6,7 @@ from flask_cors import CORS
 from flask.json import jsonify
 from flask_restful import Api, Resource
 
-from Modules.admin import AccountView, AdministratorView, AdressView, VisitsView, ServicesView, \
+from Modules.admin import AccountView, AdressView, VisitsView, ServicesView, \
     SalonsView
 from Modules.user_management import (
     can_access_admin,
@@ -28,11 +28,10 @@ from Modules.visits import create_visit, update_visit, delete_visit, \
     get_available_hours, get_account_visits, get_visit_details, get_visit_details_for_edit, \
     authorized_to_access_visit, add_visit_summary
 
-from Modules.crud_common import fetch_object, delete_object
+from Modules.crud_common import fetch_object
 
 from models import (
     Accounts,
-    Administrators,
     Adresses,
     Services,
     Salons,
@@ -388,4 +387,3 @@ admin.add_view(VisitsView(Visits, session))
 admin.add_view(ServicesView(Services, session))
 admin.add_view(SalonsView(Salons, session))
 admin.add_view(AdressView(Adresses, session))
-admin.add_view(AdministratorView(Administrators, session))

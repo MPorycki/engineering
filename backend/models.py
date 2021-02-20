@@ -61,6 +61,7 @@ class Accounts(base):
     salon_id = Column(String(length=32),
                       ForeignKey(Salons.id, onupdate="CASCADE",
                                  ondelete="CASCADE"), nullable=True)
+    is_admin = Column(Integer)
 
 
 class Sessions(base):
@@ -72,16 +73,6 @@ class Sessions(base):
     )
     session_id = Column(String(length=32), primary_key=True)
     created_at = Column(TIMESTAMP)
-
-
-class Administrators(base):
-    __tablename__ = "administrators"
-
-    account_id = Column(
-        String(length=32),
-        ForeignKey(Accounts.id, onupdate="CASCADE", ondelete="CASCADE"),
-        primary_key=True
-    )
 
 
 class ResetTokens(base):
