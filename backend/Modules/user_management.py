@@ -30,7 +30,7 @@ def register_user(
     :param raw_password: direct password provided by the user into the form
     :param first_name: first name of the user
     :param last_name: last name of the user
-    :param account_type: user or admin
+    :param account_type: user or hairdresser
     :param salon_id: ID of the salon, in case the user is a hairdresser
     :return: Payload with data regarding the registration
     """
