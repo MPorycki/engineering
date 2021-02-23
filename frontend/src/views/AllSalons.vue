@@ -1,17 +1,18 @@
 <template>
     <myForm>
         <h2>Nasze salony</h2>
-
            <table class="col text-center" id="myTable" v-for="salon in salons" :key="salon.salon_id">
-                    <td id="date">
+               <tr class="shadow" id="tblrow">
+                    <td id="address">
                         {{parseAddress(salon.address)}}
                     </td>
-                    <td >
+                    <td id="openHours">
                         {{salon.opening_hour + " - " + salon.closing_hour}}
                     </td>
-                    <td >
+                    <td id="map">
                         <a target="_blank" :href="googleMapsLink(salon.address)">Mapa</a>
                     </td>
+                </tr>
             </table>
     </myForm>
 </template>
@@ -55,16 +56,38 @@ export default {
 <style scoped>
     #myTable {
       margin-top: 25px;
+      table-layout: fixed;
     }
 
     #tblrow {
         height: 50px;
         width: 100%;
+        display: grid;
+        grid-template-columns: 60% 25% 15%
     }
 
-    #date{
-        padding-right: 100px;
-        padding-left:25px;
+    #address{
         padding-top:10px;
+        padding-left: 10px;
+        grid-column: 1;
+        font-size: 1.4vw;
+        width:100%;
+        text-align: left;
+    }
+
+    #openHours {
+        padding-top:10px;
+        grid-column: 2;
+        font-size: 1.4vw;
+        width:100%;
+        text-align: left;
+    }
+
+    #map {
+        padding-top:10px;
+        grid-column: 3;
+        font-size: 1.4vw;
+        width:100%;
+        text-align: center;
     }
 </style>

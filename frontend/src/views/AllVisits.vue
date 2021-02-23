@@ -60,8 +60,8 @@ export default {
     #tblrow {
         height: 50px;
         width: 100%;
-        display:grid;
-        grid-template-columns: 50%, 50%
+        display: grid;
+        grid-template-columns: 40% 60%
     }
 
     #date{
