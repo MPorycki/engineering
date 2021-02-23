@@ -9,7 +9,7 @@
                 <td id="date">
                     {{visit.visit_date}}
                 </td>
-                <td >
+                <td id="data">
                     {{visit.visit_data}}
                 </td>
             </router-link>
@@ -53,17 +53,28 @@ export default {
 
 <style scoped>
     #myTable {
-      margin-top: 25px;
+        margin-top: 25px;
+        table-layout: fixed;
     }
 
     #tblrow {
         height: 50px;
         width: 100%;
+        display:grid;
+        grid-template-columns: 50%, 50%
     }
 
     #date{
-        padding-right: 100px;
-        padding-left:25px;
-        padding-top:10px;
+        grid-column: 1;
+        font-size: 1.4vw;
+        width:100%;
+        padding-top: 5px
+    }
+
+    #data {
+        grid-column: 2;
+        font-size: 1.4vw;
+        width:100%;
+        padding-top: 5px
     }
 </style>
