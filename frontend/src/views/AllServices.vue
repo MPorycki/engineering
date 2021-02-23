@@ -57,18 +57,21 @@ export default {
     }
 
     #serviceName{
-        grid-column: 1;
         width:50%;
+        font-size: 1.3vw;
+        text-align: left;
     }
 
     #servicePrice {
-        grid-column: 2;
-        width:15%
+        width:15%;
+        font-size: 1.3vw;
+        text-align: left;
     }
 
     #serviceDuration {
-        grid-column: 3;
         width: 12%;
         padding-left:5px;
+        font-size: 1.3vw;
+        text-align: left;
     }
 </style>
