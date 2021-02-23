@@ -50,24 +50,6 @@ export default {
         table-layout: fixed;
     }
 
-    #tblrow1 {
-        height: 50px;
-        width: 100%;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        align-content:space-around;
-    }
-
-    #tblrow2 {
-        height: 50px;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 3fr,1fr,1fr;
-        justify-items: center;
-        align-items: center;
-    }
-
     #tblrow {
         height: 50px;
         width: 100%;
