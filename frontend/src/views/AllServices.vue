@@ -54,6 +54,7 @@ export default {
         height: 50px;
         width: 100%;
         padding-top: 10px;
+        color: #6998a3;
     }
 
     #serviceName{

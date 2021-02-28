@@ -61,7 +61,8 @@ export default {
         height: 50px;
         width: 100%;
         display: grid;
-        grid-template-columns: 40% 60%
+        grid-template-columns: 40% 60%;
+        color: #6998a3;
     }
 
     #date{
