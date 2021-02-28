@@ -11,6 +11,13 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(require('vue-cookies')) // https://github.com/cmp-cc/vue-cookies
 Vue.prototype.$backend_url = "http://localhost:5000/"
+Vue.mixin({
+  methods: {
+    getUserHeaders() {
+      return { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+    }
+  }
+});
 
 new Vue({
   router,
