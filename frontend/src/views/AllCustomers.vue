@@ -26,7 +26,7 @@ export default {
         }
     },
     mounted(){
-        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+        var config = this.getUserHeaders()
         axios.get(this.$backend_url + "account/", config).then(res => this.setCustomers(res.data["accounts"]))
     },
     methods: {

@@ -69,7 +69,8 @@ export default {
             pl: pl,
             disabledDates:{to: new Date()},
             suggestedHours: null,
-            hourSelected: null
+            hourSelected: null,
+            config: this.getUserHeaders()
         }
     },
     methods: {
@@ -87,8 +88,7 @@ export default {
             axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
         },
         getServices(){
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.get(this.$backend_url + "service/", config).then(res => this.services = res.data["Services"])
+            axios.get(this.$backend_url + "service/", this.config).then(res => this.services = res.data["Services"])
         },
         onHairdresserSelect(){
             this.getServices()
@@ -111,8 +111,7 @@ export default {
                 "serviceDuration": this.calculateServiceTime(),
                 "salonId": this.salonSelected.id,
             }
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.post(this.$backend_url +"visit/availability/", data, config).then(res => this.renderHourButtons(res.data["availableHours"]))
+            axios.post(this.$backend_url +"visit/availability/", data, this.config).then(res => this.renderHourButtons(res.data["availableHours"]))
         },
         renderHourButtons(hours){
             this.suggestedHours = hours
@@ -143,8 +142,7 @@ export default {
                     "salon_id": this.salonSelected.id,
                     "services": this.servicesSelected
                 }
-                var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-                axios.post(this.$backend_url +"visit/", data, config).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
+                axios.post(this.$backend_url +"visit/", data, this.config).then(res => this.handleCreationSuccess(res.data)).catch(res => alert(res.response.data.hairdresser_taken))
             } else{
                 alert("Uzupełnij wszystkie pola")
             }

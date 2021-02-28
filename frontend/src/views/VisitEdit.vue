@@ -65,7 +65,7 @@ export default {
             suggestedHours: null,
             hourSelected: null,
             originalHour: null,
-            config: {}
+            config: this.getUserHeaders()
         }
     },
     methods: {
@@ -164,9 +164,8 @@ export default {
         yesterday.setDate(yesterday.getDate() - 1)
         this.disabledDates = {to: yesterday}
 
-        this.config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id'), for_edit: "True"}}
-         axios.get(this.$backend_url + "visit/"+this.$route.query.id, 
-                    this.config)
+        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id'), for_edit: "True"}}
+         axios.get(this.$backend_url + "visit/"+this.$route.query.id, config)
                     .then(res => this.fillUpData(res.data["details_for_edit"]))}
     
 }

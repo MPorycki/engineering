@@ -45,7 +45,7 @@ export default {
         }
     },
     mounted(){
-        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+        var config = this.getUserHeaders()
         axios.get(this.$backend_url + "account/" + this.$route.query.id, config).then(res => this.setDetails(res.data))
         axios.get(this.$backend_url + "accountVisits/" + this.$route.query.id, config).then(res => this.setVisits(res.data["visits"]))
         axios.get(this.$backend_url + "employee_access/", config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())

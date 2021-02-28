@@ -49,19 +49,18 @@ export default {
             userId: "",
             sessionId: "",
             isAdmin: false,
-            isHairdresser: false
+            isHairdresser: false,
+            config: this.getUserHeaders()
         }
     },
     methods: {
         getSession(){
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.get(this.$backend_url + "session/", config).then(() => this.sessionStilValid()).catch(() => this.sessionInvalid())
+            axios.get(this.$backend_url + "session/", this.config).then(() => this.sessionStilValid()).catch(() => this.sessionInvalid())
         },
         sessionStilValid(){
             this.userId = this.$cookies.get('user-id')
             this.sessionId = this.$cookies.get('session-id')
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.get(this.$backend_url + "employee_access/", config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
+            axios.get(this.$backend_url + "employee_access/", this.config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
         },
         setAccess(accessResults){
             this.isHairdresser = accessResults.isHairdresser
@@ -73,8 +72,7 @@ export default {
             document.cookie = "user-id=;"
         },
         logout() {
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.delete(this.$backend_url + "account/logout", config).then(() => this.logoutSuccess()).catch(err => this.logoutFailed(err))
+            axios.delete(this.$backend_url + "account/logout", this.config).then(() => this.logoutSuccess()).catch(err => this.logoutFailed(err))
         },
         logoutSuccess(){
             document.cookie = "session-id=;"

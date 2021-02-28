@@ -38,13 +38,13 @@ export default {
             summary: null,
             id: "",
             customerId: "",
-            isHairdresser: false
+            isHairdresser: false,
+            config: this.getUserHeaders()
         }
     },
     mounted() {
-        var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-        axios.get(this.$backend_url + "visit/" + this.$route.query.id, config).then(res => this.setDetails(res.data))
-        axios.get(this.$backend_url + "employee_access/", config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
+        axios.get(this.$backend_url + "visit/" + this.$route.query.id, this.config).then(res => this.setDetails(res.data))
+        axios.get(this.$backend_url + "employee_access/", this.config).then(res => this.setAccess(res.data)).catch(() => this.handleAccessError())
     },
     methods: {
         setDetails(input){
@@ -66,8 +66,7 @@ export default {
         },
         handleAccessError(){},
         cancelVisit(){
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
-            axios.delete(this.$backend_url + "visit/" + this.id, config).then(res => this.handleDeletionSuccess(res.data))
+            axios.delete(this.$backend_url + "visit/" + this.id, this.config).then(res => this.handleDeletionSuccess(res.data))
         },
         handleDeletionSuccess(data){
             if (data){

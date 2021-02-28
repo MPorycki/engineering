@@ -42,7 +42,7 @@ export default {
             this.sendToFirebase();
         },
         sendSummary(){
-            var config = { headers: {account_id: this.$cookies.get('user-id'), session_id: this.$cookies.get('session-id')}}
+            var config = this.getUserHeaders()
             var data = {"id": this.id, "summary": this.summary, "pictures": this.pictureIds}
             axios.patch(this.$backend_url + "visit/" + this.id, data, config).then(() => this.$router.push({ name: 'VisitDetails',query: { id: this.id } }))
         },
