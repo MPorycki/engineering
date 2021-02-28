@@ -66,14 +66,14 @@ export default {
 
     #date{
         grid-column: 1;
-        font-size: 1.4vw;
+        font-size: -1.2vw;
         width:100%;
         padding-top: 5px
     }
 
     #data {
         grid-column: 2;
-        font-size: 1.4vw;
+        font-size: -1.2vw;
         width:100%;
         padding-top: 5px
     }

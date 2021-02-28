@@ -58,20 +58,20 @@ export default {
 
     #serviceName{
         width:50%;
-        font-size: 1.3vw;
+        font-size: -1.2vw;
         text-align: left;
     }
 
     #servicePrice {
         width:15%;
-        font-size: 1.3vw;
+        font-size: -1.2vw;
         text-align: left;
     }
 
     #serviceDuration {
         width: 12%;
         padding-left:5px;
-        font-size: 1.3vw;
+        font-size: -1.2vw;
         text-align: left;
     }
 </style>
