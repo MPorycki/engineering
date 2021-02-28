@@ -70,7 +70,7 @@ export default {
         padding-top:10px;
         padding-left: 10px;
         grid-column: 1;
-        font-size: 1.4vw;
+        font-size: -1.2vw;
         width:100%;
         text-align: left;
     }
@@ -78,7 +78,7 @@ export default {
     #openHours {
         padding-top:10px;
         grid-column: 2;
-        font-size: 1.4vw;
+        font-size: -1.2vw;
         width:100%;
         text-align: left;
     }
@@ -86,7 +86,7 @@ export default {
     #map {
         padding-top:10px;
         grid-column: 3;
-        font-size: 1.4vw;
+        font-size: -1.2vw;
         width:100%;
         text-align: center;
     }
