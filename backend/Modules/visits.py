@@ -1,4 +1,3 @@
-import copy
 import datetime
 import uuid
 
@@ -119,6 +118,7 @@ def get_available_hours(data: dict, account_id: str) -> dict:
     "serviceDuration: amount of time neeeded for the visit based on services'
      length,
      "salonId": salon where the service is supposed to take place}
+    :param account_id: Needed to specify for which user should the date be available
     :return: Start dates that the user can pick
     """
     available_hours = list()
@@ -233,11 +233,7 @@ def update_visit(visit_data: dict):
     try:
         if update_services(visit_data["id"], visit_data["services"]):
             with session_scope() as session:
-                visit = (
-                    session.query(Visits)
-                        .filter(Visits.id == visit_data["id"])
-                        .first()
-                )
+                visit = (session.query(Visits).filter(Visits.id == visit_data["id"]).first())
                 visit.date_start = date_start
                 visit.date_end = date_end
             return {"success": True}
@@ -283,6 +279,17 @@ def get_account_visits(account_id: str) -> dict:
         return get_hairdresser_visits(account_id)
 
 
+def update_visit_status(visit: Visits):
+    """
+    If the visit that is about to be served to frontend had already been in the past but the
+    hairdresser did not close the visit manually, the status should be changed to FINISHED
+    :param visit:
+    :return:
+    """
+    if visit.date_end < datetime.datetime.utcnow() and visit.status == 'CREATED':
+        visit.status = 'FINISHED'
+
+
 def get_customer_visits(account_id):
     result = {"visits": []}
     with session_scope() as session:
@@ -290,6 +297,8 @@ def get_customer_visits(account_id):
             Visits.customer_id == account_id).order_by(
             Visits.date_start.desc()).all()
         for visit in visits:
+            update_visit_status(visit)
+            session.commit()
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
                  "visit_data": visit.salon_id,
@@ -304,8 +313,12 @@ def get_hairdresser_visits(account_id):
     result = {"visits": []}
     with session_scope() as session:
         for visit, customer in session.query(Visits, Accounts).filter(
-                Visits.customer_id == Accounts.id).filter(
-            Visits.hairdresser_id == account_id).order_by(Visits.date_start.desc()).all():
+                Visits.customer_id == Accounts.id) \
+                .filter(Visits.hairdresser_id == account_id) \
+                .order_by(Visits.date_start.desc()) \
+                .all():
+            update_visit_status(visit)
+            session.commit()
             result["visits"].append(
                 {"visit_date": visit.date_start.strftime("%d.%m.%y, %H:%M"),
                  "visit_data": f"{customer.first_name} {customer.last_name}",
