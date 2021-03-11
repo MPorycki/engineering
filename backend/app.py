@@ -252,16 +252,12 @@ api.add_resource(Service, "/service/", "/service/<_id>")
 
 
 class Salon(Resource):
-    def get(self, _id=None):
-        if _id:
-            result = fetch_object(Salons, _id)
-            return make_response(result, 200)
-        else:
+    def get(self):
             result = get_all_salons()
             return make_response(result, 200)
 
 
-api.add_resource(Salon, "/salon/", "/salon/<_id>")
+api.add_resource(Salon, "/salon/")
 
 
 class Visit(Resource):
