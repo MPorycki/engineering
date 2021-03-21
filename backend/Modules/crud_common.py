@@ -1,11 +1,20 @@
-from models import session_scope
 import copy
+
+from sqlalchemy.orm import Query
+
+from models import session_scope
 
 
 # READ
-
-def convert_to_dict(query_result):
-    result = query_result.__dict__
+def convert_to_dict(query_result: Query) -> dict:
+    """
+    Converts a Query object returned by session.query method
+    :param query_result: A query object returned by querying the database
+    :return: Query object converted to a dict
+    """
+    converted = query_result.__dict__
+    del converted['_sa_instance_state']
+    result = copy.deepcopy(converted)
     return result
 
 
@@ -30,9 +39,7 @@ def fetch_object(object_table, object_id: str) -> dict:
     """
     for obj in get_object(object_table, object_id):
         result = convert_to_dict(obj)
-        del result['_sa_instance_state']
-        result2 = copy.deepcopy(result)
-    return result2
+    return result
 
 
 def all_objects_from_db(object_table):
@@ -53,11 +60,8 @@ def fetch_all_objects(object_table) -> dict:
     result = {key_name: []}
 
     for _object in all_objects_from_db(object_table):
-        converted = convert_to_dict(_object)
-        del converted['_sa_instance_state']
-        result[key_name].append(converted)
-        result2 = copy.deepcopy(result)
-    return result2
+        result[key_name].append(convert_to_dict(_object))
+    return result
 
 
 # DELETE
