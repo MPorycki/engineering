@@ -2,23 +2,24 @@ import copy
 
 from sqlalchemy.orm import Query
 
-from models import session_scope
+from models import session_scope, base
 
 
 # READ
 def convert_to_dict(query_result: Query) -> dict:
     """
-    Converts a Query object returned by session.query method
+    Converts a Query object returned by session.query method.
+    It also removes the unnecessary key created by SQLAlchemy
     :param query_result: A query object returned by querying the database
     :return: Query object converted to a dict
     """
     converted = query_result.__dict__
-    del converted['_sa_instance_state']
+    del converted["_sa_instance_state"]
     result = copy.deepcopy(converted)
     return result
 
 
-def get_object(object_table, object_id: str):
+def get_object(object_table: base, object_id: str):
     """
     Gets a single object record from the database
     :param object_table: the table where the requested object resides
