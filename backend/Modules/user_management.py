@@ -9,8 +9,8 @@ from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 
 from models import Accounts, Sessions, ResetTokens, session_scope
-from .crud_common import *
-from .salons import salon_has_hairdresser_spot
+from crud_common import *
+from salons import salon_has_hairdresser_spot
 from settings import FRONTEND_URL, MAIL_ADRESS, MAIL_PASSWORD
 
 
@@ -173,6 +173,13 @@ def change_password(token_id: str, new_password: str) -> bool:
 
 
 def token_valid(token: dict) -> bool:
+    """
+    Checks whether reset password token is still valid and can
+    be used ror password reset.
+    :param token: Token object as a dict
+    :return: Boolean stating whether the token can still be used to
+    reset password
+    """
     if token["created_at"] < (datetime.datetime.utcnow() - datetime.timedelta(days=7)):
         return False
     else:
