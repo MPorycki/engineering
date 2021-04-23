@@ -4,7 +4,6 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 
 from models import Services, VisitsServices, session_scope
-from .crud_common import fetch_all_objects
 
 
 def create_service(data: dict) -> dict:
