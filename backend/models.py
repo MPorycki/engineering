@@ -141,4 +141,4 @@ class VisitPictures(base):
     firebase_id = Column(String, primary_key=True)
 
 
-base.metadata.create_all(db)
+# base.metadata.create_all(db)
