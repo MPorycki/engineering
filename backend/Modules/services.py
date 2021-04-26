@@ -45,7 +45,6 @@ def validate_service(data: dict):
     elif data["gender"] not in ("MALE", "FEMALE"):
         result["error"] = "Niepoprawna plec"
     elif data["service_duration"] <= 0:
-        raise IntegrityError("Czas trwania uslugi musi byc dodatni")
         result["error"] = "Czas trwania uslugi musi byc dodatni"
     else:
         result["success"] = True
@@ -137,6 +136,10 @@ def get_visit_services(_id: str) -> list:
 
 
 def services_to_string(services: list) -> str:
+    """
+    :param services: List of services as dicts
+    :return: String with a list of services names
+    """
     result_string = ""
     for service in services:
         result_string += service["name"] + ", "
