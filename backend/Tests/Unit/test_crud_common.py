@@ -10,7 +10,7 @@ from models import Accounts
 
 @fixture(scope="module")
 def test_db_object():
-    obj = Accounts(
+    return Accounts(
         id=uuid.uuid4().hex,
         email="marcopolo@test.com",
         hashed_password="anything",
@@ -20,7 +20,6 @@ def test_db_object():
         account_type="customer",
         salon_id=uuid.uuid4().hex
     )
-    return obj
 
 
 @pytest.mark.skip(reason="no way of currently testing this")
