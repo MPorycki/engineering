@@ -7,10 +7,9 @@ from models import Services, VisitsServices, session_scope
 
 
 def create_service(data: dict) -> dict:
-    try:
-        validate_service(data)
-    except IntegrityError as e:
-        return {"success": False, "error": str(e)}
+    validation = validate_service(data)
+    if not validation["success"]:
+        return validation
     _id = uuid.uuid4().hex
     new_service = Services(
         id=_id,
@@ -38,14 +37,19 @@ def validate_service(data: dict):
     gender: Gender for which the service is designed, has to be one of: (MALE, FEMALE)
     service_duration: Duration of the service, has to be higher than 0
     """
+    result = {"success": False}
     if len(data["name"]) > 32:
-        raise IntegrityError("Nazwa uslugi jest za dluga")
-    if data["price"] < 0:
-        raise IntegrityError("Cena nie moze byc ujemna")
-    if data["gender"] not in ("MALE", "FEMALE"):
-        raise IntegrityError("Niepoprawna plec")
-    if data["service_duration"] <= 0:
+        result["error"] = "Nazwa uslugi jest za dluga"
+    elif data["price"] < 0:
+        result["error"] = "Cena nie moze byc ujemna"
+    elif data["gender"] not in ("MALE", "FEMALE"):
+        result["error"] = "Niepoprawna plec"
+    elif data["service_duration"] <= 0:
         raise IntegrityError("Czas trwania uslugi musi byc dodatni")
+        result["error"] = "Czas trwania uslugi musi byc dodatni"
+    else:
+        result["success"] = True
+    return result
 
 
 def update_service(service_updated_data: dict) -> bool:
@@ -54,7 +58,7 @@ def update_service(service_updated_data: dict) -> bool:
         :param service_updated_data: data of the given service to be updated
         :return: Boolean stating whether the update was successful
         """
-    if not validate_service(service_updated_data):
+    if not validate_service(service_updated_data)["success"]:
         return False
     try:
         with session_scope() as session:
