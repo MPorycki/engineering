@@ -20,7 +20,7 @@ def test_db_object():
         account_type="customer",
         salon_id=uuid.uuid4().hex
     )
-    return test_db_object
+    return obj
 
 
 @pytest.mark.skip(reason="no way of currently testing this")
