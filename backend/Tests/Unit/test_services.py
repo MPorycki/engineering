@@ -2,7 +2,7 @@ from pytest import fixture
 
 from models import Services
 from Modules.services import validate_service, translate_gender, services_data_to_dict, \
-    services_to_string
+    services_to_string, services_total_duration, services_total_price
 
 
 @fixture(scope="function")
@@ -122,6 +122,7 @@ def test_services_data_to_dict_has_proper_structure(generate_test_service_object
     assert "name" in test_result
     assert "price" in test_result
     assert "service_duration" in test_result
+    assert "created_at" not in test_result
 
 
 def test_services_to_string_converts_correctly(generate_test_services_list):
@@ -135,9 +136,23 @@ def test_services_to_string_converts_correctly(generate_test_services_list):
     assert test_result == "Test_service, Test_service, Test_service"
 
 
-def test_services_total_duration_is_calculated_correctly():
-    pass
+def test_services_total_duration_is_calculated_correctly(generate_test_services_list):
+    # GIVEN
+    test_services_list = generate_test_services_list
+
+    # WHEN
+    test_result = services_total_duration(test_services_list)
+
+    # THEN
+    assert test_result == "360 min"
 
 
-def test_services_total_price_is_calculated_correctly():
-    pass
+def test_services_total_price_is_calculated_correctly(generate_test_services_list):
+    # GIVEN
+    test_services_list = generate_test_services_list
+
+    # WHEN
+    test_result = services_total_price(test_services_list)
+
+    # THEN
+    assert test_result == "363 zł"
