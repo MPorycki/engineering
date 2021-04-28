@@ -146,7 +146,6 @@ def send_reset_link(token_id: str, account_email: str, account_first_name):
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", port=465, context=context) as server:
         server.login(MAIL_ADRESS, MAIL_PASSWORD)
-        print("Probuje wyslac")
         server.sendmail(MAIL_ADRESS, account_email, text)
 
 
