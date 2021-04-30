@@ -6,7 +6,7 @@ from flask import request, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 
-from Modules.user_management import send_password_reset_email, can_access_admin, is_customer
+from Modules.user_management import handle_password_reset_request, can_access_admin, is_customer
 from Modules.salons import validate_salon, salon_has_hairdresser_spot
 from Modules.visits import delete_visit_services
 
@@ -46,7 +46,7 @@ class AccountView(GeneralView):
 
     def after_model_change(self, form, model, is_created):
         if is_created:
-            send_password_reset_email(model.email)
+            handle_password_reset_request(model.email)
 
     def is_accessible(self):
         return can_access_admin(request.cookies.get("session-id"), request.cookies.get("user-id"))

@@ -18,7 +18,7 @@ from Modules.user_management import (
     logout,
     change_password,
     register_user,
-    send_password_reset_email,
+    handle_password_reset_request,
     session_is_valid,
     update_user
 )
@@ -169,7 +169,7 @@ class AccountResetPassword(Resource):
                 return make_response("Password was not changed", 403)
         else:
             data = request.get_json()
-            send_password_reset_email(data["email"])
+            handle_password_reset_request(data["email"])
             return make_response("Request handled successfully", 200)
 
 
