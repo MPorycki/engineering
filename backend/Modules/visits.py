@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from .crud_common import delete_object, fetch_object
+from Modules.crud_common import delete_object, fetch_object
 from models import session_scope, Visits, VisitPictures, VisitsServices, Salons, Accounts
 from Modules.user_management import is_customer, get_account_data
 from Modules.adresses import adress_to_string
@@ -103,7 +103,7 @@ def calculate_end_date(start_date: datetime, duration: int) -> datetime:
     """
     Calculates the end date based on the provided start date
     :param start_date: beginning of the visit
-    :param duration: duration to be added to start time
+    :param duration: duration to be added to start time(in minutes)
     :return: datetime with added duration
     """
     return start_date + datetime.timedelta(minutes=duration)
