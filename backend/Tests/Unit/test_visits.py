@@ -88,7 +88,7 @@ def test_dates_collide_finds_collision_when_visit_starts_later(test_visit_obj):
     assert test_result_1 is False
 
 
-def test_calulate_end_date_returns_correct_date():
+def test_calculate_end_date_returns_correct_date():
     # GIVEN
     test_start_date = datetime.datetime.strptime("05/04/2021 14:00", "%d/%m/%Y %H:%M")
     test_duration = 120
