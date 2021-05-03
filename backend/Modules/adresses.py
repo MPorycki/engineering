@@ -40,39 +40,77 @@ def create_adress(adress: dict, salon_id: str) -> str:
     return adress_id
 
 
-def validate_adress(adress: dict) -> bool:
+def validate_adress(adress: dict) -> dict:
     """
     Validate the data provided for the adress
     :param adress:
     :return:
     """
+    if not validate_city(adress["city"])["is_validated"]:
+        raise ValueError(validate_city(adress["city"])["error"])
+
+    elif not validate_zip(["zip_code"])["is_validated"]:
+        raise ValueError(validate_zip(["zip_code"])["error"])
+
+    elif not validate_street(adress["street"])["is_validated"]:
+        raise ValueError(validate_street(adress["street"])["error"])
+
+    elif not validate_building_no(adress["building_no"])["is_validated"]:
+        raise ValueError(validate_building_no(adress["building_no"])["error"])
+
+    else:
+        result["success"] = True
+    return result
+
+
+def validate_city(city: str) -> bool:
+    result = {"is_validated": False}
     city_regex = re.compile("^[A-Z].*")
     number_regex = re.compile("[0-9]")
+    if not city_regex.match(city) or number_regex.match(
+            city):
+        result["error"] = "Nazwa miasta zawiera niedozwolone znaki."
+    elif len(city.split(" ")) > 3:
+        result["error"] = "Nazwa miasta ma za duzo slow."
+    else:
+        result["is_validated"] = True
+    return result
 
-    if not city_regex.match(adress["city"]) or number_regex.match(
-            adress["city"]
-    ):
-        raise ValueError("Nazwa miasta zawiera niedozwolone znaki.")
-    elif len(adress["city"].split(" ")) > 3:
-        raise ValueError("Nazwa miasta ma za duzo slow.")
 
+def validate_zip(zip: str) -> bool:
+    result = {"is_validated": False}
     zip_regex = re.compile("[0-9]{2}-[0-9]{3}")
-    if len(adress["zip_code"]) > 6 or len(adress["zip_code"]) == 0:
-        raise ValueError("Kod pocztowy posiada niedozwolona dlugosc.")
-    elif not zip_regex.match(adress["zip_code"]):
-        raise ValueError("Niepoprawny format kodu pocztowego.")
+    if not zip_regex.match(zip):
+        result["error"] = "Niepoprawny format kodu pocztowego."
+    else:
+        result["is_validated"] = True
+    return result
 
+
+def validate_street(street: str) -> bool:
+    result = {"is_validated": False}
     street_regex = re.compile("^[A-Z].*")
-    if len(adress["street"]) > 32 or len(adress["street"]) == 0:
-        raise ValueError("Niedozwolona dlugosc ulicy")
-    elif not street_regex.match(adress["street"]):
-        raise ValueError("W nazwie ulicy znajduja sie niedozwolone znaki")
+    if len(street) == 0:
+        result["error"] = "Nazwa ulicy jest wymagana"
+    if len(street) > 32:
+        result["error"] = "Niedozwolona dlugosc ulicy."
+    elif not street_regex.match(street):
+        result["error"] = "W nazwie ulicy znajduja sie niedozwolone znaki."
+    else:
+        result["is_validated"] = True
+    return result
 
+
+def validate_building_no(building_no: str) -> bool:
+    result = {"is_validated": False}
     building_no_regex = re.compile("^[0-9]{1,3}[a-z]?$")
-    if len(adress["building_no"]) == 0:
-        raise ValueError("Numer budynku jest wymagany")
-    elif not building_no_regex.match(adress["building_no"]):
-        raise ValueError("W numerze budynku występuja niedozwolone znaki")
+    if len(building_no) == 0:
+        result["error"] = "Numer budynku jest wymagany."
+    elif not building_no_regex.match(building_no):
+        result["error"] = "W numerze budynku występuja niedozwolone znaki."
+    else:
+        result["is_validated"] = True
+    return result
 
 
 def get_adress(salon_id: str) -> dict:
@@ -93,7 +131,7 @@ def get_adress(salon_id: str) -> dict:
         return result
 
 
-def update_adress(salon_id, adress_data: dict) -> str:
+def update_adress(salon_id, adress_data: dict) -> bool:
     """
     Update salon adress data
     :param salon_id: id of the salon that should have its adress udpated
