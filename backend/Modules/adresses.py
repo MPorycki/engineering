@@ -40,7 +40,7 @@ def create_adress(adress: dict, salon_id: str) -> str:
     return adress_id
 
 
-def validate_adress(adress: dict) -> dict:
+def validate_adress(adress: dict):
     """
     Validate the data provided for the adress
     :param adress:
@@ -57,10 +57,6 @@ def validate_adress(adress: dict) -> dict:
 
     elif not validate_building_no(adress["building_no"])["is_validated"]:
         raise ValueError(validate_building_no(adress["building_no"])["error"])
-
-    else:
-        result["success"] = True
-    return result
 
 
 def validate_city(city: str) -> bool:
@@ -133,31 +129,24 @@ def get_adress(salon_id: str) -> dict:
 
 def update_adress(salon_id, adress_data: dict) -> bool:
     """
-    Update salon adress data
+    Update salon adress data. Exceptions are handled in update_salon function,
+    hence there were removed from this one
     :param salon_id: id of the salon that should have its adress udpated
     :param adress_data: Updated data of the adress
     :return: Boolean stating whether the update was successful
     """
-    if not validate_adress(adress_data):
-        return False
-    try:
-        with session_scope() as session:
-            adress = (
-                session.query(Adresses)
-                    .filter(Adresses.salon_id == salon_id)
-                    .first()
-            )
-            adress.city = adress_data["city"]
-            adress.zip_code = adress_data["zip_code"]
-            adress.street = adress_data["street"]
-            adress.building_no = adress_data["building_no"]
-            adress.number_of_seats = adress_data["number_of_seats"]
-    except IntegrityError:
-        return False
-    except Exception as e:
-        print(str(e.__class__.__name__) + ": " + str(e))
-        return False
-    return True
+    validate_adress(adress_data)
+    with session_scope() as session:
+        adress = (
+            session.query(Adresses)
+                .filter(Adresses.salon_id == salon_id)
+                .first()
+        )
+        adress.city = adress_data["city"]
+        adress.zip_code = adress_data["zip_code"]
+        adress.street = adress_data["street"]
+        adress.building_no = adress_data["building_no"]
+        adress.number_of_seats = adress_data["number_of_seats"]
 
 
 def adress_to_string(salon_id: str) -> str:
