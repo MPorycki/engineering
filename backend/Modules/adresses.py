@@ -62,9 +62,8 @@ def validate_adress(adress: dict):
 def validate_city(city: str) -> bool:
     result = {"is_validated": False}
     city_regex = re.compile("^[A-Z].*")
-    number_regex = re.compile("[0-9]")
-    if not city_regex.match(city) or number_regex.match(
-            city):
+    number_regex = re.compile(".*[0-9].*")
+    if not city_regex.match(city) or number_regex.match(city):
         result["error"] = "Nazwa miasta zawiera niedozwolone znaki."
     elif len(city.split(" ")) > 3:
         result["error"] = "Nazwa miasta ma za duzo slow."
@@ -86,12 +85,13 @@ def validate_zip(zip: str) -> bool:
 def validate_street(street: str) -> bool:
     result = {"is_validated": False}
     street_regex = re.compile("^[A-Z].*")
+    print(len(street))
     if len(street) == 0:
-        result["error"] = "Nazwa ulicy jest wymagana"
-    if len(street) > 32:
+        result["error"] = "Nazwa ulicy jest wymagana."
+    elif len(street) > 32:
         result["error"] = "Niedozwolona dlugosc ulicy."
     elif not street_regex.match(street):
-        result["error"] = "W nazwie ulicy znajduja sie niedozwolone znaki."
+        result["error"] = "Nazwa ulicy powinna zaczynac sie z duzej litery."
     else:
         result["is_validated"] = True
     return result
