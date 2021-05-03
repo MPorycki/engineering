@@ -151,7 +151,7 @@ def update_adress(salon_id, adress_data: dict) -> bool:
 
 def adress_to_string(salon_id: str) -> str:
     """
-    Provider adress in format {{street}} {{building_no}}, {{city}} as string
+    Provides adress in format {{street}} {{building_no}}, {{city}} as string
     """
     adress = get_adress(salon_id)
     return f"{adress['street']} {adress['building_no']}, {adress['city']}"
