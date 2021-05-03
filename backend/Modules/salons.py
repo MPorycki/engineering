@@ -93,7 +93,7 @@ def update_salon(salon_data: dict) -> dict:
             salon.closing_hour = salon_data["closing_hours"]
             session.commit()
         return {"success": True}
-    except IntegrityError as e:
+    except (IntegrityError, ValueError) as e:
         return {"success": False, "error": str(e)}
 
 
