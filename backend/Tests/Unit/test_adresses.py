@@ -6,7 +6,7 @@ def test_validate_city_does_not_allow_bad_characters():
     # GIVEN
     test_city_correct = "Szczecin"
     test_city_incorrect_1 = "CyberWawa2077"
-    test_city_incorrect_2 = "oDRWOTNIE"
+    test_city_incorrect_2 = "oDWROTNIE"
 
     # WHEN
     test_result_1 = validate_city(test_city_correct)
