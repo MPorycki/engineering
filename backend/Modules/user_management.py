@@ -274,7 +274,7 @@ def get_hairdressers_in_salon(salon_id: str):
     :param salon_id: uuid of the salon
     :return:
     """
-    result = {"hairdressers": []}
+    result = {"Hairdressers": []}
     with session_scope() as session:
         hairdressers = session.query(Accounts).filter(
             Accounts.salon_id == salon_id).all()
