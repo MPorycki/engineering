@@ -85,7 +85,7 @@ export default {
             this.hairdresserSelected = null
         },
         getHairdressers(salonId){
-            axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["hairdressers"])
+            axios.get(this.$backend_url + "hairdresser/"+salonId).then(res => this.hairdressers = res.data["Hairdressers"])
         },
         getServices(){
             axios.get(this.$backend_url + "service/", this.config).then(res => this.services = res.data["Services"])

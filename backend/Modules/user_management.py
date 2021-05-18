@@ -279,7 +279,7 @@ def get_hairdressers_in_salon(salon_id: str):
         hairdressers = session.query(Accounts).filter(
             Accounts.salon_id == salon_id).all()
         for hairdresser in hairdressers:
-            result["hairdressers"].append(
+            result["Hairdressers"].append(
                 {"id": hairdresser.id, "firstName": hairdresser.first_name,
                  "lastName": hairdresser.last_name})
         return result
