@@ -31,6 +31,8 @@ def test_base_connection(client):
 def test_register_for_a_visit(sq, client, monkeypatch):
     monkeypatch.setattr("models.Session", lambda: sq)
     set_up_test_db(sq)
+    # User Jan Testowy logs in
+    client.post("/account/login", json=dict(email="jan@testowy.com", raw_password="anything"))
     # User enters the registration page. List of available salons loads
     rv = client.get("/salon/")
     salon_data = json.loads(rv.data.decode('utf8'))
@@ -56,3 +58,14 @@ def test_register_for_a_visit(sq, client, monkeypatch):
     services_request = client.get("/service/")
     print(services_request.data)
     services_data = json.loads(services_request.data.decode('utf8'))["Services"]
+    assert len(services_data) == 2
+    assert "name", "gender" in services_data[0]
+    assert "service_duration" in services_data[0]
+    assert services_data[1]["name"] == "Test"
+    # Users selects services
+    picked_services = services_data
+    # Available hours for today are loaded
+    avail_hours = client.post("/visit/availability/",
+                              data=dict(date="05/06/2021", hairdresserId=picked_hairdresser["id"],
+                                        ServiceDuration=180, salonId=picked_salon["id"]), headers=dict(account_id="a"))
+    print(avail_hours.data)

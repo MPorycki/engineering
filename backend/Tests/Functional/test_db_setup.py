@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from models import Accounts, Adresses, Salons
+from models import Accounts, Adresses, Salons, Services
 
 
 def set_up_test_db(session):
@@ -69,4 +69,21 @@ def add_salons(session):
 
 
 def add_services(session):
-    pass
+    session.add(Services(
+        id=uuid.uuid4().hex,
+        name="Test",
+        price=15,
+        description="Description",
+        created_at="2021-04-05 16:00",
+        gender="MALE",
+        service_duration=120
+    ))
+    session.add(Services(
+        id=uuid.uuid4().hex,
+        name="TestFemale",
+        price=250,
+        description="DescriptionFemale",
+        created_at="2021-04-05 16:00",
+        gender="FEMALE",
+        service_duration=60
+    ))
