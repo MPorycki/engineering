@@ -109,7 +109,7 @@ def calculate_end_date(start_date: datetime, duration: int) -> datetime:
     return start_date + datetime.timedelta(minutes=duration)
 
 
-def get_available_hours(data: dict) -> dict:
+def get_available_hours(data: dict, account_id: str) -> dict:
     """
     Provide fronted dates that the user can use to register his or her visit.
     :param data: Dict with the following schema {"date": date selected by user,
@@ -118,6 +118,7 @@ def get_available_hours(data: dict) -> dict:
     "serviceDuration: amount of time neeeded for the visit based on services'
      length,
      "salonId": salon where the service is supposed to take place}
+    :param account_id: Needed to specify for which user should the date be available
     :return: Start dates that the user can pick
     """
     available_hours = list()
@@ -132,7 +133,7 @@ def get_available_hours(data: dict) -> dict:
     while date_end < datetime.datetime.strptime(
             f"{data['date']} {salon['closing_hour']}", "%d/%m/%Y %H:%M"):
         if date_available(date_start, date_end,
-                          data["hairdresserId"], data["customerId"])["success"]:
+                          data["hairdresserId"], account_id)["success"]:
             available_hours.append(
                 datetime.datetime.strftime(date_start, "%H:%M"))
         date_start = date_start + datetime.timedelta(minutes=30)
