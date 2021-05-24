@@ -11,7 +11,6 @@ def set_up_test_db(session):
     add_services(session)
 
 
-
 def add_customers(session):
     session.add(Accounts(
         id=uuid.uuid4().hex,
@@ -34,7 +33,7 @@ def add_hairdressers(session):
         first_name="Jan",
         last_name="Testowy",
         account_type="hairdresser",
-        salon_id="219556b04e104ba2b19486cb7fda677a"
+        salon_id=None
     ))
     session.add(Accounts(
         id=uuid.uuid4().hex,
@@ -44,7 +43,7 @@ def add_hairdressers(session):
         first_name="Marcin",
         last_name="Testowin",
         account_type="hairdresser",
-        salon_id="219556b04e104ba2b19486cb7fda677a"
+        salon_id=None
     ))
     session.add(Accounts(
         id=uuid.uuid4().hex,
@@ -54,7 +53,7 @@ def add_hairdressers(session):
         first_name="Krzysztof",
         last_name="Nowak",
         account_type="hairdresser",
-        salon_id="219556b04e104ba2b19486cb7fda677a"
+        salon_id=None
     ))
 
 
@@ -87,3 +86,8 @@ def add_services(session):
         gender="FEMALE",
         service_duration=60
     ))
+
+
+def add_salon_id_for_hairdressers(session):
+    for item in session.query(Accounts).filter(Accounts.account_type == "hairdresser").all():
+        item.salon_id = "219556b04e104ba2b19486cb7fda677a"
