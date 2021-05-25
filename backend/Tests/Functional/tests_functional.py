@@ -1,10 +1,11 @@
+import datetime
 import json
 
 from pytest_mock_resources import create_sqlite_fixture
 from pytest import fixture
 
 import app
-from models import Accounts, Sessions
+from models import Accounts, Sessions, Visits
 from test_db_setup import set_up_test_db, add_salon_id_for_hairdressers
 
 sq = create_sqlite_fixture(Accounts, session=True)
@@ -18,6 +19,10 @@ def show_session_data(session):
     # Return the session ID that our test user receives when test logging in
     session_result = session.query(Sessions).first()
     return session_result.session_id, session_result.account_id
+
+
+def show_visits_data(session):
+    return session.query(Visits).first()
 
 
 @fixture
@@ -69,12 +74,32 @@ def test_register_for_a_visit(sq, client, monkeypatch):
     assert services_data[1]["name"] == "Test"
     # Users selects services
     picked_services = services_data
+    # Total service time is being calculated
+    total_service_time = 180
     # Available hours for today are loaded
     session_id, account_id = show_session_data(sq)
-    avail_hours = client.post("/visit/availability/",
-                              data=dict(date="05/06/2021", hairdresserId=picked_hairdresser["id"],
-                                        ServiceDuration=180, salonId=picked_salon["id"]),
-                              headers=dict(session_id=session_id, account_id=account_id))
-    print(avail_hours.data)
-
-    # User switches the date to tomorrow, hours for tomorrow are loaded
+    todays_date = datetime.datetime.utcnow().strftime("%d/%m/%Y")
+    avail_hours_request = client.post("/visit/availability/",
+                                      json=dict(date=todays_date,
+                                                hairdresserId=picked_hairdresser["id"],
+                                                serviceDuration=total_service_time,
+                                                salonId=picked_salon["id"]),
+                                      headers=dict(session_id=session_id, account_id=account_id))
+    avail_hours_data = json.loads(avail_hours_request.data.decode('utf8'))["availableHours"]
+    print(avail_hours_data)
+    assert len(avail_hours_data) == 10
+    # User picks an hour
+    picked_hour = "11:00"
+    # Users decides to book the visit
+    create_visit_request_data = {
+        "visit_date_start": todays_date + " " + picked_hour,
+        "hairdresser_id": picked_hairdresser["id"],
+        "service_duration": total_service_time,
+        "salon_id": picked_salon["id"],
+        "services": picked_services}
+    create_visit_request = client.post("/visit/", json=create_visit_request_data,
+                                       headers=dict(session_id=session_id, account_id=account_id))
+    visit = show_visits_data(sq)
+    assert visit is not None
+    assert visit.date_start.strftime("%d/%m/%Y %H:%M") == todays_date + " " + picked_hour
+    assert visit.status == 'CREATED'
