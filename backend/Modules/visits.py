@@ -23,7 +23,7 @@ def create_visit(visit: dict, account_id: str) -> dict:
         date_start = datetime.datetime.strptime(visit["visit_date_start"],
                                                 "%d/%m/%Y %H:%M")
         date_end = calculate_end_date(date_start, visit[
-            "service_duration"])  # TODO calculate end date based on duration
+            "service_duration"])
     except ValueError as e:
         raise ValueError("The date format is wrong: " + str(e))
     date_check = date_available(date_start, date_end, visit["hairdresser_id"],
