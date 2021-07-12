@@ -60,12 +60,12 @@ def create_visit(visit: dict, account_id: str) -> dict:
 def date_available(date_start: datetime, date_end: datetime,
                    hairdresser_id: str, customer_id: str) -> dict:
     """
-    Checks if the given date is available. Expected date example:
+    Checks if the given date is available. Expected date format:
     05/04/2020 12:00
     :param date_start: Start date of the visit as string
-    :param date_end:
-    :param hairdresser_id:
-    :param customer_id:
+    :param date_end: End date of the visit as string
+    :param hairdresser_id: id of the hairdresser that will conduct the service
+    :param customer_id: id of the customer that will receive the service
     :return: Boolean stating whether the provided date is available for booking
     """
     for visit in get_hairdresser_visits_for_day(hairdresser_id,
@@ -125,7 +125,6 @@ def get_available_hours(data: dict, account_id: str) -> dict:
     salon = fetch_object(Salons, data["salonId"])
     try:
         date_start = datetime.datetime.strptime(
-            # TODO handle case when the visit is for today
             f"{data['date']} {salon['opening_hour']}", "%d/%m/%Y %H:%M")
         date_end = calculate_end_date(date_start, data["serviceDuration"])
     except ValueError as e:
