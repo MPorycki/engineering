@@ -148,7 +148,7 @@ export default {
             }
         },
         validateData(){
-                if (this.hairdresserSelected == null || this.calculateServiceTime() == 0 || this.salonSelected == null || this.servicesSelected.length == 0){ // TODO add customer id
+                if (this.hairdresserSelected == null || this.calculateServiceTime() == 0 || this.salonSelected == null || this.servicesSelected.length == 0){
                     return false
                 }
             return true
