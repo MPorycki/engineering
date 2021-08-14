@@ -27,7 +27,7 @@ def test_convert_to_dict_converts_correctly(test_db_object):
     # GIVEN
     # A test db object...
     # WHEN
-    test_result = convert_to_dict(test_db_object) # TODO do spytania w pracy
+    test_result = convert_to_dict(test_db_object)
 
     # THEN
     assert "email" in test_result

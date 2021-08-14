@@ -42,7 +42,7 @@ from validation import VisitInputs
 
 app = Flask(__name__)
 api = Api(app)
-app.secret_key = "testowy"  # TODO ogar tematu secret key i jak zrobić żeby to bylo secure
+app.secret_key = "testowy"
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 CORS(app)
 
@@ -204,7 +204,7 @@ class MyAdminIndexView(AdminIndexView):
         user = request.cookies.get("user-id")
         session = request.cookies.get("session-id")
         if not session_is_valid(session, user):
-            return redirect("http://localhost:8080/#/login")  # TODO make it dynamic
+            return redirect("http://localhost:8080/#/login")
         if can_access_admin(session, user):
             return super(MyAdminIndexView, self).index()
         return redirect("http://localhost:8080/#/")

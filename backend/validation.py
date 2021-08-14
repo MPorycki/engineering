@@ -16,7 +16,7 @@ visit_schema = {
             'type': 'string',
         },
         'visit_date_start': {
-            'type': 'string',  # TODO add Validation
+            'type': 'string',
         },
         'service_duration': {
             'type': 'number',
